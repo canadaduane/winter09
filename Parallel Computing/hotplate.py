@@ -10,7 +10,7 @@ from numpy import *
 ESCAPE = '\033'
 window = 0
 
-MAX_TEMP = 100
+iteration = 0
 WIDTH    = 768
 HEIGHT   = 768
 
@@ -54,22 +54,19 @@ def heat_transfer(row, col):
   return (ambient + hotplate[row, col, 0] * 4.0) / 8.0
   
 def calculate():
-  global hotplate
+  global hotplate, iteration
   # Temp storage for next hotplate state
   next_hotplate = hotplate.copy()
   
-  # n = 0
   # while not steady_state():
-  # print hotplate
   for row in range(1, HEIGHT - 1):
     for col in range(1, WIDTH - 1):
       next_hotplate[row, col, 0] = heat_transfer(row, col)
-  # n += 1
-  # print "Iter: ", n
-  hotplate = next_hotplate
   
-  # print "Final solution:"
+  hotplate = next_hotplate
   print hotplate
+  iteration += 1
+  print "Iteration: ", iteration
   DrawGLScene()
 
 # We call this right after our OpenGL window is created.
