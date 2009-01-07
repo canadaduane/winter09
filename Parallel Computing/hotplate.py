@@ -58,12 +58,15 @@ def calculate():
   # Temp storage for next hotplate state
   next_hotplate = hotplate.copy()
   
-  # while not steady_state():
+  ## while not steady_state():
   for row in range(1, HEIGHT - 1):
     for col in range(1, WIDTH - 1):
       next_hotplate[row, col, 0] = heat_transfer(row, col)
   
   hotplate = next_hotplate
+  
+  # hotplate.
+  
   print hotplate
   iteration += 1
   print "Iteration: ", iteration
