@@ -40,11 +40,13 @@ int hp_cells_greater_than(Hotplate* self, float value);
 void hp_dump(Hotplate* self);
 
 void hp_etch_hotspots(Hotplate* self);
+static inline int hp_is_hotspot(Hotplate* self, int x, int y);
 
 int main(int argc, char **argv)
 {
 	double start = when(), finish = 0.0;
 	int size = 768, i;
+	int gt_count = 0;
 
 	/* Initialize the hotplate with specific pixel temperatures */
 	Hotplate* hp = hp_initialize(size, size);
@@ -57,21 +59,22 @@ int main(int argc, char **argv)
 	
 	hp_copy_to_source(hp);
 	
-	for(i = 0; i < 500; i++)
+	for(i = 0; i < 500; i++) // should be 359
 	{
 		hp_calculate_heat_transfer(hp);
 		hp_etch_hotspots(hp);
 		if (hp_is_steady_state(hp)) break;
 		hp_swap(hp);
+		// printf("%d ", i); fflush(stdout);
 	}
 	
-	hp_dump(hp);
-	
-	hp_destroy(hp);
+	// hp_dump(hp);
 	
 	finish = when();
+	gt_count = hp_cells_greater_than(hp, 50.0f);
+	hp_destroy(hp);
 	printf("Completed %d iterations in %f seconds.\n", i, finish - start);
-	printf("%d cells had a value greater than 50.0.", hp_cells_greater_than(hp, 50.0f));
+	printf("%d cells had a value greater than 50.0.\n", gt_count);
 }
 
 /* Return the current time in seconds, using a double precision number. */
@@ -228,8 +231,16 @@ int hp_is_steady_state(Hotplate* self)
 		for (x = 1; x < self->width - 1; x++)
 		{
 			avg_nearby = hp_get_neighbors_sum_unsafe(self, x, y) / 4.0f;
-			if (fabs(hp_get_unsafe(self, x, y) - avg_nearby) >= 0.1)
+			if (
+				// If the current temp is greater than the average temp by a certain threshold, then
+				// we haven't reached a steady state yet...
+				fabs(hp_get_unsafe(self, x, y) - avg_nearby) >= 0.1 &&
+				// Make sure this is not a special hostpot
+				!hp_is_hotspot(self, x, y))
+			{
+				// printf("Steady state failed at: %d, %d", x, y);
 				return FALSE;
+			}
 		}
 	}
 	return TRUE;
@@ -273,4 +284,13 @@ void hp_etch_hotspots(Hotplate* self)
 {
 	hp_hline(self, 400, 0, 330, 100.0);
 	hp_set(self, 500, 200, 100.0);
+}
+
+static inline int hp_is_hotspot(Hotplate* self, int x, int y)
+{
+	if (x == 500 && y == 200)
+		return TRUE;
+	if (y == 400 && (x >= 0 && x <= 330))
+		return TRUE;
+	return FALSE;
 }
