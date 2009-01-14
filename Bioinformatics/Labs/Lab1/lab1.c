@@ -35,6 +35,7 @@ typedef struct CONTIG_LIST_STRUCT
 ContigList* ctig_list_initialize(void);
 void ctig_list_destroy(ContigList* self);
 void ctig_list_add(ContigList* self, Contig* ctig);
+Contig* ctig_list_add_sequence(ContigList* self, char* sequence, int length);
 void ctig_list_grow(ContigList* self, int len);
 void ctig_list_load_fasta(ContigList* self, char* filename);
 void ctig_list_print(ContigList* self);
@@ -72,7 +73,7 @@ int main(int argc, char* argv[])
 	
 	{
 		ContigList *list = ctig_list_initialize();
-		ctig_list_load_fasta(list, "sequences-1.fasta.out");
+		ctig_list_load_fasta(list, "sequences-4.fasta.out");
 		fflush(stdout);
 		ctig_list_print(list);
 	}
@@ -185,29 +186,63 @@ void ctig_list_add(ContigList* self, Contig* ctig)
 	self->list[self->length - 1] = ctig;
 }
 
+Contig* ctig_list_add_sequence(ContigList* self, char* sequence, int length)
+{
+	Contig* new_contig = ctig_initialize();
+	new_contig->sequence = sequence;
+	new_contig->length = length;
+	ctig_list_add(self, new_contig);
+	return new_contig;
+}
+
 void ctig_list_load_fasta(ContigList* self, char* filename)
 {
 	FILE* in = fopen(filename, "r");
 	char* line = NULL;
-	int seq_line_next = FALSE;
+	char* complete_line = calloc(1, sizeof(char));
+	int line_length = 0;
 	
+	int seq_line_next = FALSE;
+	int seq_line_done = FALSE;
+	
+	strcpy(complete_line, "");
 	while((line = readline(in)) && !feof(in))
 	{
 		if (seq_line_next == TRUE)
 		{
-			// printf("Line: %s\n", line);
-			Contig* new_contig = ctig_initialize();
-			new_contig->sequence = line;
-			new_contig->length = strlen(line);
-			ctig_list_add(self, new_contig);
-			seq_line_next = FALSE;
+			// printf("Readline: %s\n", line);
+			// printf(" c1: %d, c2: %d\n", line[0], line[1]);
+			if (line[0] == '\0') // Blank Line
+			{
+				seq_line_done = TRUE;
+			}
+			else
+			{
+				line_length += strlen(line);
+				complete_line = realloc(complete_line, line_length + 1);
+				strcat(complete_line, line);
+			}
 		}
-		else if (line[0] == '>')
+		else if (line[0] == '>') // Start of DNA data section
 		{
 			seq_line_next = TRUE;
 		}
-		// printf("Readline: %s\n", line);
+		
+		if (seq_line_done == TRUE)
+		{
+			ctig_list_add_sequence(self, complete_line, line_length);
+			seq_line_next = FALSE;
+			seq_line_done = FALSE;
+			
+			/* Allocate the beginning of a new buffer for the complete_line pointer */
+			complete_line = calloc(1, sizeof(char));
+			line_length = 0;
+			strcpy(complete_line, "");
+		}
 	}
+
+	if (line_length > 0)
+		ctig_list_add_sequence(self, complete_line, line_length);
 	
 	fclose(in);
 }
