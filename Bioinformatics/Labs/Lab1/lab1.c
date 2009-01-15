@@ -30,6 +30,8 @@ typedef struct CONTIG_MATCH_STRUCT
 	Contig* c2;
 } ContigMatch;
 
+const int MATCH_THRESHOLD = 5;
+
 Contig* ctig_initialize(void);
 Contig* ctig_initialize_with_string(char* s);
 void ctig_destroy(Contig* self);
@@ -52,6 +54,7 @@ Contig* ctig_list_add_sequence(ContigList* self, char* sequence, int length);
 void ctig_list_grow(ContigList* self, int len);
 void ctig_list_load_fasta(ContigList* self, char* filename);
 void ctig_list_print(ContigList* self);
+ContigList* ctig_list_cross_match(ContigList* self);
 
 /* ===== NwMatrix Class Declaration ===== */
 
@@ -84,13 +87,17 @@ int main(int argc, char* argv[])
 	// 	return -1;
 	// }
 	
-	// {
-	// 	ContigList *list = ctig_list_initialize();
-	// 	ctig_list_load_fasta(list, "sequences-4.fasta.out");
-	// 	fflush(stdout);
-	// 	ctig_list_print(list);
-	// }
-	// exit(0);
+	{
+		ContigList *list = ctig_list_initialize();
+		ContigList *result = NULL;
+		
+		ctig_list_load_fasta(list, "sequences-3.fasta.out");
+		ctig_list_print(list);
+		
+		result = ctig_list_cross_match(list);
+		ctig_list_print(result);
+	}
+	exit(0);
 	
 	// Main call to algorithm
 	{
@@ -101,8 +108,8 @@ int main(int argc, char* argv[])
 		NwMatrix *m = NULL;
 		int overlap = 0;
 		
-		c1 = ctig_initialize_with_string("ct");
-		c2 = ctig_initialize_with_string("==ct=");
+		c1 = ctig_initialize_with_string("ACTGCCCCTTCAA");
+		c2 = ctig_initialize_with_string("CCCCTTCAAG");
 
 		// m = nw_initialize();
 		
@@ -290,9 +297,9 @@ void ctig_list_grow(ContigList* self, int new_len)
 	assert(self->list != NULL);
 	if (new_len > self->length)
 	{
-		self->length = new_len;
-		self->list = realloc(self->list, sizeof(Contig*) * self->length);
+		self->list = realloc(self->list, sizeof(Contig*) * new_len);
 	}
+	self->length = new_len;
 }
 
 void ctig_list_destroy(ContigList* self)
@@ -379,6 +386,71 @@ void ctig_list_print(ContigList* self)
 		assert(self->list[i] != NULL);
 		printf("%d: %s\n", i, self->list[i]->sequence);
 	}
+}
+
+ContigList* ctig_list_cross_match(ContigList* self)
+{
+	Contig* merged = NULL;
+	ContigList* src = self;
+	ContigList* dst = ctig_list_initialize();
+	ContigMatch match, best_match;
+	int prev_list_length = -1;
+	int i = 0, j = 0;
+	int* marked = calloc(0, sizeof(int));
+	int best_match_index = -1;
+	
+	while (prev_list_length != src->length)
+	{
+		prev_list_length = src->length;
+		
+		/* Reallocate the 'marked' boolean array for the src ContigList */
+		free(marked); marked = calloc(src->length, sizeof(int));
+		
+		for (i = 0; i < src->length; i++)
+		{
+			best_match.overlap = 0;
+			best_match_index = -1;
+			if (!marked[i])
+			{
+				for (j = 0; j < src->length; j++)
+				{
+					if (!marked[j] && i != j)
+					{
+						ctig_exact_match( &match, src->list[i], src->list[j] );
+						if (match.overlap >= MATCH_THRESHOLD && match.overlap > best_match.overlap)
+						{
+							best_match = match;
+							best_match_index = j;
+						}
+					}
+				}
+				if (best_match.overlap > 0 && best_match_index >= 0)
+				{
+					marked[best_match_index] = TRUE;
+					// printf("Merging %d and %d\n", i, best_match_index);
+					merged = ctig_exact_merge(&best_match);
+					// printf("  %s\n", merged->sequence);
+					src->list[i] = merged;
+				}
+			}
+		}
+		
+		/* Reallocate the 'destination' ContigList */
+		dst = ctig_list_initialize();
+
+		/* Move marked Contigs to the dst list, then swap src and dst */
+		for (i = 0; i < src->length; i++)
+		{
+			if (!marked[i])
+				ctig_list_add(dst, src->list[i]);
+			else
+				ctig_destroy(src->list[i]);
+		}
+		ctig_list_destroy(src);
+		src = dst;
+	}
+	
+	return src;
 }
 
 /* ===== NwMatrix Class Definitions ===== */
