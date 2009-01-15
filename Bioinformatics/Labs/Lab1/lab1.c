@@ -7,6 +7,7 @@
 #include <omp.h>
 
 #include "readline.h"
+#include "minmax.h"
 
 const int TRUE = 1;
 const int FALSE = 0;
@@ -19,10 +20,22 @@ typedef struct CONTIG_STRUCT
 	char* sequence;
 } Contig;
 
+typedef struct CONTIG_MATCH_STRUCT
+{
+	int i_start, i_end;
+	int j_start, j_end;
+	int overlap;
+	int position;
+	Contig* c1;
+	Contig* c2;
+} ContigMatch;
+
 Contig* ctig_initialize(void);
 Contig* ctig_initialize_with_string(char* s);
 void ctig_destroy(Contig* self);
 void ctig_set_sequence(Contig* self, char* s);
+void ctig_exact_match(ContigMatch* match, Contig* self, Contig* other);
+Contig* ctig_exact_merge(ContigMatch* match);
 
 /* ===== ContigList Class Declaration ===== */
 
@@ -71,30 +84,46 @@ int main(int argc, char* argv[])
 	// 	return -1;
 	// }
 	
-	{
-		ContigList *list = ctig_list_initialize();
-		ctig_list_load_fasta(list, "sequences-4.fasta.out");
-		fflush(stdout);
-		ctig_list_print(list);
-	}
-	exit(0);
+	// {
+	// 	ContigList *list = ctig_list_initialize();
+	// 	ctig_list_load_fasta(list, "sequences-4.fasta.out");
+	// 	fflush(stdout);
+	// 	ctig_list_print(list);
+	// }
+	// exit(0);
 	
 	// Main call to algorithm
 	{
-		Contig* c1;
-		Contig* c2;
-		NwMatrix *m;
-		int score;
+		ContigMatch* match = calloc(1, sizeof(ContigMatch));
+		Contig* c1 = NULL;
+		Contig* c2 = NULL;
+		Contig* c3 = NULL;
+		NwMatrix *m = NULL;
+		int overlap = 0;
 		
-		c1 = ctig_initialize_with_string("agct");
-		c2 = ctig_initialize_with_string("agct");
+		c1 = ctig_initialize_with_string("ct");
+		c2 = ctig_initialize_with_string("==ct=");
 
-		m = nw_initialize();
-		score = nw_compute_score(m, c1, c2);
+		// m = nw_initialize();
 		
-		printf("Score: %d\n", score);
+		ctig_exact_match(match, c1, c2);
+		printf("Match | overlap: %d, position: %d\n", match->overlap, match->position);
+		printf("  c1: %s\n  c2: %s\n", match->c1->sequence, match->c2->sequence);
+		printf("  i_start: %d, i_end: %d\n", match->i_start, match->i_end);
+		printf("  j_start: %d, j_end: %d\n", match->j_start, match->j_end);
+		printf("\n");
 		
-		nw_destroy(m);
+		if (match->overlap > 0)
+		{
+			c3 = ctig_exact_merge(match);
+			printf("Merge: %s\n", c3->sequence);
+		}
+		else
+		{
+			printf("Nothing to merge\n");
+		}
+		
+		// nw_destroy(m);
 		
 		ctig_destroy(c2);
 		ctig_destroy(c1);
@@ -144,6 +173,100 @@ void ctig_set_sequence(Contig* self, char* s)
 	self->sequence = malloc(self->length + 1);
 	
 	memcpy(self->sequence, s, self->length + 1);
+}
+
+void ctig_exact_match(ContigMatch* match, Contig* self, Contig* other)
+{
+	int h, i, j;
+
+	match->c1 = self;
+	match->c2 = other;
+	match->overlap = 0;
+	match->position = -1;
+	
+	for (h = 0; h < self->length + other->length; h++)
+	{
+		int match_overlap = 0;
+		int i_start = max(0, h - other->length);
+		int i_end   = min3(h, self->length, self->length + other->length - h);
+		int j_start = max(0, other->length - h);
+		int j_end   = min(other->length, self->length + other->length - h);
+		// printf("h: %d, i_start: %d, i_end: %d, j_start: %d, j_end: %d\n", h, i_start, i_end, j_start, j_end);
+		for (i = i_start; i < i_end; i++)
+		{
+			for (j = j_start; j < j_end; j++)
+			{
+				// printf("h: %d, i: %d, j: %d | %c =?= %c\n", h, i, j, self->sequence[i], other->sequence[j]);
+				if (self->sequence[i] == other->sequence[j])
+				{
+					match_overlap ++;
+					i ++;
+				}
+				else
+				{
+					match_overlap = 0;
+					goto failed_match;
+				}
+			}
+		}
+		if (match_overlap > match->overlap)
+		{
+			match->i_start = i_start;
+			match->i_end = i_end;
+			match->j_start = j_start;
+			match->j_end = j_end;
+			match->overlap = match_overlap;
+			match->position = h;
+		}
+		failed_match:;
+	}
+}
+
+Contig* ctig_exact_merge(ContigMatch* match)
+{
+	int max_length =
+		match->c1->length +
+		match->c2->length;
+	assert( match->position > 0 && match->position < max_length );
+	int actual_length = max_length - match->overlap;
+	char* sequence = calloc(actual_length + 1, sizeof(char));
+	char* seq1 = NULL;
+	char* seq2 = NULL;
+	int seq1_len = 0;
+	int seq2_len = 0;
+	int k = 0;
+
+	if (match->i_start > match->j_start)
+	{	// i_start begins the sequence
+		seq1 = match->c1->sequence;
+		seq1_len = match->i_end;
+	}
+	else
+	{ // j_start begins the sequence
+		seq1 = match->c2->sequence;
+		seq1_len = match->j_end;
+	}
+	
+	if (match->c1->length - match->i_end > match->c2->length - match->j_end)
+	{ // use c1 as second half
+		seq2 = match->c1->sequence + match->i_end;
+		seq2_len = match->c1->length - match->i_end;
+	}
+	else
+	{ // use c2 as second half
+		seq2 = match->c2->sequence + match->j_end;
+		seq2_len = match->c2->length - match->j_end;
+	}
+	
+	memcpy(sequence, seq1, seq1_len);
+	memcpy(sequence + seq1_len, seq2, seq2_len);
+	sequence[seq1_len + seq2_len + 1] = '\0';
+	
+	Contig* new_contig = ctig_initialize();
+	new_contig->sequence = sequence;
+	new_contig->length = seq1_len + seq2_len;
+
+	return new_contig;
 }
 
 /* ===== ContigList Class Definitions ===== */
