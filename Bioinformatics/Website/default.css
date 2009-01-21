@@ -31,8 +31,16 @@ body {
 #title {
 	position: absolute;
 	right: 1em;
-	top: 1em;
+	top: 45px;
 	font-size: 16pt;
+}
+#logo {
+	position: absolute;
+	left: 1em;
+	top: 1em;
+	background: url(images/bioinformatics.png) no-repeat;
+	width: 580px;
+	height: 60px;
 }
 #main {
 	padding: 30px 2em 2em 2em;
