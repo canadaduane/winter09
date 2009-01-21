@@ -4,6 +4,7 @@
 #include <string.h>
 #include <assert.h>
 #include <math.h>
+#include <omp.h>
 
 #define FALSE 0
 #define TRUE 1
@@ -211,6 +212,9 @@ void hp_calculate_heat_transfer(Hotplate* self)
 {
 	float new_heat_value = 0.0;
 	int x, y;
+#pragma omp parallel for \
+	private(x, y, new_heat_value) \
+	shared(self)
 	for (y = 1; y < self->height - 1; y++)
 	{
 		for (x = 1; x < self->width - 1; x++)
@@ -226,6 +230,9 @@ int hp_is_steady_state(Hotplate* self)
 {
 	float avg_nearby = 0.0f;
 	int x, y;
+// #pragma omp parallel for \
+// 	private(x, y, avg_nearby) \
+// 	shared(self)
 	for (y = 1; y < self->height - 1; y++)
 	{
 		for (x = 1; x < self->width - 1; x++)
