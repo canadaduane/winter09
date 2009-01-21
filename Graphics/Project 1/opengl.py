@@ -12,7 +12,7 @@ drawMode = 1
 RASTER_SIZE = 640*480*3
 # Create a big old matrix with values ranging from 0.0 to 1.0
 raster = array([float(i)/RASTER_SIZE for i in range(0, RASTER_SIZE)], dtype='float32').reshape(640,480,3)
-raster[320,320] = [1.0,1.0,1.0]
+# raster[320,320] = [1.0,1.0,1.0]
 
 # We call this right after our OpenGL window is created.
 def InitGL(width, height):

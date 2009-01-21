@@ -1,0 +1,67 @@
+Where is the "memory" for each pixel stored in a plasma display, and thin-film electroluminescent display?
+- stored at each intersection
+
+What is the Deflection System of a cathode ray tube made of?
+
+What are some examples of Scan Conversion? Circles & triangles?
+- yes
+
+Why can't we use a three-layer thick beam-penetration CRT for 3 color displays?
+- no way to mix all 3 colors (r + g, g + b, but no r + b)
+
+Why does a Direct View Storage tube need more than one electron gun?
+- 1 focused, 1 mist
+
+What is a plasma? Is zinc sulfide a "plasma"? If not, why is it the active ingredient of "plasma" TVs?
+
+3.	The advent of computer graphics has changed the viability of presentation graphics (two, three, and even four-dimensional charts, graphs, etc.) from “poorly understood and of limited utility” to “easily understood and widely used” for virtually all sectors of the economy (science, engineering, business, defense, journalism, …).
+a.	True
+b.	False
+(b)
+
+5.	Computer animation is practical for
+a.	only short pieces, like TV advertisements
+b.	only short and intermediate pieces, like segments of motion pictures
+c.	feature-length motion pictures (as indicated by the  behavior of Pixar stock over the past few months).
+(c)
+
+Why do we have different names for "give off light" e.g.
+	fluoresce
+	phosphoresce
+Why are they named after atomic elements?
+
+How are direct view storage tubes positively charged at precise locations?
+cf.:
+14.	Describe briefly how an image presented on a direct view storage tube is refreshed?
+(a flood of electrons passes through the positively charged regions of the storage grid and strikes the screen phospor)
+
+
+What is stereolithography?
+What part of a hologram relies on retina or momentary persistence in brain?
+cf.:
+19.	Which of the following so-called “3D” output devices/techniques produce true, persistent 3D output (i.e. it does not rely on the persistence of the information on the retina or the apparent momentary persistence in the brain)?  Circle the correct answer(s).
+a.	bimodal projectors
+b.	head-mounted shutters
+c.	stereo boxes
+d.	holograms
+e.	rotating LED panels
+f.	stereolithography
+g.	varifocal mirrors
+h.	none of the above
+
+Should we learn about
+	cell encoding?
+	RLE?
+	DDA line algorithm?
+	"Active Edge List" and order of line drawing?
+
+Why use Gray code in Rand tablet? Why not just use regular binary representation since it uses same # of bits?
+
+Examples... What part of architectural design is automated by computers, what part is enhanced?
+
+11. Early CRTs used in graphics were monochrome. Hence, only with the development of multi-color monitors did it become possible to render colored scenes and scenarios.
+Why (False)?
+
+What is the upper limit of the eye for perceived improvement due to increased "refresh rate" of screens?
+
+
