@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 		hp_calculate_heat_transfer(hp, i);
 		hp_etch_hotspots(hp);
 		if (hp_is_steady_state(hp)) break;
-		hp_dump(hp, FALSE);
+		// hp_dump(hp, FALSE);
 		hp_swap(hp);
 		// printf("%d ", i); fflush(stdout);
 	}
@@ -238,6 +238,7 @@ void hp_calculate_heat_transfer_single(Hotplate* self)
 {
 	float new_heat_value = 0.0;
 	int x, y;
+	// printf("Process calculating y: %d to %d (lines = %d).\n", 1, self->height - 1, self->height - 2);
 	for (y = 1; y < self->height - 1; y++)
 	{
 		for (x = 1; x < self->width - 1; x++)
@@ -271,12 +272,12 @@ void* hp_calculate_heat_transfer_parallel_thread( void* v )
 	int x, y;
 	int x_min = 1, x_max = thread->hotplate->width - 1;
 	int y_min = 1 + (lines * thread->id);
-	int y_max = y_min + lines - 1;
+	int y_max = y_min + lines;
 	
 	/* Make sure the last thread takes care of the remainder of the integer division of the hotplate */
 	if (thread->id == NUM_THREADS - 1) y_max = thread->hotplate->height - 1;
 	
-	printf("Thread %d calculating y: %d to %d (lines = %d).\n", thread->id, y_min, y_max, lines);
+	// printf("Thread %d calculating y: %d to %d (lines = %d).\n", thread->id, y_min, y_max, lines);
 	
 	float new_heat_value;
 	for (y = y_min; y < y_max; y++)
@@ -292,10 +293,10 @@ void* hp_calculate_heat_transfer_parallel_thread( void* v )
 /* Transfer heat according to algorithm */
 void hp_calculate_heat_transfer(Hotplate* self, int iter)
 {
-	printf("Start iteration %d...\n", iter);
+	// printf("Start iteration %d...\n", iter);
 	// hp_calculate_heat_transfer_single(self);
 	hp_calculate_heat_transfer_parallel(self);
-	printf("end iteration %d.\n", iter);
+	// printf("end iteration %d.\n", iter);
 }
 
 HotplateThread* hpt_initialize( int id, Hotplate* hotplate, void* (*action)( void* ) )

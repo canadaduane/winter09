@@ -1,0 +1,10 @@
+Completed 359 iterations in 0.955781 seconds.
+72542 cells had a value greater than 50.0.
+Completed 359 iterations in 0.934461 seconds.
+72542 cells had a value greater than 50.0.
+Completed 359 iterations in 0.988514 seconds.
+72542 cells had a value greater than 50.0.
+Completed 359 iterations in 0.955874 seconds.
+72542 cells had a value greater than 50.0.
+Completed 359 iterations in 0.973817 seconds.
+72542 cells had a value greater than 50.0.
