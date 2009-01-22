@@ -6,6 +6,11 @@
 #include <math.h>
 #include <pthread.h>
 
+/* Ballpark benchmark:
+ Completed 359 iterations in 2.404296 seconds.
+ 72542 cells had a value greater than 50.0.
+*/
+
 #define FALSE 0
 #define TRUE 1
 #define NUM_THREADS 2
@@ -36,10 +41,12 @@ static inline void hp_hline(Hotplate* self, int y, int x1, int x2, float value);
 static inline void hp_vline(Hotplate* self, int x, int y1, int y2, float value);
 static inline float hp_get_neighbors_sum_unsafe(Hotplate* self, int x, int y);
 static inline float hp_get_total_heat_unsafe(Hotplate* self, int x, int y);
-void hp_calculate_heat_transfer(Hotplate* self);
+void hp_calculate_heat_transfer(Hotplate* self, int iter);
+void hp_calculate_heat_transfer_single(Hotplate* self);
+void hp_calculate_heat_transfer_parallel(Hotplate* self);
 int hp_is_steady_state(Hotplate* self);
 int hp_cells_greater_than(Hotplate* self, float value);
-void hp_dump(Hotplate* self);
+void hp_dump(Hotplate* self, int characters);
 void hp_etch_hotspots(Hotplate* self);
 static inline int hp_is_hotspot(Hotplate* self, int x, int y);
 
@@ -56,7 +63,7 @@ HotplateThread* hpt_initialize_static( HotplateThread* self, int id, Hotplate* h
 void hpt_destroy( HotplateThread* self );
 void hpt_destroy_static( HotplateThread* self );
 void hpt_join( HotplateThread* self );
-void* hp_calculate_heat_transfer_part( void* );
+void* hp_calculate_heat_transfer_parallel_thread( void* );
 
 
 /* * * * * * * * * * * * * * * */
@@ -79,11 +86,12 @@ int main(int argc, char **argv)
 	
 	hp_copy_to_source(hp);
 	
-	for(i = 0; i < 500; i++) // should be 359
+	for(i = 0; i < 600; i++) // should be 359
 	{
-		hp_calculate_heat_transfer(hp);
+		hp_calculate_heat_transfer(hp, i);
 		hp_etch_hotspots(hp);
 		if (hp_is_steady_state(hp)) break;
+		hp_dump(hp, FALSE);
 		hp_swap(hp);
 		// printf("%d ", i); fflush(stdout);
 	}
@@ -226,7 +234,37 @@ static inline float hp_get_total_heat_unsafe(Hotplate* self, int x, int y)
 	return (neighbors + 4.0f * hp_get_unsafe(self, x, y)) / 8.0f;
 }
 
-void* hp_calculate_heat_transfer_part( void* v )
+void hp_calculate_heat_transfer_single(Hotplate* self)
+{
+	float new_heat_value = 0.0;
+	int x, y;
+	for (y = 1; y < self->height - 1; y++)
+	{
+		for (x = 1; x < self->width - 1; x++)
+		{
+			new_heat_value = hp_get_total_heat_unsafe(self, x, y);
+			hp_set_unsafe(self, x, y, new_heat_value);
+		}
+	}
+}
+
+void hp_calculate_heat_transfer_parallel(Hotplate* self)
+{
+	int i;
+	HotplateThread threads[NUM_THREADS];
+	for (i = 0; i < NUM_THREADS; i++)
+	{
+		hpt_initialize_static( threads + i, i, self, hp_calculate_heat_transfer_parallel_thread );
+	}
+	
+	for (i = 0; i < NUM_THREADS; i++)
+	{
+		hpt_join( threads + i );
+		hpt_destroy_static( threads + i );
+	}
+}
+
+void* hp_calculate_heat_transfer_parallel_thread( void* v )
 {
 	HotplateThread* thread = (HotplateThread*)v;
 	int lines = thread->hotplate->height / NUM_THREADS;
@@ -252,24 +290,12 @@ void* hp_calculate_heat_transfer_part( void* v )
 }
 
 /* Transfer heat according to algorithm */
-void hp_calculate_heat_transfer(Hotplate* self)
+void hp_calculate_heat_transfer(Hotplate* self, int iter)
 {
-	float new_heat_value = 0.0;
-	int x, y;
-	int i, rc;
-	void* status;
-	
-	HotplateThread threads[NUM_THREADS];
-	for (i = 0; i < NUM_THREADS; i++)
-	{
-		hpt_initialize_static( threads + i, i, self, hp_calculate_heat_transfer_part );
-	}
-	
-	for (i = 0; i < NUM_THREADS; i++)
-	{
-		hpt_join( threads + i );
-		hpt_destroy_static( threads + i );
-	}
+	printf("Start iteration %d...\n", iter);
+	// hp_calculate_heat_transfer_single(self);
+	hp_calculate_heat_transfer_parallel(self);
+	printf("end iteration %d.\n", iter);
 }
 
 HotplateThread* hpt_initialize( int id, Hotplate* hotplate, void* (*action)( void* ) )
@@ -362,18 +388,27 @@ int hp_cells_greater_than(Hotplate* self, float value)
 }
 
 /* Print the hotplate state as ASCII values to the terminal */
-void hp_dump(Hotplate* self)
+void hp_dump(Hotplate* self, int characters)
 {
 	int x, y;
 	char intensity[] = {'.', '=', 'x', '%', 'M'};
-	printf("Dimensions: %d x %d\n", self->width, self->height);
-	for (y = 0; y < self->height; y++)
+	// printf("Dimensions: %d x %d\n", self->width, self->height);
+	// for (y = 0; y < self->height; y++)
 	{
+		y = 399;
 		for (x = 0; x < self->width; x++)
 		{
-			int value = hp_get_unsafe(self, x, y) / 20;
-			if (value > 4) value = 4;
-			printf("%c", intensity[value]);
+			if (characters == TRUE)
+			{
+				int value = hp_get_unsafe(self, x, y) / 20;
+				if (value > 4) value = 4;
+				printf("%c", intensity[value]);
+			}
+			else
+			{
+				float value = hp_get_unsafe(self, x, y);
+				printf("[%.01f]", value);
+			}
 		}
 		printf("\n");
 	}
