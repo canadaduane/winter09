@@ -21,12 +21,15 @@ int shell_arg_int( int argc, char* argv[], char* arg_switch, int default_value)
 typedef struct HYPER_CUBE_NODE_STRUCT
 {
 	int id;
-	int stored_sum;
+	int state;
+	int message_box;
+	int message_received;
 	int num_nodes;
 	int dimensions;
 	pthread_t pthread;
 	pthread_attr_t pattr;
-	volatile int proceed;
+	pthread_cond_t message_cond;
+	pthread_mutex_t message_mutex;
 } HyperCubeNode;
 
 /* HyperCubeNode Construction / Destruction */
@@ -56,10 +59,10 @@ int main( int argc, char* argv[] )
 	{
 		nodes[i] = hcn_initialize( i );
 		node_switch[1] = '0' + i;
-		nodes[i]->stored_sum = shell_arg_int( argc, argv, node_switch, 10 );
+		nodes[i]->state = shell_arg_int( argc, argv, node_switch, 10 );
 		nodes[i]->dimensions = dimensions;
 		nodes[i]->num_nodes = num_nodes;
-		printf( "  Node %d starts with sum: %d\n", i, nodes[i]->stored_sum );
+		printf( "  Node %d starts with sum: %d\n", i, nodes[i]->state );
 	}
 	
 	for ( i = 0; i < num_nodes; i++ )
@@ -72,7 +75,7 @@ int main( int argc, char* argv[] )
 		hcn_thread_join( nodes[i] );
 	}
 	
-	printf("Sum: %d\n", nodes[0]->stored_sum);
+	printf("Sum: %d\n", nodes[0]->state);
 	
 	/* Delete Nodes */
 	for ( i = 0; i < num_nodes; i++ )
@@ -90,12 +93,15 @@ HyperCubeNode* hcn_initialize( int id )
 HyperCubeNode* hcn_initialize_static( HyperCubeNode* self, int id )
 {
 	self->id = id;
-	self->stored_sum = 0;
+	self->state = 0;
+	self->message_box = 0;
+	self->message_received = 0;
 	self->dimensions = 0;
 	self->num_nodes = 0;
-	self->proceed = 0;
 	pthread_attr_init( &(self->pattr) );
 	pthread_attr_setdetachstate( &(self->pattr), PTHREAD_CREATE_JOINABLE );
+	pthread_cond_init( &(self->message_cond), NULL );
+	pthread_mutex_init( &(self->message_mutex), NULL );
 	return self;
 }
 
@@ -143,41 +149,38 @@ void* hcn_broadcast_action( void* hcn )
 	int n = self->num_nodes;
 	int i;
 	
-	/* Set mask to 0b for 1 dim, 01b for 2 dim, 011b for 3 dim, etc. */
-	// int mask = ((1 << d) - 1) ^ (1 << (d - 1));
-	
-	/* Set mask to */
-	int mask = 1;
-	
-	/* Set dimensional bit to 1b for 1 dim, 10b for 2 dim, 100b for 3 dim, etc.*/
-	int dim_bit = 1 << (d - 1);
-	
 	for ( i = 0; i < d; i++ )
 	{ /* Loop through each dimension */
-		printf(" i: %d, mask: %x, self->id: %d\n", i, mask, self->id);
+		printf("Iteration %d, self->id: %d\n", i, self->id);
 		
-		if ( mask & self->id == 0 )
-		{ /* Bits indicate it's our turn to send or receive */
+		/* The sender (if we are a recipient), or recipient (if we are a sender) */
+		int other = ( self->id ^ ( 1 << i ) );
 			
-			/* The sender (if we are a recipient), or recipient (if we are a sender) */
-			int other = ( self->id ^ dim_bit );
-			
-			if ( self->id & ( dim_bit >> (d - i) ) )
-			{ /* The bits indicate it's our turn to send ... */
-				printf(" %d sending to %d\n", self->id, other);
-				nodes[other]->stored_sum += self->stored_sum;
-				nodes[other]->proceed = 1;
-			}
-			else
-			{ /* ... or the bits indicate it's our turn to receive */
-				printf(" %d waiting to receive from %d\n", self->id, other);
-				while( self->proceed == 0 );
-				self->proceed = 0;
-			}
-			
+		printf( " %d sending '%d' to %d\n", self->id, self->state, other );
+		pthread_mutex_lock( &(self->message_mutex) );
+		{
+			nodes[other]->message_box = self->state;
+			nodes[other]->message_received = 1;
+			pthread_cond_signal( &(nodes[other]->message_cond) );
 		}
+		pthread_mutex_unlock( &(self->message_mutex) );
+
+		printf( " %d waiting to receive from %d\n", self->id, other );
+		pthread_mutex_lock( &(self->message_mutex) );
+		{
+			while( !self->message_received )
+				pthread_cond_wait( &(self->message_cond), &(self->message_mutex) );
+			// Reset 'message received' flag
+			self->message_received = 0;
+		}
+		pthread_mutex_unlock( &(self->message_mutex) );
 		
-		mask = (mask << 1) | 1;
+		printf( " %d received '%d' from %d\n", self->id, self->message_box, other );
+		
+		/* Perform the reduction operation: */
+		self->state = self->state + self->message_box;
+		
+		printf( " %d new state: %d\n", self->id, self->state);
 	}
 }
 
