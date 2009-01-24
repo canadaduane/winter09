@@ -56,6 +56,7 @@ typedef struct HOT_PLATE_THREAD_STRUCT
 	pthread_t pthread;
 	pthread_attr_t pattr;
 	Hotplate* hotplate;
+	int wait, done;
 } HotplateThread;
 
 HotplateThread* hpt_initialize( int id, Hotplate* hotplate, void* (*action)( void* ) );
@@ -64,7 +65,13 @@ void hpt_destroy( HotplateThread* self );
 void hpt_destroy_static( HotplateThread* self );
 void hpt_join( HotplateThread* self );
 void* hp_calculate_heat_transfer_parallel_thread( void* );
+void* hp_parallel_thread( void* );
 
+HotplateThread threads[NUM_THREADS];
+int all_threads_done = FALSE;
+int all_threads_proceed = FALSE;
+int waiting_threads = 0;
+pthread_mutex_t mutex_waiting_threads = PTHREAD_MUTEX_INITIALIZER;
 
 /* * * * * * * * * * * * * * * */
 /*     Main Program Area       */
@@ -85,15 +92,18 @@ int main(int argc, char **argv)
 	hp_etch_hotspots(hp);
 	
 	hp_copy_to_source(hp);
-	
-	for(i = 0; i < 600; i++) // should be 359
+
+	/* CREATE THREADS */
+	for (i = 0; i < NUM_THREADS; i++)
 	{
-		hp_calculate_heat_transfer(hp, i);
-		hp_etch_hotspots(hp);
-		if (hp_is_steady_state(hp)) break;
-		// hp_dump(hp, FALSE);
-		hp_swap(hp);
-		// printf("%d ", i); fflush(stdout);
+		hpt_initialize_static( threads + i, i, hp, hp_parallel_thread );
+	}
+
+	/* JOIN THREADS */
+	for (i = 0; i < NUM_THREADS; i++)
+	{
+		hpt_join( threads + i );
+		hpt_destroy_static( threads + i );
 	}
 	
 	// hp_dump(hp);
@@ -103,6 +113,54 @@ int main(int argc, char **argv)
 	hp_destroy(hp);
 	printf("Completed %d iterations in %f seconds.\n", i, finish - start);
 	printf("%d cells had a value greater than 50.0.\n", gt_count);
+}
+
+void* hp_parallel_thread(void *v)
+{
+	HotplateThread* thread = (HotplateThread*)v;
+	int do_nothing, i;
+	
+	for(i = 0; i < 600; i++) // should be 359
+	{
+		printf("thread %d in iter %d\n", thread->id, i);
+		if ( all_threads_done ) break;
+
+		pthread_mutex_lock( &mutex_waiting_threads );
+		all_threads_proceed = FALSE;
+		pthread_mutex_unlock( &mutex_waiting_threads );
+		
+		hp_calculate_heat_transfer_parallel_thread( v );
+
+		pthread_mutex_lock( &mutex_waiting_threads );
+		waiting_threads++;
+		pthread_mutex_unlock( &mutex_waiting_threads );
+
+		
+		if ( thread->id == 0 )
+		{
+			while ( waiting_threads < NUM_THREADS ) do_nothing = TRUE;
+
+			pthread_mutex_lock( &mutex_waiting_threads );
+
+			hp_etch_hotspots( thread->hotplate );
+			if ( hp_is_steady_state( thread->hotplate ) )
+				all_threads_done = TRUE;
+			hp_swap( thread->hotplate );
+			
+			waiting_threads = 0;
+			all_threads_proceed = TRUE;
+
+			pthread_mutex_unlock( &mutex_waiting_threads );
+		}
+		else
+		{
+			while ( !all_threads_proceed ) do_nothing = TRUE;
+		}
+	}
+	
+	printf("Thread %d done.\n", thread->id);
+	
+	return NULL;
 }
 
 /* Return the current time in seconds, using a double precision number. */
@@ -312,6 +370,8 @@ HotplateThread* hpt_initialize_static( HotplateThread* self, int id, Hotplate* h
 	
 	self->id = id;
 	self->hotplate = hotplate;
+	self->wait = FALSE;
+	self->done = FALSE;
 	
 	pthread_attr_init(&(self->pattr));
 	pthread_attr_setdetachstate(&(self->pattr), PTHREAD_CREATE_JOINABLE);
