@@ -26,6 +26,7 @@ typedef struct HYPER_CUBE_NODE_STRUCT
 	int dimensions;
 	pthread_t pthread;
 	pthread_attr_t pattr;
+	volatile int proceed;
 } HyperCubeNode;
 
 /* HyperCubeNode Construction / Destruction */
@@ -35,6 +36,8 @@ void hcn_destroy( HyperCubeNode* self );
 void hcn_destroy_static( HyperCubeNode* self );
 /* HyperCubeNode Public Methods */
 void hcn_thread_start( HyperCubeNode* self, void* (*action)( void* ) );
+void hcn_thread_join( HyperCubeNode* self );
+void* hcn_broadcast_action( void* hcn );
 
 HyperCubeNode** nodes;
 
@@ -59,7 +62,17 @@ int main( int argc, char* argv[] )
 		printf( "  Node %d starts with sum: %d\n", i, nodes[i]->stored_sum );
 	}
 	
+	for ( i = 0; i < num_nodes; i++ )
+	{
+		hcn_thread_start( nodes[i], hcn_broadcast_action );
+	}
 	
+	for ( i = 0; i < num_nodes; i++ )
+	{
+		hcn_thread_join( nodes[i] );
+	}
+	
+	printf("Sum: %d\n", nodes[0]->stored_sum);
 	
 	/* Delete Nodes */
 	for ( i = 0; i < num_nodes; i++ )
@@ -77,6 +90,10 @@ HyperCubeNode* hcn_initialize( int id )
 HyperCubeNode* hcn_initialize_static( HyperCubeNode* self, int id )
 {
 	self->id = id;
+	self->stored_sum = 0;
+	self->dimensions = 0;
+	self->num_nodes = 0;
+	self->proceed = 0;
 	pthread_attr_init( &(self->pattr) );
 	pthread_attr_setdetachstate( &(self->pattr), PTHREAD_CREATE_JOINABLE );
 	return self;
@@ -108,6 +125,17 @@ void hcn_thread_start( HyperCubeNode* self, void* (*action)( void* ) )
 	}
 }
 
+void hcn_thread_join( HyperCubeNode* self )
+{
+	void* status;
+	int rc = pthread_join( self->pthread, &status );
+	if (rc)
+	{
+		printf("ERROR; return code from pthread_join() is %d\n", rc);
+		exit(-1);
+	}
+}
+
 void* hcn_broadcast_action( void* hcn )
 {
 	HyperCubeNode* self = (HyperCubeNode*)hcn;
@@ -119,12 +147,14 @@ void* hcn_broadcast_action( void* hcn )
 	// int mask = ((1 << d) - 1) ^ (1 << (d - 1));
 	
 	/* Set mask to */
+	int mask = 1;
 	
 	/* Set dimensional bit to 1b for 1 dim, 10b for 2 dim, 100b for 3 dim, etc.*/
 	int dim_bit = 1 << (d - 1);
 	
 	for ( i = 0; i < d; i++ )
 	{ /* Loop through each dimension */
+		printf(" i: %d, mask: %x, self->id: %d\n", i, mask, self->id);
 		
 		if ( mask & self->id == 0 )
 		{ /* Bits indicate it's our turn to send or receive */
@@ -133,16 +163,21 @@ void* hcn_broadcast_action( void* hcn )
 			int other = ( self->id ^ dim_bit );
 			
 			if ( self->id & ( dim_bit >> (d - i) ) )
-			{ /* Bits indicate it's our turn to send */
-				
+			{ /* The bits indicate it's our turn to send ... */
+				printf(" %d sending to %d\n", self->id, other);
+				nodes[other]->stored_sum += self->stored_sum;
+				nodes[other]->proceed = 1;
 			}
 			else
-			{ /* or bits indicate it's our turn to receive */
-				
+			{ /* ... or the bits indicate it's our turn to receive */
+				printf(" %d waiting to receive from %d\n", self->id, other);
+				while( self->proceed == 0 );
+				self->proceed = 0;
 			}
 			
 		}
 		
+		mask = (mask << 1) | 1;
 	}
 }
 
