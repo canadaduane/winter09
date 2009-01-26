@@ -149,40 +149,55 @@ void* hcn_broadcast_action( void* hcn )
 	int n = self->num_nodes;
 	int i;
 	
+	pthread_cond_t* cond;
+	pthread_mutex_t* mutex;
+	
 	for ( i = 0; i < d; i++ )
 	{ /* Loop through each dimension */
 		printf("Iteration %d, self->id: %d\n", i, self->id);
 		
 		/* The sender (if we are a recipient), or recipient (if we are a sender) */
 		int other = ( self->id ^ ( 1 << i ) );
-			
-		printf( " %d sending '%d' to %d\n", self->id, self->state, other );
-		pthread_mutex_lock( &(self->message_mutex) );
+		
+		if ( self->id < other )
+		{
+			cond = &(self->message_cond);
+			mutex = &(self->message_mutex);
+		}
+		else
+		{
+			cond = &(nodes[other]->message_cond);
+			mutex = &(nodes[other]->message_mutex);
+		}
+		
+		printf( "   %d --(%d)-> %d\n", self->id, self->state, other );
+		pthread_mutex_lock( mutex );
 		{
 			nodes[other]->message_box = self->state;
 			nodes[other]->message_received = 1;
-			pthread_cond_signal( &(nodes[other]->message_cond) );
+			pthread_cond_signal( cond );
 		}
-		pthread_mutex_unlock( &(self->message_mutex) );
+		pthread_mutex_unlock( mutex );
 
-		printf( " %d waiting to receive from %d\n", self->id, other );
-		pthread_mutex_lock( &(self->message_mutex) );
+		printf( " W %d <- ? -- %d\n", self->id, other );
+		pthread_mutex_lock( mutex );
 		{
 			while( !self->message_received )
-				pthread_cond_wait( &(self->message_cond), &(self->message_mutex) );
+				pthread_cond_wait( cond, mutex );
 			// Reset 'message received' flag
 			self->message_received = 0;
+			printf( "   %d <-(%d)-- %d\n", self->id, self->message_box, other );
 		}
-		pthread_mutex_unlock( &(self->message_mutex) );
-		
-		printf( " %d received '%d' from %d\n", self->id, self->message_box, other );
+		pthread_mutex_unlock( mutex );
 		
 		/* Perform the reduction operation: */
 		self->state = self->state + self->message_box;
-		
-		printf( " %d new state: %d\n", self->id, self->state);
+
+		printf( " F %d: %d\n", self->id, self->state);
 	}
 }
+
+
 
 // mask = 011b
 // 	for (d = 0; d < n; d++)
