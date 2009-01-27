@@ -41,6 +41,7 @@ void* hcn_broadcast_action( void* hcn );
 void* hcn_reduce_action( void* hcn );
 
 HyperCubeNode** nodes;
+pthread_mutex_t* mutex;
 
 int main( int argc, char* argv[] )
 {
@@ -50,6 +51,9 @@ int main( int argc, char* argv[] )
 	char node_switch[] = "-0";
 	
 	printf( "Hypercube Broadcast\nDimensions: %d\nTotal Nodes: %d\n", dimensions, num_nodes );
+	
+	mutex = calloc( 1, sizeof( pthread_mutex_t ) );
+	pthread_mutex_init( mutex, NULL );
 	
 	/* Initialize Nodes */
 	nodes = calloc( num_nodes, sizeof( HyperCubeNode* ) );
@@ -80,6 +84,8 @@ int main( int argc, char* argv[] )
 	{
 		printf("Box %d: %d\n", i, nodes[i]->message_box);
 	}
+	
+	pthread_mutex_destroy( mutex );
 	
 	/* Delete Nodes */
 	for ( i = 0; i < num_nodes; i++ )
@@ -217,7 +223,6 @@ void* hcn_reduce_action( void* hcn )
 	int i;
 	
 	/* Set mask to 0b for 1 dim, 01b for 2 dim, 011b for 3 dim, etc. */
-	// int mask = (1 << d-1) - 1;
 	int mask = 0;
 
 	/* Set dimensional bit to 1b for 1 dim, 10b for 2 dim, 100b for 3 dim, etc.*/
@@ -226,7 +231,7 @@ void* hcn_reduce_action( void* hcn )
 	for ( i = 0; i < d; i++ )
 	{ /* Loop through each dimension */
 
-		if ( ( !self->id & mask ) == 0 )
+		if ( ( self->id & mask ) == 0 )
 		{ /* Bits indicate it's our turn to send or receive */
 			
 			/* The sender (if we are a recipient), or recipient (if we are a sender) */
