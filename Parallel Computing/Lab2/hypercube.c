@@ -38,6 +38,7 @@ void hcn_destroy_static( HyperCubeNode* self );
 void hcn_thread_start( HyperCubeNode* self, void* (*action)( void* ) );
 void hcn_thread_join( HyperCubeNode* self );
 void* hcn_broadcast_action( void* hcn );
+void* hcn_reduce_action( void* hcn );
 
 HyperCubeNode** nodes;
 
@@ -62,11 +63,12 @@ int main( int argc, char* argv[] )
 		printf( "  Node %d starts with value: %d\n", i, nodes[i]->message_box );
 	}
 	
-	nodes[0]->message_box = 5;
+	// nodes[0]->message_box = 5;
 	
 	for ( i = 0; i < num_nodes; i++ )
 	{
-		hcn_thread_start( nodes[i], hcn_broadcast_action );
+		hcn_thread_start( nodes[i], hcn_reduce_action );
+		// hcn_thread_start( nodes[i], hcn_broadcast_action );
 	}
 	
 	for ( i = 0; i < num_nodes; i++ )
@@ -178,7 +180,6 @@ void* hcn_broadcast_action( void* hcn )
 	
 	for ( i = 0; i < d; i++ )
 	{ /* Loop through each dimension */
-		printf("Node: %d, i: %d, flip: %x, mask: %x\n", self->id, i, flip, mask);
 		
 		if ( ( self->id & mask ) == 0 )
 		{ /* Bits indicate it's our turn to send or receive */
@@ -186,7 +187,7 @@ void* hcn_broadcast_action( void* hcn )
 			/* The sender (if we are a recipient), or recipient (if we are a sender) */
 			int other = ( self->id ^ flip );
 			
-			printf ( " [Node %d comm with %d]\n", self->id, other );
+			printf ( "[Node %d comm with %d] i: %d, flip: %x, mask: %x\n", self->id, other, i, flip, mask );
 			
 			if ( ( self->id & flip ) == 0 )
 			{ /* The bits indicate it's our turn to send ... */
@@ -201,7 +202,7 @@ void* hcn_broadcast_action( void* hcn )
 		}
 		else
 		{
-			printf (" [Node %d skipping iteration %d]\n", self->id, i);
+			printf ( "[Node %d skipping iteration %d] flip: %x, mask: %x\n", self->id, i, flip, mask );
 		}
 		flip = flip >> 1;
 		mask = mask ^ flip;
@@ -216,26 +217,26 @@ void* hcn_reduce_action( void* hcn )
 	int i;
 	
 	/* Set mask to 0b for 1 dim, 01b for 2 dim, 011b for 3 dim, etc. */
-	int mask = (1 << d-1) - 1;
+	// int mask = (1 << d-1) - 1;
+	int mask = 0;
 
 	/* Set dimensional bit to 1b for 1 dim, 10b for 2 dim, 100b for 3 dim, etc.*/
-	int flip = (1 << d-1);
+	int flip = 1;
 	
 	for ( i = 0; i < d; i++ )
 	{ /* Loop through each dimension */
-		printf("Node: %d, i: %d, flip: %x, mask: %x\n", self->id, i, flip, mask);
-		
-		if ( ( self->id & mask ) == 0 )
+
+		if ( ( !self->id & mask ) == 0 )
 		{ /* Bits indicate it's our turn to send or receive */
 			
 			/* The sender (if we are a recipient), or recipient (if we are a sender) */
 			int other = ( self->id ^ flip );
 			
-			printf ( " [Node %d comm with %d]\n", self->id, other );
+			printf ( "[Node %d comm with %d] i: %d, flip: %x, mask: %x\n", self->id, other, i, flip, mask );
 			
-			if ( ( self->id & flip ) == 0 )
+			if ( ( self->id & flip ) != 0 )
 			{ /* The bits indicate it's our turn to send ... */
-				nodes[other]->message_box = self->message_box;
+				nodes[other]->message_box += self->message_box;
 				nodes[other]->wait = 0;
 			}
 			else
@@ -246,10 +247,10 @@ void* hcn_reduce_action( void* hcn )
 		}
 		else
 		{
-			printf (" [Node %d skipping iteration %d]\n", self->id, i);
+			printf ( "[Node %d skipping iteration %d] flip: %x, mask: %x\n", self->id, i, flip, mask );
 		}
-		flip = flip >> 1;
 		mask = mask ^ flip;
-	}
+		flip = flip << 1;
+		}
 }
 
