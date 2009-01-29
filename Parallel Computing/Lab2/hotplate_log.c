@@ -119,7 +119,7 @@ void hp_main_loop(Hotplate* self)
 	HotplateThread threads[NUM_THREADS];
 	for (i = 0; i < NUM_THREADS; i++)
 	{
-		hpt_initialize_static( threads + i, i, threads + i, hp_main_loop_thread );
+		hpt_initialize_static( threads + i, i, self, hp_main_loop_thread );
 	}
 	
 	for (i = 0; i < NUM_THREADS; i++)
@@ -451,6 +451,11 @@ void mylib_init_barrier(mylib_logbarrier_t b)
         }
         pthread_mutex_init(&logbarrier_count_lock, NULL);
 }
+
+float* oplate;
+float* iplate;
+int keepgoing;
+int lkeepgoing[NUM_THREADS];
 
 void mylib_logbarrier (mylib_logbarrier_t b, int nproc, int thread_id)
 {
