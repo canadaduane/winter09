@@ -222,10 +222,10 @@ void* hcn_reduce_action( void* hcn )
 	int n = self->num_nodes;
 	int i;
 	
-	/* Set mask to 0b for 1 dim, 01b for 2 dim, 011b for 3 dim, etc. */
+	/* Set mask to 0b */
 	int mask = 0;
 
-	/* Set dimensional bit to 1b for 1 dim, 10b for 2 dim, 100b for 3 dim, etc.*/
+	/* Set dimensional bit to 1b */
 	int flip = 1;
 	
 	for ( i = 0; i < d; i++ )
