@@ -46,7 +46,7 @@ void* hp_main_loop_thread( void* );
 void hp_calculate_heat_transfer(Hotplate* self, int y_start, int y_end);
 int hp_is_steady_state(Hotplate* self, int y_start, int y_end);
 int hp_cells_greater_than(Hotplate* self, float value);
-void hp_dump(Hotplate* self, int characters);
+void hp_dump(Hotplate* self, int characters, int max_x, int max_y);
 void hp_etch_hotspots(Hotplate* self);
 static inline int hp_is_hotspot(Hotplate* self, int x, int y);
 
@@ -75,12 +75,12 @@ typedef struct barrier_node {
 typedef struct barrier_node mylib_logbarrier_t[NUM_THREADS];
 int number_in_barrier = 0;
 pthread_mutex_t logbarrier_count_lock;
-
 void mylib_logbarrier (mylib_logbarrier_t b, int num_threads, int thread_id);
 void mylib_init_barrier(mylib_logbarrier_t b);
 
 mylib_logbarrier_t barr;
-volatile int steady_state = FALSE;
+volatile int steady_state = 0;
+pthread_mutex_t steady_state_mutex;
 
 /* * * * * * * * * * * * * * * */
 /*     Main Program Area       */
@@ -90,6 +90,9 @@ int main(int argc, char **argv)
 	double start = when(), finish = 0.0;
 	int size = 768, i;
 	int gt_count = 0;
+
+	steady_state_mutex = calloc( 1, sizeof( pthread_mutex_t ) );
+	pthread_mutex_init( steady_state_mutex, NULL );
 
 	/* Initialize the hotplate with specific pixel temperatures */
 	Hotplate* hp = hp_initialize(size, size);
@@ -109,6 +112,8 @@ int main(int argc, char **argv)
 	finish = when();
 	gt_count = hp_cells_greater_than(hp, 50.0f);
 	hp_destroy(hp);
+	pthread_mutex_destroy( steady_state_mutex );
+	
 	printf("Completed %d iterations in %f seconds.\n", i, finish - start);
 	printf("%d cells had a value greater than 50.0.\n", gt_count);
 }
@@ -142,14 +147,27 @@ void* hp_main_loop_thread( void* v )
 	
 	for(i = 0; i < 600; i++) // should be 359
 	{
+		printf("[%d] i: %d, heat transfer\n", thread->id, i);
 		hp_calculate_heat_transfer(thread->hotplate, y_start, y_end);
 		mylib_logbarrier(barr, NUM_THREADS, thread->id);
 
-		hp_etch_hotspots(thread->hotplate);
+		printf("[%d] i: %d, steady state\n", thread->id, i);
+		if (thread->id == 0)
+		{
+			hp_etch_hotspots(thread->hotplate);
+		}
+
+		mylib_logbarrier(barr, NUM_THREADS, thread->id);
+		
 		if (hp_is_steady_state(thread->hotplate, y_start, y_end)) steady_state = TRUE;
 		mylib_logbarrier(barr, NUM_THREADS, thread->id);
-
-		hp_swap(thread->hotplate);
+		
+		if (thread->id == 0)
+		{
+			hp_dump(thread->hotplate, TRUE, 30, 30);
+			hp_swap(thread->hotplate);
+		}
+		
 		if (steady_state) break;
 	}
 }
@@ -396,15 +414,17 @@ int hp_cells_greater_than(Hotplate* self, float value)
 }
 
 /* Print the hotplate state as ASCII values to the terminal */
-void hp_dump(Hotplate* self, int characters)
+void hp_dump(Hotplate* self, int characters, int max_x, int max_y)
 {
 	int x, y;
 	char intensity[] = {'.', '=', 'x', '%', 'M'};
+	if ( max_x == 0 ) max_x = self->width;
+	if ( max_y == 0 ) max_y = self->height;
+	
 	// printf("Dimensions: %d x %d\n", self->width, self->height);
-	// for (y = 0; y < self->height; y++)
+	for (y = 0; y < max_y; y++)
 	{
-		y = 399;
-		for (x = 0; x < self->width; x++)
+		for (x = 0; x < max_x; x++)
 		{
 			if (characters == TRUE)
 			{
