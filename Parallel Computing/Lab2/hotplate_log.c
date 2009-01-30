@@ -41,7 +41,7 @@ static inline void hp_hline(Hotplate* self, int y, int x1, int x2, float value);
 static inline void hp_vline(Hotplate* self, int x, int y1, int y2, float value);
 static inline float hp_get_neighbors_sum_unsafe(Hotplate* self, int x, int y);
 static inline float hp_get_total_heat_unsafe(Hotplate* self, int x, int y);
-void hp_main_loop(Hotplate* self);
+int hp_main_loop(Hotplate* self);
 void* hp_main_loop_thread( void* );
 void hp_calculate_heat_transfer(Hotplate* self, int y_start, int y_end);
 int hp_is_steady_state(Hotplate* self, int y_start, int y_end);
@@ -77,10 +77,11 @@ int number_in_barrier = 0;
 pthread_mutex_t logbarrier_count_lock;
 void mylib_logbarrier (mylib_logbarrier_t b, int num_threads, int thread_id);
 void mylib_init_barrier(mylib_logbarrier_t b);
+int loops = 0;
 
 mylib_logbarrier_t barr;
 volatile int steady_state = 0;
-pthread_mutex_t steady_state_mutex;
+pthread_mutex_t* steady_state_mutex;
 
 /* * * * * * * * * * * * * * * */
 /*     Main Program Area       */
@@ -107,7 +108,7 @@ int main(int argc, char **argv)
 	
 	mylib_init_barrier(barr);
 	
-	hp_main_loop(hp);
+	i = hp_main_loop(hp);
 	
 	finish = when();
 	gt_count = hp_cells_greater_than(hp, 50.0f);
@@ -118,7 +119,7 @@ int main(int argc, char **argv)
 	printf("%d cells had a value greater than 50.0.\n", gt_count);
 }
 
-void hp_main_loop(Hotplate* self)
+int hp_main_loop(Hotplate* self)
 {
 	int i;
 	HotplateThread threads[NUM_THREADS];
@@ -132,6 +133,8 @@ void hp_main_loop(Hotplate* self)
 		hpt_join( threads + i );
 		hpt_destroy_static( threads + i );
 	}
+	
+	return loops;
 }
 
 void* hp_main_loop_thread( void* v )
@@ -144,9 +147,13 @@ void* hp_main_loop_thread( void* v )
 
 	/* Make sure the last thread takes care of the remainder of the integer division of the hotplate */
 	if (thread->id == NUM_THREADS - 1) y_end = thread->hotplate->height - 1;
-	
+	steady_state = 0;
 	for(i = 0; i < 600; i++) // should be 359
 	{
+		// pthread_mutex_lock( steady_state_mutex );
+		// steady_state = 0;
+		// pthread_mutex_unlock( steady_state_mutex );
+		
 		printf("[%d] i: %d, heat transfer\n", thread->id, i);
 		hp_calculate_heat_transfer(thread->hotplate, y_start, y_end);
 		mylib_logbarrier(barr, NUM_THREADS, thread->id);
@@ -159,7 +166,13 @@ void* hp_main_loop_thread( void* v )
 
 		mylib_logbarrier(barr, NUM_THREADS, thread->id);
 		
-		if (hp_is_steady_state(thread->hotplate, y_start, y_end)) steady_state = TRUE;
+		if (thread->id == 0 && hp_is_steady_state(thread->hotplate, 1, thread->hotplate->height - 1))
+		{
+			// pthread_mutex_lock( steady_state_mutex );
+			steady_state = 1;
+			// pthread_mutex_unlock( steady_state_mutex );
+		}
+
 		mylib_logbarrier(barr, NUM_THREADS, thread->id);
 		
 		if (thread->id == 0)
@@ -168,8 +181,9 @@ void* hp_main_loop_thread( void* v )
 			hp_swap(thread->hotplate);
 		}
 		
-		if (steady_state) break;
+		if (steady_state >= 1) break;
 	}
+	loops = i;
 }
 
 
@@ -309,8 +323,8 @@ void hp_calculate_heat_transfer(Hotplate* self, int y_start, int y_end)
 {
 	float new_heat_value = 0.0;
 	int x, y;
-	// printf("Process calculating y: %d to %d (lines = %d).\n", 1, self->height - 1, self->height - 2);
-	for (y = 1; y < self->height - 1; y++)
+	printf("Process calculating y: %d to %d (lines = %d).\n", y_start, y_end, y_end - y_start);
+	for (y = y_start; y < y_end; y++)
 	{
 		for (x = 1; x < self->width - 1; x++)
 		{
