@@ -13,7 +13,7 @@
 
 #define FALSE 0
 #define TRUE 1
-#define NUM_THREADS 2
+#define NUM_THREADS 4
 
 typedef struct HOT_PLATE_STRUCT
 {
@@ -106,6 +106,8 @@ int main(int argc, char **argv)
 	
 	hp_copy_to_source(hp);
 	
+	hp_dump(hp, TRUE, 0, 0);
+	
 	mylib_init_barrier(barr);
 	
 	i = hp_main_loop(hp);
@@ -147,41 +149,29 @@ void* hp_main_loop_thread( void* v )
 
 	/* Make sure the last thread takes care of the remainder of the integer division of the hotplate */
 	if (thread->id == NUM_THREADS - 1) y_end = thread->hotplate->height - 1;
-	steady_state = 0;
+	steady_state = FALSE;
 	for(i = 0; i < 600; i++) // should be 359
 	{
-		// pthread_mutex_lock( steady_state_mutex );
-		// steady_state = 0;
-		// pthread_mutex_unlock( steady_state_mutex );
-		
 		printf("[%d] i: %d, heat transfer\n", thread->id, i);
 		hp_calculate_heat_transfer(thread->hotplate, y_start, y_end);
+		
 		mylib_logbarrier(barr, NUM_THREADS, thread->id);
 
 		printf("[%d] i: %d, steady state\n", thread->id, i);
 		if (thread->id == 0)
 		{
 			hp_etch_hotspots(thread->hotplate);
-		}
-
-		mylib_logbarrier(barr, NUM_THREADS, thread->id);
-		
-		if (thread->id == 0 && hp_is_steady_state(thread->hotplate, 1, thread->hotplate->height - 1))
-		{
-			// pthread_mutex_lock( steady_state_mutex );
-			steady_state = 1;
-			// pthread_mutex_unlock( steady_state_mutex );
-		}
-
-		mylib_logbarrier(barr, NUM_THREADS, thread->id);
-		
-		if (thread->id == 0)
-		{
+			if ( hp_is_steady_state(thread->hotplate, 1, thread->hotplate->height - 1) )
+			{
+				steady_state = TRUE;
+			}
 			hp_dump(thread->hotplate, TRUE, 30, 30);
 			hp_swap(thread->hotplate);
 		}
+
+		mylib_logbarrier(barr, NUM_THREADS, thread->id);
 		
-		if (steady_state >= 1) break;
+		if ( steady_state ) break;
 	}
 	loops = i;
 }
@@ -323,7 +313,7 @@ void hp_calculate_heat_transfer(Hotplate* self, int y_start, int y_end)
 {
 	float new_heat_value = 0.0;
 	int x, y;
-	printf("Process calculating y: %d to %d (lines = %d).\n", y_start, y_end, y_end - y_start);
+	printf("Process calculating y: %d to %d (lines = %d).\n", y_start, y_end - 1, y_end - y_start);
 	for (y = y_start; y < y_end; y++)
 	{
 		for (x = 1; x < self->width - 1; x++)
