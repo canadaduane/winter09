@@ -90,8 +90,6 @@ int main(int argc, char **argv)
 	
 	// hp_dump(hp, TRUE, 0, 0);
 	
-	mylib_init_barrier(barr);
-	
 	i = hp_main_loop(hp);
 	
 	finish = when();
@@ -136,7 +134,7 @@ void* hp_main_loop_thread( void* v )
 		// printf("[%d] i: %d, heat transfer\n", thread->id, i);
 		hp_calculate_heat_transfer(thread->hotplate, y_start, y_end);
 		
-		mylib_logbarrier(barr, NUM_THREADS, thread->id);
+		// barrier goes here
 
 		// printf("[%d] i: %d, steady state\n", thread->id, i);
 		if (thread->id == 0)
@@ -149,8 +147,8 @@ void* hp_main_loop_thread( void* v )
 			// hp_dump(thread->hotplate, TRUE, 30, 30);
 			hp_swap(thread->hotplate);
 		}
-
-		mylib_logbarrier(barr, NUM_THREADS, thread->id);
+		
+		// barrier goes here
 		
 		if ( steady_state ) break;
 	}
