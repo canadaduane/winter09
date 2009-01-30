@@ -64,24 +64,9 @@ void hpt_destroy( HotplateThread* self );
 void hpt_destroy_static( HotplateThread* self );
 void hpt_join( HotplateThread* self );
 
-/* Log Barrier Declarations */
-typedef struct barrier_node {
-        pthread_mutex_t count_lock;
-        pthread_cond_t ok_to_proceed_up;
-        pthread_cond_t ok_to_proceed_down;
-        int count;
-} mylib_barrier_t_internal;
-
-typedef struct barrier_node mylib_logbarrier_t[NUM_THREADS];
-int number_in_barrier = 0;
-pthread_mutex_t logbarrier_count_lock;
-void mylib_logbarrier (mylib_logbarrier_t b, int num_threads, int thread_id);
-void mylib_init_barrier(mylib_logbarrier_t b);
 int loops = 0;
 
-mylib_logbarrier_t barr;
 volatile int steady_state = 0;
-pthread_mutex_t* steady_state_mutex;
 
 /* * * * * * * * * * * * * * * */
 /*     Main Program Area       */
@@ -91,9 +76,6 @@ int main(int argc, char **argv)
 	double start = when(), finish = 0.0;
 	int size = 768, i;
 	int gt_count = 0;
-
-	steady_state_mutex = calloc( 1, sizeof( pthread_mutex_t ) );
-	pthread_mutex_init( steady_state_mutex, NULL );
 
 	/* Initialize the hotplate with specific pixel temperatures */
 	Hotplate* hp = hp_initialize(size, size);
@@ -115,7 +97,6 @@ int main(int argc, char **argv)
 	finish = when();
 	gt_count = hp_cells_greater_than(hp, 50.0f);
 	hp_destroy(hp);
-	pthread_mutex_destroy( steady_state_mutex );
 	
 	printf("Completed %d iterations in %f seconds.\n", i, finish - start);
 	printf("%d cells had a value greater than 50.0.\n", gt_count);
@@ -460,97 +441,4 @@ static inline int hp_is_hotspot(Hotplate* self, int x, int y)
 	if (y == 400 && (x >= 0 && x <= 330))
 		return TRUE;
 	return FALSE;
-}
-
-
-
-void mylib_init_barrier(mylib_logbarrier_t b)
-{
-        int i;
-        for (i = 0; i < NUM_THREADS; i++) {
-                b[i].count = 0;
-                pthread_mutex_init(&(b[i].count_lock), NULL);
-                pthread_cond_init(&(b[i].ok_to_proceed_up), NULL);
-                pthread_cond_init(&(b[i].ok_to_proceed_down), NULL);
-        }
-        pthread_mutex_init(&logbarrier_count_lock, NULL);
-}
-
-float* oplate;
-float* iplate;
-int keepgoing;
-int lkeepgoing[NUM_THREADS];
-
-void mylib_logbarrier (mylib_logbarrier_t b, int nproc, int thread_id)
-{
-        int i, q, base, index;
-        float *tmp;
-        i = 2;
-        base = 0;
-
-        if (nproc == 1)
-            return;
-
-        pthread_mutex_lock(&logbarrier_count_lock);
-        number_in_barrier++;
-        if (number_in_barrier == nproc)
-        {
-                /* I am the last one in */
-                /* swap the new value pointer with the old value pointer */
-                tmp = oplate;
-                oplate = iplate;
-                iplate = tmp;
-                /*
-                fprintf(stderr,"%d: swapping pointers\n", thread_id);
-                */
-
-                /* set the keepgoing flag and let everybody go */
-                keepgoing = 0;
-                for (q = 0; q < nproc; q++)
-                    keepgoing += lkeepgoing[q];
-        }
-        pthread_mutex_unlock(&logbarrier_count_lock);
-
-        do {
-                index = base + thread_id / i;
-                if (thread_id % i == 0) {
-                        pthread_mutex_lock(&(b[index].count_lock));
-                        b[index].count ++;
-                        while (b[index].count < 2)
-                              pthread_cond_wait(&(b[index].ok_to_proceed_up),
-                                        &(b[index].count_lock));
-                        pthread_mutex_unlock(&(b[index].count_lock));
-                }
-                else {
-                        pthread_mutex_lock(&(b[index].count_lock));
-                        b[index].count ++;
-                        if (b[index].count == 2)
-                           pthread_cond_signal(&(b[index].ok_to_proceed_up));
-/*
-            while (b[index].count != 0)
-*/
-            while (
-                               pthread_cond_wait(&(b[index].ok_to_proceed_down),
-                                    &(b[index].count_lock)) != 0);
-            pthread_mutex_unlock(&(b[index].count_lock));
-            break;
-                }
-                base = base + nproc/i;
-                i = i * 2;
-        } while (i <= nproc);
-
-        i = i / 2;
-
-        for (; i > 1; i = i / 2)
-        {
-        base = base - nproc/i;
-                index = base + thread_id / i;
-                pthread_mutex_lock(&(b[index].count_lock));
-                b[index].count = 0;
-                pthread_cond_signal(&(b[index].ok_to_proceed_down));
-                pthread_mutex_unlock(&(b[index].count_lock));
-        }
-        pthread_mutex_lock(&logbarrier_count_lock);
-        number_in_barrier--;
-        pthread_mutex_unlock(&logbarrier_count_lock);
 }
