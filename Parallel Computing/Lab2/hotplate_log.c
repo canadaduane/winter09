@@ -152,12 +152,12 @@ void* hp_main_loop_thread( void* v )
 	steady_state = FALSE;
 	for(i = 0; i < 600; i++) // should be 359
 	{
-		printf("[%d] i: %d, heat transfer\n", thread->id, i);
+		// printf("[%d] i: %d, heat transfer\n", thread->id, i);
 		hp_calculate_heat_transfer(thread->hotplate, y_start, y_end);
 		
 		mylib_logbarrier(barr, NUM_THREADS, thread->id);
 
-		printf("[%d] i: %d, steady state\n", thread->id, i);
+		// printf("[%d] i: %d, steady state\n", thread->id, i);
 		if (thread->id == 0)
 		{
 			hp_etch_hotspots(thread->hotplate);
@@ -165,7 +165,7 @@ void* hp_main_loop_thread( void* v )
 			{
 				steady_state = TRUE;
 			}
-			hp_dump(thread->hotplate, TRUE, 30, 30);
+			// hp_dump(thread->hotplate, TRUE, 30, 30);
 			hp_swap(thread->hotplate);
 		}
 
