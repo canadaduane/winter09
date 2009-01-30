@@ -13,7 +13,7 @@
 
 #define FALSE 0
 #define TRUE 1
-#define NUM_THREADS 4
+#define NUM_THREADS 2
 
 typedef struct HOT_PLATE_STRUCT
 {

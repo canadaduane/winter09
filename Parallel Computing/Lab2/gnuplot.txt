@@ -1,0 +1,11 @@
+set style data linespoints
+plot "file1" title "File 1"
+replot "file2" title "File 2"
+set term pdf
+set output "file"
+set xlabel "Processors"
+set ylabel "Time (sec)"
+set logscale x
+set logscale y
+replot
+help
