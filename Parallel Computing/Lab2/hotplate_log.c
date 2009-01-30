@@ -106,7 +106,7 @@ int main(int argc, char **argv)
 	
 	hp_copy_to_source(hp);
 	
-	hp_dump(hp, TRUE, 0, 0);
+	// hp_dump(hp, TRUE, 0, 0);
 	
 	mylib_init_barrier(barr);
 	
@@ -313,7 +313,7 @@ void hp_calculate_heat_transfer(Hotplate* self, int y_start, int y_end)
 {
 	float new_heat_value = 0.0;
 	int x, y;
-	printf("Process calculating y: %d to %d (lines = %d).\n", y_start, y_end - 1, y_end - y_start);
+	// printf("Process calculating y: %d to %d (lines = %d).\n", y_start, y_end - 1, y_end - y_start);
 	for (y = y_start; y < y_end; y++)
 	{
 		for (x = 1; x < self->width - 1; x++)
