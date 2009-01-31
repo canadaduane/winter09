@@ -153,7 +153,7 @@ void* hp_main_loop_thread( void* v )
 	waiting[thread->id] = FALSE;
 	for(i = 0; i < 600; i++) // should be 359
 	{
-		printf("[%d] i: %d, heat transfer\n", thread->id, i);
+		// printf("[%d] i: %d, heat transfer\n", thread->id, i);
 		hp_calculate_heat_transfer(thread->hotplate, y_start, y_end);
 		
 		// barrier goes here
@@ -161,7 +161,7 @@ void* hp_main_loop_thread( void* v )
 		while ( waiting[thread->id] ) if ( thread->id == 0 && all_waiting() ) wait_no_longer();
 		waiting[thread->id] = FALSE;
 
-		printf("[%d] i: %d, steady state\n", thread->id, i);
+		// printf("[%d] i: %d, steady state\n", thread->id, i);
 		if (thread->id == 0)
 		{
 			hp_etch_hotspots(thread->hotplate);
