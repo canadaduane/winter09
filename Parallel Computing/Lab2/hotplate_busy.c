@@ -65,7 +65,7 @@ void hpt_destroy_static( HotplateThread* self );
 void hpt_join( HotplateThread* self );
 
 int loops = 0;
-
+volatile int waiting[NUM_THREADS];
 volatile int steady_state = 0;
 
 /* * * * * * * * * * * * * * * */
@@ -118,6 +118,26 @@ int hp_main_loop(Hotplate* self)
 	return loops;
 }
 
+int all_waiting( void )
+{
+	int i;
+	int all_waiting = 0;
+	for ( i = 0; i < NUM_THREADS; i++ )
+	{
+		if ( waiting[i] ) all_waiting ++;
+	}
+	return all_waiting == NUM_THREADS;
+}
+
+void wait_no_longer( void )
+{
+	int i;
+	for ( i = 0; i < NUM_THREADS; i++ )
+	{
+		waiting[i] = FALSE;
+	}
+}
+
 void* hp_main_loop_thread( void* v )
 {
 	HotplateThread* thread = (HotplateThread*)v;
@@ -129,14 +149,19 @@ void* hp_main_loop_thread( void* v )
 	/* Make sure the last thread takes care of the remainder of the integer division of the hotplate */
 	if (thread->id == NUM_THREADS - 1) y_end = thread->hotplate->height - 1;
 	steady_state = FALSE;
+
+	waiting[thread->id] = FALSE;
 	for(i = 0; i < 600; i++) // should be 359
 	{
-		// printf("[%d] i: %d, heat transfer\n", thread->id, i);
+		printf("[%d] i: %d, heat transfer\n", thread->id, i);
 		hp_calculate_heat_transfer(thread->hotplate, y_start, y_end);
 		
 		// barrier goes here
+		waiting[thread->id] = TRUE;
+		while ( waiting[thread->id] ) if ( thread->id == 0 && all_waiting() ) wait_no_longer();
+		waiting[thread->id] = FALSE;
 
-		// printf("[%d] i: %d, steady state\n", thread->id, i);
+		printf("[%d] i: %d, steady state\n", thread->id, i);
 		if (thread->id == 0)
 		{
 			hp_etch_hotspots(thread->hotplate);
@@ -149,6 +174,9 @@ void* hp_main_loop_thread( void* v )
 		}
 		
 		// barrier goes here
+		waiting[thread->id] = TRUE;
+		while ( waiting[thread->id] ) if ( thread->id == 0 && all_waiting() ) wait_no_longer();
+		waiting[thread->id] = FALSE;
 		
 		if ( steady_state ) break;
 	}
