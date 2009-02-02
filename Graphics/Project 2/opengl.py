@@ -20,19 +20,11 @@ raster = array([float(i)/RASTER_SIZE for i in range(0, RASTER_SIZE)], dtype='flo
 
 dj_clear_color = [0.0, 0.0, 0.0, 0.0]
 dj_color = [1.0, 1.0, 1.0, 1.0]
-dj_vertex = [0, 0, 0]
+dj_vertex_mode = 0
 
 def dj_glClearColor(r, g, b, a = 1.0):
   global dj_clear_color
   dj_clear_color = [r, g, b, a]
-
-def dj_glColor3f(r, g, b):
-  global dj_color
-  dj_color = [r, g, b, 1.0]
-
-def dj_glVertex2i(x, y):
-  global dj_vertex
-  dj_vertex = [x, y, 0]
 
 def dj_glClear(mode):
   """Fills every pixel on the screen with the color last specified by glClearColor(r,g,b,a)."""
@@ -40,24 +32,42 @@ def dj_glClear(mode):
   if ((mode & GL_COLOR_BUFFER_BIT) != 0):
     raster = [dj_clear_color[i % 3] for i in range(0, RASTER_SIZE)]
 
-def dj_drawPoint():
-  global raster, dj_color, dj_vertex
-  pos = (dj_vertex[1] * 640 + dj_vertex[0])*3
+def dj_glColor3f(r, g, b):
+  global dj_color
+  dj_color = [r, g, b, 1.0]
+
+def dj_glVertex2i(x, y):
+  if (dj_vertex_mode == GL_POINTS):
+    dj_drawPoint(x, y)
+  elif (dj_vertex_mode == GL_LINES):
+    raise RuntimeError, "unimplemented"
+  elif (dj_vertex_mode == GL_TRIANGLES):
+    raise RuntimeError, "unimplemented"
+  
+def dj_glBegin(mode):
+  global dj_vertex_mode
+  if (mode != GL_POINTS and mode != GL_LINES and mode != GL_TRIANGLES):
+    raise RuntimeError, "dj_glBegin accepts only GL_POINTS, GL_LINES and GL_TRIANGLES"
+  dj_vertex_mode = mode
+
+def dj_glEnd():
+  global dj_vertex_mode
+  dj_vertex_mode = 0
+
+def dj_drawPoint(x, y):
+  global raster, dj_color
+  pos = (y * 640 + x)*3
   raster[pos+0] = dj_color[0];
   raster[pos+1] = dj_color[1];
   raster[pos+2] = dj_color[2];
 
-dj_glClearColor(0.5, 0.2, 1.0)
+dj_glClearColor(0.2, 0.2, 0.2)
 dj_glClear(GL_COLOR_BUFFER_BIT)
-# dj_glColor3f(1.0, 1.0, 1.0)
-# dj_glVertex2i(320, 240)
-# dj_drawPoint()
-# dj_glVertex2i(321, 240)
-# dj_drawPoint()
-# dj_glVertex2i(322, 240)
-# dj_drawPoint()
-# dj_glVertex2i(321, 241)
-# dj_drawPoint()
+
+dj_glColor3f(1.0, 0.0, 0.0)
+dj_glBegin(GL_POINTS)
+dj_glVertex2i(320, 240)
+dj_glVertex2i(322, 240)
 
 # We call this right after our OpenGL window is created.
 def InitGL(width, height):
@@ -67,13 +77,13 @@ def InitGL(width, height):
   glEnable(GL_DEPTH_TEST)           # Enables Depth Testing
   glShadeModel(GL_SMOOTH)           # Enables Smooth Color Shading
   
-  # glMatrixMode(GL_PROJECTION)       # Reset The Projection Matrix
+  glMatrixMode(GL_PROJECTION)       # Reset The Projection Matrix
   # glLoadIdentity()                  # Calculate The Aspect Ratio Of The Window
   # glMatrixMode(GL_MODELVIEW)
   # glLoadIdentity()
   glOrtho(0,640, 0,480, -1,1);
 
-  gluPerspective(45.0, float(width)/float(height), 0.1, 100.0)
+  # gluPerspective(45.0, float(width)/float(height), 0.1, 100.0)
 
 def ReSizeGLScene(width, height):
   # Prevent A Divide By Zero If The Window Is Too Small 
@@ -88,10 +98,44 @@ def ReSizeGLScene(width, height):
   glMatrixMode(GL_MODELVIEW)
 
 def DrawGLScene():
-  glClearColor(1, 0, 0, 1)
+  glClearColor(0.1, 0.1, 0.1, 1)
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); # Clear The Screen And The Depth Buffer
-  
-  if drawMode == 2:
+  if drawMode == 1:
+    oldMatrixMode = glGetIntegerv(GL_MATRIX_MODE)
+    
+    glMatrixMode(GL_MODELVIEW)
+    glPushMatrix()
+    glLoadIdentity()
+
+    glMatrixMode(GL_PROJECTION)
+    glPushMatrix()
+    glLoadIdentity()
+    
+    glBegin(GL_LINES)
+    for i in range(8):
+      glColor3f(1,0,0)
+      glVertex2i(200,200)
+      glVertex2i(200 + 10*i, 280)
+      glColor3f(0,1,0)
+      glVertex2i(200,200)
+      glColor3f(0,1,1)
+      glVertex2i(200 - 10*i, 280)
+      glVertex2i(200,200)
+      glVertex2i(280, 200 + 10*i)
+      glVertex2i(200,200)
+      glVertex2i(280, 200 - 10*i)
+    glEnd()
+
+    glFlush()
+    
+    glPopMatrix()
+    glMatrixMode(GL_MODELVIEW)
+    
+    glPopMatrix()
+    glMatrixMode(oldMatrixMode)
+    
+    
+  elif drawMode == 2:
     depthWasEnabled = glIsEnabled(GL_DEPTH_TEST)
     glDisable(GL_DEPTH_TEST)
     oldMatrixMode = glGetIntegerv(GL_MATRIX_MODE)
@@ -111,9 +155,10 @@ def DrawGLScene():
     # Set the state back to what it was
     glPopMatrix()
     glMatrixMode(GL_MODELVIEW)
+    
     glPopMatrix()
     glMatrixMode(oldMatrixMode)
-
+    # 
     if (depthWasEnabled):
       glEnable(GL_DEPTH_TEST)
     
