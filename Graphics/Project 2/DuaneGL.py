@@ -9,45 +9,55 @@ RASTER_HEIGHT = 480
 RASTER_SIZE = RASTER_WIDTH * RASTER_HEIGHT * 3
 raster = array([float(i)/RASTER_SIZE for i in range(0, RASTER_SIZE)], dtype='float32')
 
-dj_clear_color = [0.0, 0.0, 0.0, 0.0]
-dj_color = [1.0, 1.0, 1.0, 1.0]
-dj_vertex_mode = 0
+clear_color = [0.0, 0.0, 0.0, 0.0]
+color = [1.0, 1.0, 1.0, 1.0]
+vertex_mode = 0
+vertex_count = 0
+vertex_prev = [0, 0]
 
-def djClearColor(r, g, b, a = 1.0):
-  global dj_clear_color
-  dj_clear_color = [r, g, b, a]
+def clearColor(r, g, b, a = 1.0):
+  global clear_color
+  clear_color = [r, g, b, a]
 
-def djClear(mode):
+def clear(mode):
   """Fills every pixel on the screen with the color last specified by glClearColor(r,g,b,a)."""
   global raster
   if ((mode & GL_COLOR_BUFFER_BIT) != 0):
-    raster = [dj_clear_color[i % 3] for i in range(0, RASTER_SIZE)]
+    raster = [clear_color[i % 3] for i in range(0, RASTER_SIZE)]
 
-def djColor3f(r, g, b):
-  global dj_color
-  dj_color = [r, g, b, 1.0]
+def color3f(r, g, b):
+  global color
+  color = [r, g, b, 1.0]
 
-def djVertex2i(x, y):
-  if (dj_vertex_mode == GL_POINTS):
-    djDrawPoint(x, y)
-  elif (dj_vertex_mode == GL_LINES):
-    raise RuntimeError, "unimplemented"
-  elif (dj_vertex_mode == GL_TRIANGLES):
-    raise RuntimeError, "unimplemented"
-  
-def djBegin(mode):
-  global dj_vertex_mode
+def vertex2i(x, y):
+  global vertex_count
+  if (vertex_mode == GL_POINTS):
+    drawPoint(x, y)
+  elif (vertex_mode == GL_LINES):
+    if (vertex_count % 2 == 0):
+      vertex_prev = [x, y]
+    elif (vertex_count % 2 == 1):
+      drawLine(vertex_prev, [x, y])
+  elif (vertex_mode == GL_TRIANGLES):
+    raise RuntimeError, "GL_TRIANGLES unimplemented"
+    
+  # Always increment the vertex count
+  vertex_count += 1
+
+def begin(mode):
+  global vertex_mode, vertex_count
   if (mode != GL_POINTS and mode != GL_LINES and mode != GL_TRIANGLES):
-    raise RuntimeError, "djBegin accepts only GL_POINTS, GL_LINES and GL_TRIANGLES"
-  dj_vertex_mode = mode
+    raise RuntimeError, "DuaneGL.begin accepts only GL_POINTS, GL_LINES and GL_TRIANGLES"
+  vertex_count = 0
+  vertex_mode = mode
 
-def djEnd():
-  global dj_vertex_mode
-  dj_vertex_mode = 0
+def end():
+  global vertex_mode
+  vertex_mode = 0
 
-def djDrawPoint(x, y):
-  global raster, dj_color
+def drawPoint(x, y):
+  global raster, color
   pos = (y * RASTER_WIDTH + x)*3
-  raster[pos+0] = dj_color[0];
-  raster[pos+1] = dj_color[1];
-  raster[pos+2] = dj_color[2];
+  raster[pos+0] = color[0];
+  raster[pos+1] = color[1];
+  raster[pos+2] = color[2];

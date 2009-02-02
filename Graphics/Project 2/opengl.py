@@ -13,13 +13,13 @@ ESCAPE = '\033'
 window = 0
 drawMode = 1
 
-djClearColor(0.2, 0.2, 0.2)
-djClear(GL_COLOR_BUFFER_BIT)
+clearColor(0.2, 0.2, 0.2)
+clear(GL_COLOR_BUFFER_BIT)
 
-djColor3f(1.0, 0.0, 0.0)
-djBegin(GL_POINTS)
-djVertex2i(320, 240)
-djVertex2i(322, 240)
+color3f(1.0, 0.0, 0.0)
+begin(GL_POINTS)
+vertex2i(320, 240)
+vertex2i(322, 240)
 
 # We call this right after our OpenGL window is created.
 def InitGL(width, height):
