@@ -5,69 +5,21 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from numpy import *
 
+import DuaneGL
+from DuaneGL import *
+
 # Define some constants that we'll be using
 ESCAPE = '\033'
 window = 0
 drawMode = 1
-RASTER_SIZE = 640*480*3
-# Create a big old matrix with values ranging from 0.0 to 1.0
-raster = array([float(i)/RASTER_SIZE for i in range(0, RASTER_SIZE)], dtype='float32')
-# raster[320,320] = [1.0,1.0,1.0]
 
-# raster[320,320] = [1.0, 0.5, 0.0];
-# raster[321,320] = [1.0, 0.5, 0.0];
-# raster[322,321] = [1.0, 0.5, 0.0];
+djClearColor(0.2, 0.2, 0.2)
+djClear(GL_COLOR_BUFFER_BIT)
 
-dj_clear_color = [0.0, 0.0, 0.0, 0.0]
-dj_color = [1.0, 1.0, 1.0, 1.0]
-dj_vertex_mode = 0
-
-def dj_glClearColor(r, g, b, a = 1.0):
-  global dj_clear_color
-  dj_clear_color = [r, g, b, a]
-
-def dj_glClear(mode):
-  """Fills every pixel on the screen with the color last specified by glClearColor(r,g,b,a)."""
-  global raster
-  if ((mode & GL_COLOR_BUFFER_BIT) != 0):
-    raster = [dj_clear_color[i % 3] for i in range(0, RASTER_SIZE)]
-
-def dj_glColor3f(r, g, b):
-  global dj_color
-  dj_color = [r, g, b, 1.0]
-
-def dj_glVertex2i(x, y):
-  if (dj_vertex_mode == GL_POINTS):
-    dj_drawPoint(x, y)
-  elif (dj_vertex_mode == GL_LINES):
-    raise RuntimeError, "unimplemented"
-  elif (dj_vertex_mode == GL_TRIANGLES):
-    raise RuntimeError, "unimplemented"
-  
-def dj_glBegin(mode):
-  global dj_vertex_mode
-  if (mode != GL_POINTS and mode != GL_LINES and mode != GL_TRIANGLES):
-    raise RuntimeError, "dj_glBegin accepts only GL_POINTS, GL_LINES and GL_TRIANGLES"
-  dj_vertex_mode = mode
-
-def dj_glEnd():
-  global dj_vertex_mode
-  dj_vertex_mode = 0
-
-def dj_drawPoint(x, y):
-  global raster, dj_color
-  pos = (y * 640 + x)*3
-  raster[pos+0] = dj_color[0];
-  raster[pos+1] = dj_color[1];
-  raster[pos+2] = dj_color[2];
-
-dj_glClearColor(0.2, 0.2, 0.2)
-dj_glClear(GL_COLOR_BUFFER_BIT)
-
-dj_glColor3f(1.0, 0.0, 0.0)
-dj_glBegin(GL_POINTS)
-dj_glVertex2i(320, 240)
-dj_glVertex2i(322, 240)
+djColor3f(1.0, 0.0, 0.0)
+djBegin(GL_POINTS)
+djVertex2i(320, 240)
+djVertex2i(322, 240)
 
 # We call this right after our OpenGL window is created.
 def InitGL(width, height):
@@ -150,7 +102,7 @@ def DrawGLScene():
     
     # Draw the raster image
     glRasterPos2f(-1,-1)
-    glDrawPixels(640, 480, GL_RGB, GL_FLOAT, raster);
+    glDrawPixels(640, 480, GL_RGB, GL_FLOAT, DuaneGL.raster);
     
     # Set the state back to what it was
     glPopMatrix()

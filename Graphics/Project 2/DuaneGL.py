@@ -4,7 +4,9 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
 # Create a big old matrix with values ranging from 0.0 to 1.0
-RASTER_SIZE = 640*480*3
+RASTER_WIDTH = 640
+RASTER_HEIGHT = 480
+RASTER_SIZE = RASTER_WIDTH * RASTER_HEIGHT * 3
 raster = array([float(i)/RASTER_SIZE for i in range(0, RASTER_SIZE)], dtype='float32')
 
 dj_clear_color = [0.0, 0.0, 0.0, 0.0]
@@ -45,7 +47,7 @@ def djEnd():
 
 def djDrawPoint(x, y):
   global raster, dj_color
-  pos = (y * 640 + x)*3
+  pos = (y * RASTER_WIDTH + x)*3
   raster[pos+0] = dj_color[0];
   raster[pos+1] = dj_color[1];
   raster[pos+2] = dj_color[2];
