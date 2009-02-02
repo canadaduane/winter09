@@ -5,8 +5,8 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from numpy import *
 
-import DuaneGL
-from DuaneGL import *
+import duanegl
+from duanegl import *
 
 # Define some constants that we'll be using
 ESCAPE = '\033'
@@ -102,7 +102,7 @@ def DrawGLScene():
     
     # Draw the raster image
     glRasterPos2f(-1,-1)
-    glDrawPixels(640, 480, GL_RGB, GL_FLOAT, DuaneGL.raster);
+    glDrawPixels(640, 480, GL_RGB, GL_FLOAT, duanegl.raster);
     
     # Set the state back to what it was
     glPopMatrix()
