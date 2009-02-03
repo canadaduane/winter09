@@ -39,7 +39,7 @@ def vertex2i(x, y):
   global vertex_prev, color_prev
   global vertex_prev2, color_prev2
   if (vertex_mode == GL_POINTS):
-    drawPoint(x, y)
+    drawPoint2i(x, y)
   elif (vertex_mode == GL_LINES):
     if (vertex_count % 2 == 0):
       vertex_prev = [x, y]
@@ -70,7 +70,7 @@ def end():
   global vertex_mode
   vertex_mode = 0
 
-def drawPoint(x, y):
+def drawPoint2i(x, y):
   global raster, color
   pos = (y * RASTER_WIDTH + x)*3
   raster[pos+0] = color[0];
@@ -80,7 +80,7 @@ def drawPoint(x, y):
 # This function is passed into drawLine
 def drawPointColor(x, y, r, g, b):
   color3f(r, g, b)
-  drawPoint(x, y)
+  drawPoint2i(x, y)
 
 def drawLine(p1, p2, c1, c2, fn):
   """Draw's a line from point 1 to point 2, with a gradient from c1 to c2"""
