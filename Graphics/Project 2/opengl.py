@@ -1,5 +1,7 @@
 import string
 import sys
+import time
+import math
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -11,15 +13,22 @@ from duanegl import *
 # Define some constants that we'll be using
 ESCAPE = '\033'
 window = 0
-drawMode = 1
+drawMode = 2
 
 clearColor(0.2, 0.2, 0.2)
 clear(GL_COLOR_BUFFER_BIT)
 
-color3f(1.0, 0.0, 0.0)
-begin(GL_POINTS)
-vertex2i(320, 240)
-vertex2i(322, 240)
+def frange(fr, to, step):
+    while fr < to:
+       yield fr
+       fr += step
+
+begin(GL_LINES)
+color3f(1.0, 0.5, 0.0)
+for r in frange(0, 2*math.pi, math.pi/8):
+  vertex2i(320, 240)
+  vertex2i(int(320 + 40*math.sin(r)), int(240 + 40*math.cos(r)))
+end()
 
 # We call this right after our OpenGL window is created.
 def InitGL(width, height):
@@ -155,9 +164,12 @@ def main():
 
   # Uncomment this line to get full screen.
   # glutFullScreen()
-
+  
+  def sleep():
+    time.sleep(1)
+    DrawGLScene
   # When we are doing nothing, redraw the scene.
-  glutIdleFunc(DrawGLScene)
+  glutIdleFunc(sleep)
 
   # Register the function called when our window is resized.
   glutReshapeFunc(ReSizeGLScene)
