@@ -23,12 +23,32 @@ def frange(fr, to, step):
        yield fr
        fr += step
 
-begin(GL_LINES)
-color3f(1.0, 0.5, 0.0)
+# Test lines
+begin(GL_TRIANGLES)
 for r in frange(0, 2*math.pi, math.pi/8):
+  color3f(1.0, 0.5, 0.0)
   vertex2i(320, 240)
+  color3f(0.5, 0.5, 1.0)
   vertex2i(int(320 + 40*math.sin(r)), int(240 + 40*math.cos(r)))
 end()
+
+# Test triangles
+begin(GL_TRIANGLES)
+color3f(1,0,0)
+vertex2i(300,300)
+color3f(0,1,0)
+vertex2i(500,300)
+color3f(0,0,1)
+vertex2i(400,350)
+
+color3f(1,0,0)
+vertex2i(20,40)
+color3f(0,1,0)
+vertex2i(30,30)
+color3f(0,0,1)
+vertex2i(120,50)
+# end()
+
 
 # We call this right after our OpenGL window is created.
 def InitGL(width, height):
