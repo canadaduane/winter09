@@ -21,7 +21,8 @@ vertex_prev = [0, 0]
 vertex_prev2 = [0, 0]
 
 point_size = 1
-enabled = 0
+line_width = 1
+enabled = {}
 
 def clearColor(r, g, b, a = 1.0):
   global clear_color
@@ -48,15 +49,24 @@ def end():
   glEnd()
   vertex_mode = 0
 
+def isEnabled(feature):
+  global enabled
+  try:
+    return enabled[feature]
+  except:
+    return False
+
 def enable(features):
   global enabled
   glEnable(features)
-  enabled = enabled | features
+  enabled[features] = True
+  # print enabled
 
 def disable(features):
   global enabled
   glDisable(features)
-  enabled = enabled & (~features)
+  enabled[features] = False
+  # print enabled
 
 def color3f(r, g, b):
   global color
@@ -73,24 +83,39 @@ def pointSize(s):
   glPointSize(s)
   point_size = s
 
+def lineWidth(w):
+  global line_width
+  glLineWidth(w)
+  line_width = w
+
 def vertex2i(x, y):
   global vertex_count
   global vertex_prev, color_prev
   global vertex_prev2, color_prev2
-  global point_size
+  global point_size, enabled
   
   glVertex2i(x, y)
   if (vertex_mode == GL_POINTS):
     if (point_size == 1):
       drawPoint2i(x, y)
     else:
-      drawCircle2i(x, y, point_size)
+      for r in range(int(point_size/2) + 1):
+        if (isEnabled(GL_POINT_SMOOTH)):
+          drawCircle(x, y, r)
+        else:
+          drawRect(x, y, r)
   elif (vertex_mode == GL_LINES):
     if (vertex_count % 2 == 0):
       vertex_prev = [x, y]
       color_prev = copy(color)
     elif (vertex_count % 2 == 1):
-      drawLine(vertex_prev, [x, y], color_prev, color, drawPoint2iColor)
+      if (line_width == 1):
+        drawLine(vertex_prev, [x, y], color_prev, color, drawPoint2iColor)
+      else:
+        def circle(x, y, r, g, b):
+          color3f(r, g, b)
+          drawCircle(x, y, int(line_width/2))
+        drawLine(vertex_prev, [x, y], color_prev, color, circle)
   elif (vertex_mode == GL_TRIANGLES):
     pcount = vertex_count % 3
     if (pcount == 0):
@@ -111,25 +136,46 @@ def drawPoint2i(x, y):
   raster[pos+1] = color[1];
   raster[pos+2] = color[2];
 
-def drawCircle2i(x_i, y_i, r):
-  x = 0
-  y = r
-  decision = 5.0/4 - r
-  while (x < y):
-    drawPoint2i(x_i + x, y_i + y)
-    drawPoint2i(x_i - x, y_i + y)
-    drawPoint2i(x_i + x, y_i - y)
-    drawPoint2i(x_i - x, y_i - y)
-    drawPoint2i(x_i + y, y_i + x)
-    drawPoint2i(x_i - y, y_i + x)
-    drawPoint2i(x_i + y, y_i - x)
-    drawPoint2i(x_i - y, y_i - x)
-    x = x + 1
-    if (decision < 0):
-      decision = decision + 2 * x + 1
-    else:
-      y = y - 1 
-      decision = decision + 2 * x + 1 - 2 * y
+def drawCircle(x_i, y_i, r):
+  if (r < 1):
+    return
+  elif (r == 1):
+    drawPoint2i(x_i, y_i)
+  else:
+    x = 0
+    y = r
+    decision = 5.0/4 - r
+    while (x <= y):
+      drawPoint2i(x_i + x, y_i + y)
+      drawPoint2i(x_i - x, y_i + y)
+      drawPoint2i(x_i + x, y_i - y)
+      drawPoint2i(x_i - x, y_i - y)
+      drawPoint2i(x_i + y, y_i + x)
+      drawPoint2i(x_i - y, y_i + x)
+      drawPoint2i(x_i + y, y_i - x)
+      drawPoint2i(x_i - y, y_i - x)
+      x = x + 1
+      if (decision < 0):
+        decision = decision + 2 * x + 1
+      else:
+        y = y - 1 
+        decision = decision + 2 * x + 1 - 2 * y
+
+def drawRect(x_i, y_i, r):
+  if (r < 0):
+    return
+  elif (r == 0):
+    drawPoint2i(x_i, y_i)
+  else:
+    for i in range(r+1):
+      drawPoint2i(x_i + r, y_i + i)
+      drawPoint2i(x_i - r, y_i + i)
+      drawPoint2i(x_i + r, y_i - i)
+      drawPoint2i(x_i - r, y_i - i)
+      drawPoint2i(x_i + i, y_i + r)
+      drawPoint2i(x_i - i, y_i + r)
+      drawPoint2i(x_i + i, y_i - r)
+      drawPoint2i(x_i - i, y_i - r)
 
 def drawPoint2iColor(x, y, r, g, b):
   color3f(r, g, b)

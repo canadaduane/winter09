@@ -57,22 +57,31 @@ def scene_c():
   clear(GL_COLOR_BUFFER_BIT)
   radius = 10.0
   pointSize(10)
+  lineWidth(6)
   
   # Draw square points
-  glDisable(GL_POINT_SMOOTH)
+  disable(GL_POINT_SMOOTH)
   begin(GL_POINTS)
-  rgb = [[1.0, 1.0, 0.0], [1.0, 0.5, 0.0], [0.5, 1.0, 0.0]]
+  rgb = [[1.0, 1.0, 0.0], [1.0, 0.5, 0.0], [0.5, 0.0, 1.0]]
   for i in range(3):
     apply(color3f, rgb[i])
     vertex2i(260 + i*40, 240)
   end()
   
   # Now draw circular points
-  glEnable(GL_POINT_SMOOTH)
+  enable(GL_POINT_SMOOTH)
   begin(GL_POINTS)
   for i in range(3):
     apply(color3f, rgb[i])
     vertex2i(260 + i*40, 200)
+  end()
+  
+  # Draw a thick line
+  begin(GL_LINES)
+  apply(color3f, rgb[0])
+  vertex2i(260, 150)
+  apply(color3f, rgb[1])
+  vertex2i(380, 160)
   end()
 
 # We call this right after our OpenGL window is created.
