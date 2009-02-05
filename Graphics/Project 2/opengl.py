@@ -2,10 +2,12 @@ import string
 import sys
 import time
 import math
+import random
+from numpy import *
+from functional import *
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
-from numpy import *
 
 import duanegl
 from duanegl import *
@@ -13,57 +15,65 @@ from duanegl import *
 # Define some constants that we'll be using
 ESCAPE = '\033'
 window = 0
-drawMode = 1
+drawMode = 2
+sceneChoice = 2
 
-clearColor(0.2, 0.2, 0.2)
-clear(GL_COLOR_BUFFER_BIT)
-
+# Helper Function for floating-point ranges
 def frange(fr, to, step):
     while fr < to:
        yield fr
        fr += step
 
-# Test lines
-red = [1.0, 0.0, 0.0, 1.0]
-white = [1.0, 1.0, 1.0, 1.0]
-blue = [0.0, 0.0, 1.0, 1.0]
-green = [0.0, 1.0, 0.0, 1.0]
+def scene_a():
+  clearColor(0.0, 0.0, 0.0)
+  clear(GL_COLOR_BUFFER_BIT)
+  radius = 90.0
+  begin(GL_TRIANGLES)
+  for r in frange(0, math.pi/4, math.pi/4):
+    color3f(1.0, 0.5, 0.0)
+    vertex2i(320, 240)
+    color3f(0.5, 0.5, 1.0)
+    vertex2i(int(320 + radius*math.sin(r)), int(240 + radius*math.cos(r)))
+    color3f(0.5, 0.5, 1.0)
+    vertex2i(int(320 + radius*math.sin(r+math.pi/8)), int(240 + radius*math.cos(r+math.pi/8)))
+  end()
+  
 
-p1 = [320.2, 240.0]
-p2 = [200.9, 284.4]
-drawPerfectYLine(p1, p2, red, white)
+def scene_b():
+  clearColor(0.0, 0.0, 0.0)
+  clear(GL_COLOR_BUFFER_BIT)
+  radius = 50.0
+  step = math.pi/8
+  begin(GL_LINES)
+  for r in frange(0, 2*math.pi, step):
+    color3f(1.0, 0.5, 0.0)
+    vertex2i(int(320 + radius*math.sin(r)), int(240 + radius*math.cos(r)))
+    color3f(0.5, 0.5, 1.0)
+    vertex2i(int(320 + radius*math.sin(r+step)), int(240 + radius*math.cos(r+step)))
+  end()
 
-apply(color4f, green)
-apply(drawPoint2f, p1)
-apply(drawPoint2f, p2)
-
-# drawPerfectLine([340.9, 284.4], [300.2, 275.8], white, white)
-# drawPerfectLine([300.2, 275.8], [320.2, 240.0], white, white)
-# begin(GL_TRIANGLES)
-# for r in frange(0, 2*math.pi, math.pi/8):
-#   color3f(1.0, 0.5, 0.0)
-#   vertex2i(320, 240)
-#   color3f(0.5, 0.5, 1.0)
-#   vertex2i(int(320 + 40*math.sin(r)), int(240 + 40*math.cos(r)))
-# end()
-
-# Test triangles
-# begin(GL_TRIANGLES)
-# color3f(1,0,0)
-# vertex2i(300,300)
-# color3f(0,1,0)
-# vertex2i(500,300)
-# color3f(0,0,1)
-# vertex2i(400,350)
-# 
-# color3f(1,0,0)
-# vertex2i(20,40)
-# color3f(0,1,0)
-# vertex2i(30,30)
-# color3f(0,0,1)
-# vertex2i(120,50)
-# end()
-
+def scene_c():
+  clearColor(0.0, 0.0, 0.0)
+  clear(GL_COLOR_BUFFER_BIT)
+  radius = 10.0
+  pointSize(10)
+  
+  # Draw square points
+  glDisable(GL_POINT_SMOOTH)
+  begin(GL_POINTS)
+  rgb = [[1.0, 1.0, 0.0], [1.0, 0.5, 0.0], [0.5, 1.0, 0.0]]
+  for i in range(3):
+    apply(color3f, rgb[i])
+    vertex2i(260 + i*40, 240)
+  end()
+  
+  # Now draw circular points
+  glEnable(GL_POINT_SMOOTH)
+  begin(GL_POINTS)
+  for i in range(3):
+    apply(color3f, rgb[i])
+    vertex2i(260 + i*40, 200)
+  end()
 
 # We call this right after our OpenGL window is created.
 def InitGL(width, height):
@@ -85,29 +95,18 @@ def ReSizeGLScene(width, height):
   glMatrixMode(GL_MODELVIEW)
   glLoadIdentity()
   glOrtho(0,width, 0,height, -1,1);
+  
+  DrawGLScene()
 
 def DrawGLScene():
+  global sceneChoice
   glClearColor(0.1, 0.1, 0.1, 1)
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); # Clear The Screen And The Depth Buffer
-  if drawMode == 1:
-    print "Inside drawMode 1"
-    
-    # glBegin(GL_LINES)
-    # for i in range(8):
-    #   glColor3f(1.0,0.0,0.0)
-    #   glVertex2i(200,200)
-    #   glVertex2i(200 + 10*i, 280)
-    #   glColor3f(0.0,1.0,0.0)
-    #   glVertex2i(200,200)
-    #   glColor3f(0.0,1.0,1.0)
-    #   glVertex2i(200 - 10*i, 280)
-    #   glVertex2i(200,200)
-    #   glVertex2i(280, 200 + 10*i)
-    #   glVertex2i(200,200)
-    #   glVertex2i(280, 200 - 10*i)
-    # glEnd()
-    
-  elif drawMode == 2:
+  
+  # Draw the chosen scene
+  [scene_a, scene_b, scene_c][sceneChoice]()
+  
+  if drawMode == 2:
     depthWasEnabled = glIsEnabled(GL_DEPTH_TEST)
     glDisable(GL_DEPTH_TEST)
     oldMatrixMode = glGetIntegerv(GL_MATRIX_MODE)
@@ -140,15 +139,34 @@ def DrawGLScene():
 
 # The function called whenever a key is pressed. Note the use of Python tuples to pass in: (key, x, y)  
 def keyPressed(*args):
-  global drawMode
-  # If escape is pressed, kill everything.
-  if args[0] == ESCAPE:
-    sys.exit()
-  if args[0] == '1':
-    drawMode = 1
-  if args[0] == '2':
-    drawMode = 2
-  print("drawMode: ", drawMode)
+  global drawMode, sceneChoice
+  
+  def set_draw_mode(m):
+    global drawMode
+    drawMode = m
+  
+  def set_scene_choice(m):
+    global sceneChoice
+    print "set_scene_choice"
+    sceneChoice = m
+  
+  try:
+    # If escape is pressed, kill everything.
+    {
+      ESCAPE: sys.exit,
+      '1': lambda: set_draw_mode(1),
+      '2': lambda: set_draw_mode(2),
+    
+      'a': lambda: set_scene_choice(0),
+      'b': lambda: set_scene_choice(1),
+      'c': lambda: set_scene_choice(2)
+    }[args[0]]()
+  except KeyError:
+    # that's ok
+    print "Unknown key:", args[0]
+  
+  print("drawMode:", drawMode, "sceneChoice:", sceneChoice)
+  DrawGLScene()
 
 def main():
   global window
@@ -179,8 +197,7 @@ def main():
   # glutFullScreen()
   
   def sleep():
-    time.sleep(1)
-    DrawGLScene
+    time.sleep(0.1)
   # When we are doing nothing, redraw the scene.
   glutIdleFunc(sleep)
 

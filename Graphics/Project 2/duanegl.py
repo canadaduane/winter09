@@ -8,7 +8,7 @@ from copy import copy
 RASTER_WIDTH = 640
 RASTER_HEIGHT = 480
 RASTER_SIZE = RASTER_WIDTH * RASTER_HEIGHT * 3
-raster = array([float(i)/RASTER_SIZE for i in range(0, RASTER_SIZE)], dtype='float32')
+raster = array([ 0.0 for i in range(0, RASTER_SIZE) ], dtype='float32')
 
 clear_color = [0.0, 0.0, 0.0, 0.0]
 color = [1.0, 1.0, 1.0, 1.0]
@@ -20,30 +20,71 @@ vertex_count = 0
 vertex_prev = [0, 0]
 vertex_prev2 = [0, 0]
 
+point_size = 1
+enabled = 0
+
 def clearColor(r, g, b, a = 1.0):
   global clear_color
+  glClearColor(r, g, b, a)
   clear_color = [r, g, b, a]
 
 def clear(mode):
   """Fills every pixel on the screen with the color last specified by glClearColor(r,g,b,a)."""
   global raster
+  glClear(mode)
   if ((mode & GL_COLOR_BUFFER_BIT) != 0):
     raster = [clear_color[i % 3] for i in range(0, RASTER_SIZE)]
 
+def begin(mode):
+  global vertex_mode, vertex_count
+  glBegin(mode)
+  if (mode != GL_POINTS and mode != GL_LINES and mode != GL_TRIANGLES):
+    raise RuntimeError, "DuaneGL.begin accepts only GL_POINTS, GL_LINES and GL_TRIANGLES"
+  vertex_count = 0
+  vertex_mode = mode
+
+def end():
+  global vertex_mode
+  glEnd()
+  vertex_mode = 0
+
+def enable(features):
+  global enabled
+  glEnable(features)
+  enabled = enabled | features
+
+def disable(features):
+  global enabled
+  glDisable(features)
+  enabled = enabled & (~features)
+
 def color3f(r, g, b):
   global color
+  glColor3f(r, g, b)
   color = [r, g, b, 1.0]
 
 def color4f(r, g, b, a):
   global color
+  glColor4f(r, g, b, a)
   color = [r, g, b, a]
+
+def pointSize(s):
+  global point_size
+  glPointSize(s)
+  point_size = s
 
 def vertex2i(x, y):
   global vertex_count
   global vertex_prev, color_prev
   global vertex_prev2, color_prev2
+  global point_size
+  
+  glVertex2i(x, y)
   if (vertex_mode == GL_POINTS):
-    drawPoint2i(x, y)
+    if (point_size == 1):
+      drawPoint2i(x, y)
+    else:
+      drawCircle2i(x, y, point_size)
   elif (vertex_mode == GL_LINES):
     if (vertex_count % 2 == 0):
       vertex_prev = [x, y]
@@ -63,23 +104,32 @@ def vertex2i(x, y):
   # Always increment the vertex count
   vertex_count += 1
 
-def begin(mode):
-  global vertex_mode, vertex_count
-  if (mode != GL_POINTS and mode != GL_LINES and mode != GL_TRIANGLES):
-    raise RuntimeError, "DuaneGL.begin accepts only GL_POINTS, GL_LINES and GL_TRIANGLES"
-  vertex_count = 0
-  vertex_mode = mode
-
-def end():
-  global vertex_mode
-  vertex_mode = 0
-
 def drawPoint2i(x, y):
   global raster, color
   pos = (int(y) * RASTER_WIDTH + int(x))*3
   raster[pos+0] = color[0];
   raster[pos+1] = color[1];
   raster[pos+2] = color[2];
+
+def drawCircle2i(x_i, y_i, r):
+  x = 0
+  y = r
+  decision = 5.0/4 - r
+  while (x < y):
+    drawPoint2i(x_i + x, y_i + y)
+    drawPoint2i(x_i - x, y_i + y)
+    drawPoint2i(x_i + x, y_i - y)
+    drawPoint2i(x_i - x, y_i - y)
+    drawPoint2i(x_i + y, y_i + x)
+    drawPoint2i(x_i - y, y_i + x)
+    drawPoint2i(x_i + y, y_i - x)
+    drawPoint2i(x_i - y, y_i - x)
+    x = x + 1
+    if (decision < 0):
+      decision = decision + 2 * x + 1
+    else:
+      y = y - 1 
+      decision = decision + 2 * x + 1 - 2 * y
 
 def drawPoint2iColor(x, y, r, g, b):
   color3f(r, g, b)
@@ -117,20 +167,22 @@ def getRGBinc(c1, c2, dx, dy):
 def drawPerfectYLine(p1, p2, c1, c2, fn = drawPoint2fColor):
   if (p2[1] < p1[1]):
     p1, p2 = p2, p1
+    c1, c2 = c2, c1
   x1, y1 = p1
   x2, y2 = p2
-  dx = x2 - x1
-  dy = y2 - y1
-  gradient = dx/dy
-  r, g, b = getRGB(c1)
-  r_inc, g_inc, b_inc = getRGBinc(c1, c2, dx, dy)
-  while (y1 < y2):
-    fn(x1, y1, r, g, b)
-    x1 += gradient
-    y1 += 1
-    r += r_inc
-    g += g_inc
-    b += b_inc
+  dx = float(x2 - x1)
+  dy = float(y2 - y1)
+  if (dy != 0):
+    gradient = dx/dy
+    r, g, b = getRGB(c1)
+    r_inc, g_inc, b_inc = getRGBinc(c1, c2, dx, dy)
+    while (y1 < y2):
+      fn(x1, y1, r, g, b)
+      x1 += gradient
+      y1 += 1
+      r += r_inc
+      g += g_inc
+      b += b_inc
   
   
 def drawLine(p1, p2, c1, c2, fn):
@@ -159,7 +211,7 @@ def drawLine(p1, p2, c1, c2, fn):
   # Generic line-drawing functions that need to be set up properly
   def x_line(x, y, xinc, yinc, r, g, b):
     decision = 2 * y_delta - x_delta
-    for i in range(x_delta - 1):
+    for i in range(x_delta):
       fn(x, y, r, g, b)
       if (decision < 0):
         decision = decision + 2 * y_delta
@@ -173,7 +225,7 @@ def drawLine(p1, p2, c1, c2, fn):
   
   def y_line(x, y, xinc, yinc, r, g, b):
     decision = 2 * x_delta - y_delta
-    for i in range(y_delta - 1):
+    for i in range(y_delta):
       fn(x, y, r, g, b)
       if (decision < 0):
         decision = decision + 2 * x_delta
@@ -213,7 +265,11 @@ def drawTriangle(v1, v2, v3, c1, c2, c3):
   bucket = []
   
   def add_point_to_bucket(x, y, r, g, b):
-    bucket.append([x, y, r, g, b])
+    bucket.append([int(x), int(y), r, g, b])
+
+  def add_point_to_bucket_trace(x, y, r, g, b):
+    print "x", x, "y", y
+    bucket.append([int(x), int(y), r, g, b])
   
   def y_then_x(a, b):
     if (a[1] > b[1]):
@@ -228,17 +284,19 @@ def drawTriangle(v1, v2, v3, c1, c2, c3):
       else:
         return 0;
   
+  # v3[0] += 1
+  # v3[1] -= 1
   # Draw line from v1 to v2
   if (v1[1] != v2[1]):
-    drawLine(v1, v2, c1, c2, add_point_to_bucket)
+    drawPerfectYLine(v1, v2, c1, c2, add_point_to_bucket)
     
   # Draw line from v2 to v3
   if (v2[1] != v3[1]):
-    drawLine(v2, v3, c2, c3, add_point_to_bucket)
+    drawPerfectYLine(v2, v3, c2, c3, add_point_to_bucket)
     
   # Draw line from v3 to v1
   if (v3[1] != v1[1]):
-    drawLine(v3, v1, c3, c1, add_point_to_bucket)
+    drawPerfectYLine(v3, v1, c3, c1, add_point_to_bucket)
   
   if (len(bucket) > 0):
     bucket.sort(y_then_x)
@@ -252,7 +310,7 @@ def drawTriangle(v1, v2, v3, c1, c2, c3):
         if (pt_max == None):
           # print "pt_min", pt_min
           apply(drawPoint2iColor, pt_min)
-        else:
+        elif(pt_min[0] != pt_max[0]):
           c1 = [pt_min[2], pt_min[3], pt_min[4], 1.0]
           c2 = [pt_max[2], pt_max[3], pt_max[4], 1.0]
           # print "pt_min", pt_min, "pt_max", pt_max, "c1", c1, "c2", c2
