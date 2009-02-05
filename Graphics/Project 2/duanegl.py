@@ -125,7 +125,7 @@ def vertex2i(x, y, mode = False):
           drawCircle(x, y, int(line_width/2))
         drawLine(vertex_prev, [x, y], color_prev, color, circle)
   
-  elif (mode == GL_TRIANGLES):
+  elif (mode == GL_TRIANGLES or mode == GL_TRIANGLE_STRIP):
     pcount = vertex_count % 3
     if (pcount == 0):
       vertex_prev2 = [x, y]
@@ -134,7 +134,14 @@ def vertex2i(x, y, mode = False):
       vertex_prev = [x, y]
       color_prev = copy(color)
     elif (pcount == 2):
-      drawTriangle(vertex_prev2, vertex_prev, [x, y], color_prev2, color_prev, color)
+      if (mode == GL_TRIANGLE_STRIP):
+        n = vertex_count / 3
+        if (n % 2 == 1):
+          drawTriangle(vertex_prev2, vertex_prev, [x, y], color_prev2, color_prev, color)
+        else:
+          drawTriangle(vertex_prev, [x, y], vertex_prev2, color_prev, color, color_prev2)
+      else:
+        drawTriangle(vertex_prev2, vertex_prev, [x, y], color_prev2, color_prev, color)
   
   elif (mode == GL_LINE_STRIP or mode == GL_LINE_LOOP):
     v, c = [x, y], color

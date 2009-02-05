@@ -112,6 +112,30 @@ def scene_d():
   vertex2i(200, 180)
   end()
   
+  begin(GL_TRIANGLE_STRIP)
+  color3f(0.0, 0.5, 0.0)
+  vertex2i(100, 380)
+  color3f(1.0, 0.5, 0.0)
+  vertex2i(120, 370)
+  color3f(0.0, 0.5, 1.0)
+  vertex2i(140, 390)
+
+  color3f(0.0, 0.5, 0.0)
+  vertex2i(140, 390)
+  color3f(1.0, 0.5, 0.0)
+  vertex2i(120, 370)
+  color3f(0.0, 0.5, 1.0)
+  vertex2i(180, 380)
+
+  color3f(1.0, 0.0, 0.0)
+  vertex2i(180, 380)
+  color3f(0.0, 0.0, 1.0)
+  vertex2i(120, 370)
+  color3f(1.0, 0.0, 1.0)
+  vertex2i(200, 350)
+  end()
+  
+  
 # We call this right after our OpenGL window is created.
 def InitGL(width, height):
   glClearColor(0.0, 0.0, 0.0, 0.0)  # This Will Clear The Background Color To Black
