@@ -13,7 +13,7 @@ from duanegl import *
 # Define some constants that we'll be using
 ESCAPE = '\033'
 window = 0
-drawMode = 2
+drawMode = 1
 
 clearColor(0.2, 0.2, 0.2)
 clear(GL_COLOR_BUFFER_BIT)
@@ -24,29 +24,44 @@ def frange(fr, to, step):
        fr += step
 
 # Test lines
-begin(GL_TRIANGLES)
-for r in frange(0, 2*math.pi, math.pi/8):
-  color3f(1.0, 0.5, 0.0)
-  vertex2i(320, 240)
-  color3f(0.5, 0.5, 1.0)
-  vertex2i(int(320 + 40*math.sin(r)), int(240 + 40*math.cos(r)))
-end()
+red = [1.0, 0.0, 0.0, 1.0]
+white = [1.0, 1.0, 1.0, 1.0]
+blue = [0.0, 0.0, 1.0, 1.0]
+green = [0.0, 1.0, 0.0, 1.0]
+
+p1 = [320.2, 240.0]
+p2 = [200.9, 284.4]
+drawPerfectYLine(p1, p2, red, white)
+
+apply(color4f, green)
+apply(drawPoint2f, p1)
+apply(drawPoint2f, p2)
+
+# drawPerfectLine([340.9, 284.4], [300.2, 275.8], white, white)
+# drawPerfectLine([300.2, 275.8], [320.2, 240.0], white, white)
+# begin(GL_TRIANGLES)
+# for r in frange(0, 2*math.pi, math.pi/8):
+#   color3f(1.0, 0.5, 0.0)
+#   vertex2i(320, 240)
+#   color3f(0.5, 0.5, 1.0)
+#   vertex2i(int(320 + 40*math.sin(r)), int(240 + 40*math.cos(r)))
+# end()
 
 # Test triangles
-begin(GL_TRIANGLES)
-color3f(1,0,0)
-vertex2i(300,300)
-color3f(0,1,0)
-vertex2i(500,300)
-color3f(0,0,1)
-vertex2i(400,350)
-
-color3f(1,0,0)
-vertex2i(20,40)
-color3f(0,1,0)
-vertex2i(30,30)
-color3f(0,0,1)
-vertex2i(120,50)
+# begin(GL_TRIANGLES)
+# color3f(1,0,0)
+# vertex2i(300,300)
+# color3f(0,1,0)
+# vertex2i(500,300)
+# color3f(0,0,1)
+# vertex2i(400,350)
+# 
+# color3f(1,0,0)
+# vertex2i(20,40)
+# color3f(0,1,0)
+# vertex2i(30,30)
+# color3f(0,0,1)
+# vertex2i(120,50)
 # end()
 
 
@@ -58,14 +73,6 @@ def InitGL(width, height):
   glEnable(GL_DEPTH_TEST)           # Enables Depth Testing
   glShadeModel(GL_SMOOTH)           # Enables Smooth Color Shading
   
-  glMatrixMode(GL_PROJECTION)       # Reset The Projection Matrix
-  # glLoadIdentity()                  # Calculate The Aspect Ratio Of The Window
-  # glMatrixMode(GL_MODELVIEW)
-  # glLoadIdentity()
-  glOrtho(0,640, 0,480, -1,1);
-
-  # gluPerspective(45.0, float(width)/float(height), 0.1, 100.0)
-
 def ReSizeGLScene(width, height):
   # Prevent A Divide By Zero If The Window Is Too Small 
   if height == 0:
@@ -75,46 +82,30 @@ def ReSizeGLScene(width, height):
   glViewport(0, 0, width, height)
   glMatrixMode(GL_PROJECTION)
   glLoadIdentity()
-  gluPerspective(45.0, float(width) / float(height), 0.1, 100.0)
   glMatrixMode(GL_MODELVIEW)
+  glLoadIdentity()
+  glOrtho(0,width, 0,height, -1,1);
 
 def DrawGLScene():
   glClearColor(0.1, 0.1, 0.1, 1)
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); # Clear The Screen And The Depth Buffer
   if drawMode == 1:
-    oldMatrixMode = glGetIntegerv(GL_MATRIX_MODE)
+    print "Inside drawMode 1"
     
-    glMatrixMode(GL_MODELVIEW)
-    glPushMatrix()
-    glLoadIdentity()
-
-    glMatrixMode(GL_PROJECTION)
-    glPushMatrix()
-    glLoadIdentity()
-    
-    glBegin(GL_LINES)
-    for i in range(8):
-      glColor3f(1,0,0)
-      glVertex2i(200,200)
-      glVertex2i(200 + 10*i, 280)
-      glColor3f(0,1,0)
-      glVertex2i(200,200)
-      glColor3f(0,1,1)
-      glVertex2i(200 - 10*i, 280)
-      glVertex2i(200,200)
-      glVertex2i(280, 200 + 10*i)
-      glVertex2i(200,200)
-      glVertex2i(280, 200 - 10*i)
-    glEnd()
-
-    glFlush()
-    
-    glPopMatrix()
-    glMatrixMode(GL_MODELVIEW)
-    
-    glPopMatrix()
-    glMatrixMode(oldMatrixMode)
-    
+    # glBegin(GL_LINES)
+    # for i in range(8):
+    #   glColor3f(1.0,0.0,0.0)
+    #   glVertex2i(200,200)
+    #   glVertex2i(200 + 10*i, 280)
+    #   glColor3f(0.0,1.0,0.0)
+    #   glVertex2i(200,200)
+    #   glColor3f(0.0,1.0,1.0)
+    #   glVertex2i(200 - 10*i, 280)
+    #   glVertex2i(200,200)
+    #   glVertex2i(280, 200 + 10*i)
+    #   glVertex2i(200,200)
+    #   glVertex2i(280, 200 - 10*i)
+    # glEnd()
     
   elif drawMode == 2:
     depthWasEnabled = glIsEnabled(GL_DEPTH_TEST)
@@ -142,6 +133,8 @@ def DrawGLScene():
     # 
     if (depthWasEnabled):
       glEnable(GL_DEPTH_TEST)
+
+  glFlush()
     
   glutSwapBuffers()
 

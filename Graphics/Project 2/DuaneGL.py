@@ -34,6 +34,10 @@ def color3f(r, g, b):
   global color
   color = [r, g, b, 1.0]
 
+def color4f(r, g, b, a):
+  global color
+  color = [r, g, b, a]
+
 def vertex2i(x, y):
   global vertex_count
   global vertex_prev, color_prev
@@ -45,7 +49,7 @@ def vertex2i(x, y):
       vertex_prev = [x, y]
       color_prev = copy(color)
     elif (vertex_count % 2 == 1):
-      drawLine(vertex_prev, [x, y], color_prev, color, drawPointColor)
+      drawLine(vertex_prev, [x, y], color_prev, color, drawPoint2iColor)
   elif (vertex_mode == GL_TRIANGLES):
     pcount = vertex_count % 3
     if (pcount == 0):
@@ -72,16 +76,63 @@ def end():
 
 def drawPoint2i(x, y):
   global raster, color
-  pos = (y * RASTER_WIDTH + x)*3
+  pos = (int(y) * RASTER_WIDTH + int(x))*3
   raster[pos+0] = color[0];
   raster[pos+1] = color[1];
   raster[pos+2] = color[2];
 
-# This function is passed into drawLine
-def drawPointColor(x, y, r, g, b):
+def drawPoint2iColor(x, y, r, g, b):
   color3f(r, g, b)
   drawPoint2i(x, y)
 
+def drawPoint2f(x, y):
+  global raster, color
+  pos = int(round(y) * RASTER_WIDTH + round(x))*3
+  raster[pos+0] = color[0];
+  raster[pos+1] = color[1];
+  raster[pos+2] = color[2];
+
+def drawPoint2fColor(x, y, r, g, b):
+  color3f(r, g, b)
+  drawPoint2f(x, y)
+
+def getRGB(c):
+  return [float(c[0]), float(c[1]), float(c[2])]
+
+def getRGBinc(c1, c2, dx, dy):
+  r1, g1, b1 = getRGB(c1)
+  r2, g2, b2 = getRGB(c2)
+  r_delta = float(r2) - float(r1)
+  g_delta = float(g2) - float(g1)
+  b_delta = float(b2) - float(b1)
+
+  def color_inc(length):
+    if (length == 0):
+      return [0.0, 0.0, 0.0]
+    else:
+      return [r_delta / length, g_delta / length, b_delta / length]
+
+  return color_inc(max(abs(dx), abs(dy)))
+  
+def drawPerfectYLine(p1, p2, c1, c2, fn = drawPoint2fColor):
+  if (p2[1] < p1[1]):
+    p1, p2 = p2, p1
+  x1, y1 = p1
+  x2, y2 = p2
+  dx = x2 - x1
+  dy = y2 - y1
+  gradient = dx/dy
+  r, g, b = getRGB(c1)
+  r_inc, g_inc, b_inc = getRGBinc(c1, c2, dx, dy)
+  while (y1 < y2):
+    fn(x1, y1, r, g, b)
+    x1 += gradient
+    y1 += 1
+    r += r_inc
+    g += g_inc
+    b += b_inc
+  
+  
 def drawLine(p1, p2, c1, c2, fn):
   """Draw's a line from point 1 to point 2, with a gradient from c1 to c2"""
   
@@ -96,7 +147,7 @@ def drawLine(p1, p2, c1, c2, fn):
   else:
     y_positive = True
   
-  r, g, b = float(c1[0]), float(c1[1]), float(c1[2])
+  r, g, b = getRGB(c1)
   r_inc, g_inc, b_inc = [0.0, 0.0, 0.0]
   r_delta = float(c2[0]) - c1[0]
   g_delta = float(c2[1]) - c1[1]
@@ -200,17 +251,17 @@ def drawTriangle(v1, v2, v3, c1, c2, c3):
       else:
         if (pt_max == None):
           # print "pt_min", pt_min
-          apply(drawPointColor, pt_min)
+          apply(drawPoint2iColor, pt_min)
         else:
           c1 = [pt_min[2], pt_min[3], pt_min[4], 1.0]
           c2 = [pt_max[2], pt_max[3], pt_max[4], 1.0]
           # print "pt_min", pt_min, "pt_max", pt_max, "c1", c1, "c2", c2
-          drawLine(pt_min, pt_max, c1, c2, drawPointColor)
+          drawLine(pt_min, pt_max, c1, c2, drawPoint2iColor)
         pt_min = pt
   
     # Need to complete the final scan line
     c1 = [pt_min[2], pt_min[3], pt_min[4], 1.0]
     c2 = [pt_max[2], pt_max[3], pt_max[4], 1.0]
-    drawLine(pt_min, pt_max, c1, c2, drawPointColor)
+    drawLine(pt_min, pt_max, c1, c2, drawPoint2iColor)
   
   # print bucket
