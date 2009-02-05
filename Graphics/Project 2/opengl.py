@@ -16,7 +16,7 @@ from duanegl import *
 ESCAPE = '\033'
 window = 0
 drawMode = 2
-sceneChoice = 2
+sceneChoice = 3
 
 # Helper Function for floating-point ranges
 def frange(fr, to, step):
@@ -24,9 +24,15 @@ def frange(fr, to, step):
        yield fr
        fr += step
 
-def scene_a():
+def scene_clear():
   clearColor(0.0, 0.0, 0.0)
   clear(GL_COLOR_BUFFER_BIT)
+  disable(GL_POINT_SMOOTH)
+  pointSize(1)
+  lineWidth(1)
+  
+def scene_a():
+  scene_clear()
   radius = 90.0
   begin(GL_TRIANGLES)
   for r in frange(0, math.pi/4, math.pi/4):
@@ -40,8 +46,7 @@ def scene_a():
   
 
 def scene_b():
-  clearColor(0.0, 0.0, 0.0)
-  clear(GL_COLOR_BUFFER_BIT)
+  scene_clear()
   radius = 50.0
   step = math.pi/8
   begin(GL_LINES)
@@ -53,8 +58,7 @@ def scene_b():
   end()
 
 def scene_c():
-  clearColor(0.0, 0.0, 0.0)
-  clear(GL_COLOR_BUFFER_BIT)
+  scene_clear()
   radius = 10.0
   pointSize(10)
   lineWidth(6)
@@ -84,6 +88,30 @@ def scene_c():
   vertex2i(380, 160)
   end()
 
+def scene_d():
+  scene_clear()
+  begin(GL_LINE_STRIP)
+  color3f(1.0, 0.0, 0.0)
+  vertex2i(320, 140)
+  color3f(1.0, 1.0, 0.0)
+  vertex2i(380, 100)
+  color3f(1.0, 0.0, 0.0)
+  vertex2i(330, 60)
+  color3f(1.0, 1.0, 0.0)
+  vertex2i(200, 80)
+  end()
+
+  begin(GL_LINE_LOOP)
+  color3f(1.0, 0.0, 0.0)
+  vertex2i(320, 240)
+  color3f(1.0, 1.0, 0.0)
+  vertex2i(380, 200)
+  color3f(1.0, 0.0, 0.0)
+  vertex2i(330, 160)
+  color3f(1.0, 1.0, 0.0)
+  vertex2i(200, 180)
+  end()
+  
 # We call this right after our OpenGL window is created.
 def InitGL(width, height):
   glClearColor(0.0, 0.0, 0.0, 0.0)  # This Will Clear The Background Color To Black
@@ -113,7 +141,7 @@ def DrawGLScene():
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); # Clear The Screen And The Depth Buffer
   
   # Draw the chosen scene
-  [scene_a, scene_b, scene_c][sceneChoice]()
+  [scene_a, scene_b, scene_c, scene_d][sceneChoice]()
   
   if drawMode == 2:
     depthWasEnabled = glIsEnabled(GL_DEPTH_TEST)
@@ -167,8 +195,9 @@ def keyPressed(*args):
       '2': lambda: set_draw_mode(2),
     
       'a': lambda: set_scene_choice(0),
-      'b': lambda: set_scene_choice(1),
-      'c': lambda: set_scene_choice(2)
+      's': lambda: set_scene_choice(1),
+      'd': lambda: set_scene_choice(2),
+      'f': lambda: set_scene_choice(3)
     }[args[0]]()
   except KeyError:
     # that's ok

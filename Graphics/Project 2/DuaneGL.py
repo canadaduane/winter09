@@ -12,11 +12,13 @@ raster = array([ 0.0 for i in range(0, RASTER_SIZE) ], dtype='float32')
 
 clear_color = [0.0, 0.0, 0.0, 0.0]
 color = [1.0, 1.0, 1.0, 1.0]
+color_first = [0.0, 0.0, 0.0, 0.0]
 color_prev = [1.0, 1.0, 1.0, 1.0]
 color_prev2 = [1.0, 1.0, 1.0, 1.0]
 
 vertex_mode = 0
 vertex_count = 0
+vertex_first = [0, 0]
 vertex_prev = [0, 0]
 vertex_prev2 = [0, 0]
 
@@ -39,14 +41,15 @@ def clear(mode):
 def begin(mode):
   global vertex_mode, vertex_count
   glBegin(mode)
-  if (mode != GL_POINTS and mode != GL_LINES and mode != GL_TRIANGLES):
-    raise RuntimeError, "DuaneGL.begin accepts only GL_POINTS, GL_LINES and GL_TRIANGLES"
   vertex_count = 0
   vertex_mode = mode
 
 def end():
   global vertex_mode
   glEnd()
+  if (vertex_mode == GL_LINE_LOOP):
+    color3f(color_first[0], color_first[1], color_first[2])
+    vertex2i(vertex_first[0], vertex_first[1], GL_LINE_STRIP)
   vertex_mode = 0
 
 def isEnabled(feature):
@@ -88,14 +91,18 @@ def lineWidth(w):
   glLineWidth(w)
   line_width = w
 
-def vertex2i(x, y):
+def vertex2i(x, y, mode = False):
   global vertex_count
+  global vertex_first, color_first
   global vertex_prev, color_prev
   global vertex_prev2, color_prev2
   global point_size, enabled
   
+  if (mode == False):
+    mode = vertex_mode
+  
   glVertex2i(x, y)
-  if (vertex_mode == GL_POINTS):
+  if (mode == GL_POINTS):
     if (point_size == 1):
       drawPoint2i(x, y)
     else:
@@ -104,7 +111,8 @@ def vertex2i(x, y):
           drawCircle(x, y, r)
         else:
           drawRect(x, y, r)
-  elif (vertex_mode == GL_LINES):
+  
+  elif (mode == GL_LINES):
     if (vertex_count % 2 == 0):
       vertex_prev = [x, y]
       color_prev = copy(color)
@@ -116,7 +124,8 @@ def vertex2i(x, y):
           color3f(r, g, b)
           drawCircle(x, y, int(line_width/2))
         drawLine(vertex_prev, [x, y], color_prev, color, circle)
-  elif (vertex_mode == GL_TRIANGLES):
+  
+  elif (mode == GL_TRIANGLES):
     pcount = vertex_count % 3
     if (pcount == 0):
       vertex_prev2 = [x, y]
@@ -126,6 +135,18 @@ def vertex2i(x, y):
       color_prev = copy(color)
     elif (pcount == 2):
       drawTriangle(vertex_prev2, vertex_prev, [x, y], color_prev2, color_prev, color)
+  
+  elif (mode == GL_LINE_STRIP or mode == GL_LINE_LOOP):
+    v, c = [x, y], color
+    if (vertex_count == 0):
+      vertex_first = [x, y]
+      color_first = color
+    else:
+      drawLine(vertex_prev, [x, y], color_prev, color, drawPoint2iColor)
+    vertex_prev = v
+    color_prev = c
+    
+
   # Always increment the vertex count
   vertex_count += 1
 
