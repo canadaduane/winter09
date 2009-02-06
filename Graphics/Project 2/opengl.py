@@ -16,7 +16,7 @@ from duanegl import *
 ESCAPE = '\033'
 window = 0
 drawMode = 2
-sceneChoice = 2
+sceneChoice = 3
 
 # Helper Function for floating-point ranges
 def frange(fr, to, step):
@@ -133,6 +133,55 @@ def scene_d():
   vertex2i(120, 370)
   color3f(1.0, 0.0, 1.0)
   vertex2i(200, 350)
+  end()
+  
+  radius = 50.0
+  step = math.pi/8
+  begin(GL_TRIANGLE_FAN)
+  color3f(1.0, 0.0, 0.0)
+  vertex2i(400, 400)
+  color3f(0.0, 0.0, 1.0)
+  vertex2i(450, 400)
+  n = 0
+  for r in frange(math.pi + step, 2*math.pi - step, step):
+    if (n % 2 == 0):
+      color3f(1.0, 0.5, 0.0)
+    else:
+      color3f(1.0, 1.0, 1.0)
+    vertex2i(int(425 + radius*math.sin(r)), int(400 - radius*math.cos(r)))
+    n += 1
+  end()
+  
+  begin(GL_QUADS)
+  color3f(0.0, 0.5, 0.0)
+  vertex2i(450, 380)
+  color3f(1.0, 0.5, 0.0)
+  vertex2i(440, 360)
+  color3f(0.0, 0.5, 1.0)
+  vertex2i(500, 365)
+  color3f(1.0, 1.0, 1.0)
+  vertex2i(510, 390)
+  end()
+
+  begin(GL_QUAD_STRIP)
+  color3f(0.0, 0.5, 0.0)
+  vertex2i(450, 380)
+  color3f(1.0, 0.5, 0.0)
+  vertex2i(440, 360)
+  color3f(0.0, 0.5, 1.0)
+  vertex2i(500, 365)
+  color3f(1.0, 1.0, 1.0)
+  vertex2i(510, 390)
+
+  color3f(0.0, 0.5, 0.0)
+  vertex2i(550, 380)
+  color3f(1.0, 0.5, 0.0)
+  vertex2i(560, 360)
+
+  color3f(0.0, 0.5, 0.0)
+  vertex2i(600, 385)
+  color3f(1.0, 0.5, 0.0)
+  vertex2i(610, 370)
   end()
   
   
@@ -259,7 +308,8 @@ def main():
   # glutFullScreen()
   
   def sleep():
-    time.sleep(0.1)
+    time.sleep(0.2)
+    
   # When we are doing nothing, redraw the scene.
   glutIdleFunc(sleep)
 

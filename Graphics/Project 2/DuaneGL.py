@@ -78,42 +78,94 @@ def _end_lines():
   def draw_point( p, c ):
     _point( p, c, line_width, True )
   
-  for vstart, vend in n_at_a_time(vertices, 2):
+  for vstart, vend in n_at_a_time( vertices, 2 ):
     p1, c1 = vstart
     p2, c2 = vend
     _bresenham_line( p1, p2, c1, c2, draw_point )
 
 def _end_triangles():
   global vertices
-  pass
+  
+  for vfirst, vsecond, vthird in n_at_a_time( vertices, 3 ):
+    p1, c1 = vfirst
+    p2, c2 = vsecond
+    p3, c3 = vthird
+    _triangle( p1, p2, p3, c1, c2, c3, _set_pixel )
 
 def _end_line_strip():
   global vertices, line_width
-  pass
+  
+  def draw_point( p, c ):
+    _point( p, c, line_width, True )
+  
+  p1, c1 = vertices[0]
+  for vertex in vertices[1:len(vertices)]:
+    p2, c2 = vertex
+    _bresenham_line( p1, p2, c1, c2, draw_point )
+    p1, c1 = p2, c2
 
 def _end_line_loop():
   global vertices, line_width
-  pass
+
+  def draw_point( p, c ):
+    _point( p, c, line_width, True )
+  
+  _end_line_strip()
+  p1, c1 = vertices[0]
+  p2, c2 = vertices[len(vertices)-1]
+  _bresenham_line( p1, p2, c1, c2, draw_point )
 
 def _end_triangle_strip():
   global vertices
-  pass
+  
+  n = 0
+  for vfirst, vsecond, vthird in n_at_a_time( vertices, 3 ):
+    p1, c1 = vfirst
+    p2, c2 = vsecond
+    p3, c3 = vthird
+    if (n % 2 == 0):
+      _triangle( p1, p2, p3, c1, c2, c3, _set_pixel )
+    else:
+      _triangle( p2, p3, p1, c1, c2, c3, _set_pixel )
+    n += 1
 
 def _end_triangle_fan():
   global vertices
-  pass
+  
+  vfirst, vsecond = vertices[0:2]
+  p1, c1 = vfirst
+  p2, c2 = vsecond
+  for vertex in vertices[2:len(vertices)]:
+    p3, c3 = vertex
+    _triangle( p1, p2, p3, c1, c2, c3, _set_pixel )
+    p2, c2 = p3, c3
 
 def _end_quads():
   global vertices
-  pass
+  
+  for vfirst, vsecond, vthird, vfourth in n_at_a_time( vertices, 4 ):
+    p1, c1 = vfirst
+    p2, c2 = vsecond
+    p3, c3 = vthird
+    p4, c4 = vfourth
+    _triangle( p1, p2, p3, c1, c2, c3, _set_pixel )
+    _triangle( p3, p1, p4, c3, c1, c4, _set_pixel )
+  
 
 def _end_quad_strip():
   global vertices
-  pass
+  
+  vfirst, vsecond = vertices[0:2]
+  p1, c1 = vfirst
+  p2, c2 = vsecond
+  for vthird, vfourth in n_at_a_time(vertices[2:len(vertices)], 2):
+    p3, c3 = vthird
+    p4, c4 = vfourth
+    _triangle( p1, p2, p3, c1, c2, c3, _set_pixel )
+    _triangle( p3, p1, p4, c3, c1, c4, _set_pixel )
+    p1, c1 = p3, c3
+    p2, c2 = p4, c4
 
-def _end_triangle_fan():
-  global vertices
-  pass
 
 def isEnabled(feature):
   global enabled
@@ -247,8 +299,8 @@ def _yline(p1, p2, c1, c2, fn = _set_pixel):
     point = copy(p1)
     color = copy(c1)
     r_inc, g_inc, b_inc = c1.increments(c2, max(abs(dx), abs(dy)))
-    while (y < p2.y):
-      fn( point, color )
+    while (point.y < p2.y):
+      fn( copy(point), copy(color) )
       color.inc(r_inc, g_inc, b_inc)
       point.x += gradient
       point.y += 1
@@ -257,13 +309,12 @@ def _hline(p1, p2, c1, c2, fn = _set_pixel):
   if (p1.x > p2.x):
     p1, p2 = p2, p1
     c1, c2 = c2, c1
-  
   x_delta = p2.x - p1.x
   point = copy(p1)
   color = copy(c1)
   r_inc, g_inc, b_inc = c1.increments(c2, x_delta)
   
-  for x in range(p1.x, p2.x + 1):
+  for x in range(int(p1.x), int(p2.x) + 1):
     fn( point, color )
     color.inc(r_inc, g_inc, b_inc)
     point.x += 1
@@ -318,7 +369,7 @@ def _bresenham_line(p1, p2, c1, c2, fn):
     if (x_delta > y_delta): x_line(1, -1) # Octant 8
     else:                   y_line(1, -1) # Octant 7
 
-def _triangle(v1, v2, v3, c1, c2, c3):
+def _triangle(v1, v2, v3, c1, c2, c3, fn = _set_pixel):
   """Draws a shaded triangle from v1 to v2 to v3, with corresponding colors c1, c2, c3"""
   
   bucket = []
@@ -328,28 +379,23 @@ def _triangle(v1, v2, v3, c1, c2, c3):
   
   if (v1.y != v2.y): # Draw line from v1 to v2
     _yline(v1, v2, c1, c2, add_point_to_bucket)
-    
+  
   if (v2.y != v3.y): # Draw line from v2 to v3
     _yline(v2, v3, c2, c3, add_point_to_bucket)
-    
+  
   if (v3.y != v1.y): # Draw line from v3 to v1
     _yline(v3, v1, c3, c1, add_point_to_bucket)
   
-  _fill( bucket, _set_pixel )
+  _fill( bucket, fn )
 
 def _fill(pairs, fn):
   def y_then_x(a, b):
-    if (a[0].y > b[0].y):
-      return 1;
-    elif (a[0].y < b[0].y):
-      return -1;
+    if (a[0].y > b[0].y):     return 1
+    elif (a[0].y < b[0].y):   return -1
     else:
-      if (a[0].x > b[0].x):
-        return 1;
-      elif (a[0].x < b[0].x):
-        return -1;
-      else:
-        return 0;
+      if (a[0].x > b[0].x):   return 1
+      elif (a[0].x < b[0].x): return -1
+      else:                   return 0
   
   if (len(pairs) > 0):
     pairs.sort(y_then_x)
