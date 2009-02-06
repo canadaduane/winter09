@@ -7,6 +7,8 @@ from copy import copy
 from color import Color
 from point import Point
 
+def n_at_a_time(list_, n):
+    return [list_[i:i+n] for i in xrange(0, len(list_), n)]
 
 # Create a big old matrix with values ranging from 0.0 to 1.0
 RASTER_WIDTH = 640
@@ -68,12 +70,18 @@ def _end_points():
   global vertices, point_size
   
   for p, c in vertices:
-    _draw_point( p, c, point_size, isEnabled(GL_POINT_SMOOTH) )
+    _point( p, c, point_size, isEnabled(GL_POINT_SMOOTH) )
 
 def _end_lines():
   global vertices, line_width
   
-  pass
+  def draw_point( p, c ):
+    _point( p, c, line_width, True )
+  
+  for vstart, vend in n_at_a_time(vertices, 2):
+    p1, c1 = vstart
+    p2, c2 = vend
+    _bresenham_line( p1, p2, c1, c2, draw_point )
 
 def _end_triangles():
   global vertices
@@ -269,8 +277,8 @@ def _bresenham_line(p1, p2, c1, c2, fn):
   
   y_positive = (p1.y <= p2.y)
   
-  x_delta = abs(p2[0] - p1[0])
-  y_delta = abs(p2[1] - p1[1])
+  x_delta = abs(p2.x - p1.x)
+  y_delta = abs(p2.y - p1.y)
 
   point = copy(p1)
   color = copy(c1)
