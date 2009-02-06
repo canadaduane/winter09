@@ -1,7 +1,7 @@
 from copy import copy
 
 class Color:
-  def __init__(self, r, g, b, a):
+  def __init__(self, r, g, b, a = 1.0):
     self.r, self.g, self.b, self.a = float(r), float(g), float(b), float(a)
   
   def index(self, i):
@@ -16,7 +16,7 @@ class Color:
       b_delta = color.b - self.b
       
       if (steps > 0):
-        return [r_delta / length, g_delta / length, b_delta / length]
+        return [r_delta / steps, g_delta / steps, b_delta / steps]
       else:
         return [0.0, 0.0, 0.0]
   
@@ -24,6 +24,15 @@ class Color:
     self.r += r_inc
     self.g += g_inc
     self.b += b_inc
+  
+  def __str__(self):
+    return '[r:%d, g:%d, b:%d]' % (self.r, self.g, self.b)
+  
+  def __repr__(self):
+    return '%s(r:%d, g:%d, b:%d)' % (
+      self.__class__.__name__,  # the instance class name
+      self.r, self.g, self.b
+    )
   
 Color.white  = Color(1.0, 1.0, 1.0, 1.0)
 Color.black  = Color(0.0, 0.0, 0.0, 1.0)

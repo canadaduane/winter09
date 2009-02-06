@@ -45,19 +45,72 @@ def begin(mode):
 
 def end():
   global vertices, vertex_mode
-  global point_size, line_width, enabled
   glEnd()
-  if (vertex_mode == GL_LINE_LOOP):
-    color3f(color_first[0], color_first[1], color_first[2])
-    vertex2i(vertex_first[0], vertex_first[1], GL_LINE_STRIP)
+
+  # Call the appropriate "end" function
+  {
+    GL_POINTS:         _end_points,
+    GL_LINES:          _end_lines,
+    GL_TRIANGLES:      _end_triangles,
+    GL_LINE_STRIP:     _end_line_strip,
+    GL_LINE_LOOP:      _end_line_loop,
+    GL_TRIANGLE_STRIP: _end_triangle_strip,
+    GL_TRIANGLE_FAN:   _end_triangle_fan,
+    GL_QUADS:          _end_quads,
+    GL_QUAD_STRIP:     _end_quad_strip,
+    GL_POLYGON:        _end_triangle_fan
+  }[vertex_mode]()
+  
+  vertices = []
   vertex_mode = 0
+
+def _end_points():
+  global vertices, point_size
+  
+  for p, c in vertices:
+    _draw_point( p, c, point_size, isEnabled(GL_POINT_SMOOTH) )
+
+def _end_lines():
+  global vertices, line_width
+  
+  pass
+
+def _end_triangles():
+  global vertices
+  pass
+
+def _end_line_strip():
+  global vertices, line_width
+  pass
+
+def _end_line_loop():
+  global vertices, line_width
+  pass
+
+def _end_triangle_strip():
+  global vertices
+  pass
+
+def _end_triangle_fan():
+  global vertices
+  pass
+
+def _end_quads():
+  global vertices
+  pass
+
+def _end_quad_strip():
+  global vertices
+  pass
+
+def _end_triangle_fan():
+  global vertices
+  pass
 
 def isEnabled(feature):
   global enabled
-  try:
-    return enabled[feature]
-  except:
-    return False
+  try:    return enabled[feature]
+  except: return False
 
 def enable(features):
   global enabled
@@ -94,24 +147,38 @@ def lineWidth(w):
 def vertex2i(x, y):
   global vertices
   glVertex2i(x, y)
-  vertices.append(x, y, 0, curr_color)
+  vertices.append( [Point(x, y, 0), curr_color] )
 
-def _setPixel(point, color):
+def _set_pixel(point, color):
   global raster
   pos = ( int(point.y) * RASTER_WIDTH + int(point.x) )*3
   raster[pos+0] = color.r;
   raster[pos+1] = color.g;
   raster[pos+2] = color.b;
 
-def _bresenham_circle(point, color, radius, fn):
+def _point( point, color, size = 1, smooth = False ):
+  if (size <= 0):
+    pass
+  elif (size == 1):
+    _set_pixel( point, color )
+  else:
+    half = size / 2
+    if (smooth):
+      _circle_filled( point, color, half, _set_pixel )
+    else:
+      ul = Point( point.x - half, point.y + half )
+      lr = Point( point.x + half, point.y - half )
+      _rect_filled( ul, lr, color, _set_pixel )
+
+def _circle(point, color, radius, fn):
   if (radius < 1):
     return
   elif (radius == 1):
     fn(point, color)
   else:
     x = 0
-    y = r
-    decision = 5.0/4 - r
+    y = radius
+    decision = 5.0/4 - radius
     while (x <= y):
       fn( Point(point.x + x, point.y + y), color )
       fn( Point(point.x - x, point.y + y), color )
@@ -128,6 +195,17 @@ def _bresenham_circle(point, color, radius, fn):
         y = y - 1 
         decision = decision + 2 * x + 1 - 2 * y
 
+def _circle_filled(point, color, radius, fn):
+  bucket = []
+  
+  def add_point_to_bucket( p, c ):
+    bucket.append( [p, c] )
+  
+  _circle(point, color, radius, add_point_to_bucket)
+  
+  _fill( bucket, fn )
+
+
 def _rect(point1, point2, color, fn):
   min_x = min(point1.x, point2.x)
   for x in range(abs(int(point2.x - point1.x))):
@@ -139,7 +217,17 @@ def _rect(point1, point2, color, fn):
     fn( Point(point1.x, min_y + y), color )
     fn( Point(point2.x, min_y + y), color )
 
-def _yline(p1, p2, c1, c2, fn = _setPixel):
+def _rect_filled(point1, point2, color, fn):
+  bucket = []
+  
+  def add_point_to_bucket( p, c ):
+    bucket.append( [p, c] )
+  
+  _rect(point1, point2, color, add_point_to_bucket)
+  
+  _fill( bucket, fn )
+
+def _yline(p1, p2, c1, c2, fn = _set_pixel):
   # Always draw from bottom to top
   if (p2.y < p1.y):
     p1, p2 = p2, p1
@@ -157,11 +245,12 @@ def _yline(p1, p2, c1, c2, fn = _setPixel):
       point.x += gradient
       point.y += 1
 
-def _hline(p1, p2, c1, c2, fn = _setPixel):
+def _hline(p1, p2, c1, c2, fn = _set_pixel):
   if (p1.x > p2.x):
     p1, p2 = p2, p1
     c1, c2 = c2, c1
   
+  x_delta = p2.x - p1.x
   point = copy(p1)
   color = copy(c1)
   r_inc, g_inc, b_inc = c1.increments(c2, x_delta)
@@ -229,6 +318,18 @@ def _triangle(v1, v2, v3, c1, c2, c3):
   def add_point_to_bucket( point, color ):
     bucket.append( [point, color] )
   
+  if (v1.y != v2.y): # Draw line from v1 to v2
+    _yline(v1, v2, c1, c2, add_point_to_bucket)
+    
+  if (v2.y != v3.y): # Draw line from v2 to v3
+    _yline(v2, v3, c2, c3, add_point_to_bucket)
+    
+  if (v3.y != v1.y): # Draw line from v3 to v1
+    _yline(v3, v1, c3, c1, add_point_to_bucket)
+  
+  _fill( bucket, _set_pixel )
+
+def _fill(pairs, fn):
   def y_then_x(a, b):
     if (a[0].y > b[0].y):
       return 1;
@@ -242,30 +343,23 @@ def _triangle(v1, v2, v3, c1, c2, c3):
       else:
         return 0;
   
-  if (v1.y != v2.y): # Draw line from v1 to v2
-    _yline(v1, v2, c1, c2, add_point_to_bucket)
-    
-  if (v2.y != v3.y): # Draw line from v2 to v3
-    _yline(v2, v3, c2, c3, add_point_to_bucket)
-    
-  if (v3.y != v1.y): # Draw line from v3 to v1
-    _yline(v3, v1, c3, c1, add_point_to_bucket)
-  
-  if (len(bucket) > 0):
-    bucket.sort(y_then_x)
-    
-    left_point, left_color = bucket.pop(0)
+  if (len(pairs) > 0):
+    pairs.sort(y_then_x)
+
+    left_point, left_color = pairs.pop(0)
     right_point, right_color = None, None
-    for point, color in bucket:
+    for point, color in pairs:
       if (point.y == left_point.y): # same scan line as left_point
         right_point = point
+        right_color = color
       else:
         if (right_point == None):
-          _setPixel( left_point, left_color )
+          _set_pixel( left_point, left_color )
         elif(left_point.x != right_point.x):
-          _hline( left_point, right_point, left_color, right_color, _setPixel)
+          _hline( left_point, right_point, left_color, right_color, fn)
         left_point = point
-  
-    # Need to complete the final scan line
-    _hline( left_point, right_point, left_color, right_color, _setPixel )
+        left_color = color
 
+    # Need to complete the final scan line
+    _hline( left_point, right_point, left_color, right_color, fn )
+  

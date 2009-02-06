@@ -16,7 +16,7 @@ from duanegl import *
 ESCAPE = '\033'
 window = 0
 drawMode = 2
-sceneChoice = 3
+sceneChoice = 2
 
 # Helper Function for floating-point ranges
 def frange(fr, to, step):
