@@ -155,14 +155,15 @@ def _end_quads():
 def _end_quad_strip():
   global vertices
   
+  vertices.reverse()
   vfirst, vsecond = vertices[0:2]
   p1, c1 = vfirst
   p2, c2 = vsecond
   for vthird, vfourth in n_at_a_time(vertices[2:len(vertices)], 2):
     p3, c3 = vthird
     p4, c4 = vfourth
-    _triangle( p1, p2, p3, c1, c2, c3, _set_pixel )
-    _triangle( p3, p1, p4, c3, c1, c4, _set_pixel )
+    _triangle( p1, p2, p4, c1, c2, c4, _set_pixel )
+    _triangle( p3, p4, p1, c3, c4, c1, _set_pixel )
     p1, c1 = p3, c3
     p2, c2 = p4, c4
 

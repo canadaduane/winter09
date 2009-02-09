@@ -16,7 +16,7 @@ from duanegl import *
 ESCAPE = '\033'
 window = 0
 drawMode = 2
-sceneChoice = 0
+sceneChoice = 3
 
 # Helper Function for floating-point ranges
 def frange(fr, to, step):
@@ -166,27 +166,36 @@ def scene_d():
   vertex2i(500, 365)
   color3f(1.0, 1.0, 1.0)
   vertex2i(510, 390)
+
+  color3f(0.0, 0.5, 0.0)
+  vertex2i(450, 330)
+  color3f(1.0, 0.5, 0.0)
+  vertex2i(440, 310)
+  color3f(0.0, 0.5, 1.0)
+  vertex2i(500, 315)
+  color3f(1.0, 1.0, 1.0)
+  vertex2i(510, 340)
   end()
 
   begin(GL_QUAD_STRIP)
   color3f(0.0, 0.5, 0.0)
-  vertex2i(450, 380)
+  vertex2i(450, 180)
   color3f(1.0, 0.5, 0.0)
-  vertex2i(440, 360)
+  vertex2i(440, 160)
   color3f(0.0, 0.5, 1.0)
-  vertex2i(500, 365)
+  vertex2i(500, 165)
   color3f(1.0, 1.0, 1.0)
-  vertex2i(510, 390)
+  vertex2i(510, 190)
 
   color3f(0.0, 0.5, 0.0)
-  vertex2i(550, 380)
+  vertex2i(550, 180)
   color3f(1.0, 0.5, 0.0)
-  vertex2i(560, 360)
-
+  vertex2i(560, 160)
+  
   color3f(0.0, 0.5, 0.0)
-  vertex2i(600, 385)
+  vertex2i(600, 185)
   color3f(1.0, 0.5, 0.0)
-  vertex2i(610, 370)
+  vertex2i(610, 170)
   end()
   
   
