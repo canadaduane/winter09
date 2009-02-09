@@ -126,7 +126,7 @@ def _end_triangle_strip():
     if (n % 2 == 0):
       _triangle( p1, p2, p3, c1, c2, c3, _set_pixel )
     else:
-      _triangle( p2, p3, p1, c1, c2, c3, _set_pixel )
+      _triangle( p2, p3, p1, c2, c3, c1, _set_pixel )
     n += 1
 
 def _end_triangle_fan():
@@ -176,13 +176,11 @@ def enable(features):
   global enabled
   glEnable(features)
   enabled[features] = True
-  # print enabled
 
 def disable(features):
   global enabled
   glDisable(features)
   enabled[features] = False
-  # print enabled
 
 def color3f(r, g, b):
   global curr_color
@@ -298,7 +296,8 @@ def _yline(p1, p2, c1, c2, fn = _set_pixel):
     gradient = dx/dy
     point = copy(p1)
     color = copy(c1)
-    r_inc, g_inc, b_inc = c1.increments(c2, max(abs(dx), abs(dy)))
+    length = sqrt(dx**2 + dy**2)
+    r_inc, g_inc, b_inc = c1.increments(c2, abs(dy))
     while (point.y < p2.y):
       fn( copy(point), copy(color) )
       color.inc(r_inc, g_inc, b_inc)
@@ -379,12 +378,18 @@ def _triangle(v1, v2, v3, c1, c2, c3, fn = _set_pixel):
   
   if (v1.y != v2.y): # Draw line from v1 to v2
     _yline(v1, v2, c1, c2, add_point_to_bucket)
+  else:
+    _hline(v1, v2, c1, c2, add_point_to_bucket)
   
   if (v2.y != v3.y): # Draw line from v2 to v3
     _yline(v2, v3, c2, c3, add_point_to_bucket)
+  else:
+    _hline(v2, v3, c2, c3, add_point_to_bucket)
   
   if (v3.y != v1.y): # Draw line from v3 to v1
     _yline(v3, v1, c3, c1, add_point_to_bucket)
+  else:
+    _hline(v3, v1, c3, c1, add_point_to_bucket)
   
   _fill( bucket, fn )
 

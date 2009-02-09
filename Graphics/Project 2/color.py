@@ -15,9 +15,11 @@ class Color:
       g_delta = color.g - self.g
       b_delta = color.b - self.b
       
-      if (steps > 0):
+      if (abs(steps) > 0):
+        print "increments > 0, steps: ", abs(steps), r_delta, g_delta, b_delta
         return [r_delta / steps, g_delta / steps, b_delta / steps]
       else:
+        print "increments <= 0, steps: ", abs(steps)
         return [0.0, 0.0, 0.0]
   
   def inc(self, r_inc, g_inc, b_inc):

@@ -16,7 +16,7 @@ from duanegl import *
 ESCAPE = '\033'
 window = 0
 drawMode = 2
-sceneChoice = 3
+sceneChoice = 0
 
 # Helper Function for floating-point ranges
 def frange(fr, to, step):
@@ -35,13 +35,18 @@ def scene_a():
   scene_clear()
   radius = 90.0
   begin(GL_TRIANGLES)
-  for r in frange(0, math.pi/4, math.pi/4):
-    color3f(1.0, 0.5, 0.0)
-    vertex2i(320, 240)
-    color3f(0.5, 0.5, 1.0)
-    vertex2i(int(320 + radius*math.sin(r)), int(240 + radius*math.cos(r)))
-    color3f(0.5, 0.5, 1.0)
-    vertex2i(int(320 + radius*math.sin(r+math.pi/8)), int(240 + radius*math.cos(r+math.pi/8)))
+  for r in frange(0, 2*math.pi, math.pi/4):
+    color3f(1.0, 0.0, 0.0)
+    x, y = 320, 240
+    vertex2i(x, y)
+
+    color3f(0.0, 1.0, 0.0)
+    x, y = int(320 + radius*math.sin(r)), int(240 + radius*math.cos(r))
+    vertex2i(x, y)
+
+    color3f(0.0, 0.0, 1.0)
+    x, y = int(320 + radius*math.sin(r+math.pi/8)), int(240 + radius*math.cos(r+math.pi/8))
+    vertex2i(x, y)
   end()
   
 
