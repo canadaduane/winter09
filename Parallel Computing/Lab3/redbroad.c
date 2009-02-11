@@ -46,27 +46,20 @@ void reduce(int root, int* boxes)
     int* tmp = calloc( sizeof(int), MessageSize );
     memcpy( sum, boxes, sizeof(int) * MessageSize );
     
-    printf("MyID: %d, vMyID: %d\n", MyID, vMyID);
-    
     for ( i = 0; i < Dimensions; i++)
     {
         int other = vMyID ^ (1<<i);
         int vOther = (other + root) % (1<<Dimensions);
         
-        printf( "%d, %d, mask: %x\n", vMyID, vOther, mask);
         if ( (vMyID & mask) == 0 && vMyID < NumNodes && vOther < NumNodes )
         {
             if ( (vMyID & (1<<i)) != 0)
             {
-                printf("%d send: ", vMyID);
-                print_message(sum, MessageSize);
                 MPI_Isend(sum, MessageSize, MPI_INT, vOther, 0, MPI_COMM_WORLD, &request);
             }
             else
             {
                 MPI_Recv(tmp, MessageSize, MPI_INT, vOther, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-                printf("%d recv: ", vMyID);
-                print_message(tmp, MessageSize);
                 for ( j = 0; j < MessageSize; j++) sum[j] += tmp[j];
             }
         }
@@ -77,6 +70,48 @@ void reduce(int root, int* boxes)
     
     free(sum);
     free(tmp);
+}
+
+void broadcast( int root, int* boxes )
+{
+    int i, j;
+    int vMyID = ((MyID + (1<<Dimensions)) - root) % (1<<Dimensions);
+    MPI_Request request;
+    MPI_Status status;
+    
+    /* Set mask to 0b for 1 dim, 01b for 2 dim, 011b for 3 dim, etc. */
+    int mask = (1 << (Dimensions-1)) - 1;
+
+    /* Set dimensional bit to 1b for 1 dim, 10b for 2 dim, 100b for 3 dim, etc.*/
+    int flip = (1 << (Dimensions-1));
+    
+    for ( i = 0; i < Dimensions; i++ )
+    { /* Loop through each dimension */
+        
+        /* The sender (if we are a recipient), or recipient (if we are a sender) */
+        int other = vMyID ^ flip;
+        int vOther = (other + root) % (1<<Dimensions);
+
+        if ( ( vMyID & mask ) == 0 && vMyID < NumNodes && vOther < NumNodes)
+        { /* Bits indicate it's our turn to send or receive */
+            
+            if ( ( vMyID & flip ) == 0 )
+            { /* The bits indicate it's our turn to send ... */
+                MPI_Isend(boxes, MessageSize, MPI_INT, vOther, 0, MPI_COMM_WORLD, &request);
+            }
+            else
+            { /* ... or the bits indicate it's our turn to receive */
+                MPI_Recv(boxes, MessageSize, MPI_INT, vOther, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+            }
+            
+        }
+        else
+        {
+            // printf ( "[Node %d skipping iteration %d] flip: %x, mask: %x\n", self->id, i, flip, mask );
+        }
+        flip = flip >> 1;
+        mask = mask ^ flip;
+    }
 }
 
 
@@ -90,10 +125,7 @@ int main(int argc, char *argv[])
     // Initialize message array
     MessageSize = shell_arg_int(argc, argv, "--msg-size", 10);
     Message = calloc( sizeof(int), MessageSize );
-    for (i = 0; i < MessageSize; i++)
-    {
-        Message[i] = i;
-    }
+    for (i = 0; i < MessageSize; i++) Message[i] = i;
     
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &NumNodes);
@@ -104,16 +136,21 @@ int main(int argc, char *argv[])
     {
         printf("Nodes: %d\n", NumNodes);
         printf("Dimensionality: %d\n", Dimensions);
+        for (i = 0; i < MessageSize; i++) Message[i] = 1;
     }
     
     gethostname(host, 253);
     printf("I am proc %d of %d running on %s\n", MyID, NumNodes, host);
     
     reduce(0, Message);
+    broadcast(0, Message);
     
-    printf ("Final values for %d: ", MyID);
-    print_message( Message, MessageSize );
-
+    // if (MyID == 0)
+    // {
+        printf ("%d final values: ", MyID );
+        print_message( Message, MessageSize );
+    // }
+    
     MPI_Finalize();
     
     free(Message);
