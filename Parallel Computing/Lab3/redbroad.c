@@ -37,7 +37,7 @@ void print_message(int* msg, int size)
 void reduce(int root, int* boxes)
 {
     int i, j;
-    int vMyID = ((MyID + NumNodes) - root) % NumNodes;
+    int vMyID = ((MyID + (1<<Dimensions)) - root) % (1<<Dimensions);
     int mask = 0;
     MPI_Request request;
     MPI_Status status;
@@ -51,15 +51,22 @@ void reduce(int root, int* boxes)
     for ( i = 0; i < Dimensions; i++)
     {
         int other = vMyID ^ (1<<i);
-        if ( (vMyID & mask) == 0 && other < NumNodes )
+        int vOther = (other + root) % (1<<Dimensions);
+        
+        printf( "%d, %d, mask: %x\n", vMyID, vOther, mask);
+        if ( (vMyID & mask) == 0 && vMyID < NumNodes && vOther < NumNodes )
         {
             if ( (vMyID & (1<<i)) != 0)
             {
-                MPI_Isend(sum, MessageSize, MPI_INT, other, 0, MPI_COMM_WORLD, &request);
+                printf("%d send: ", vMyID);
+                print_message(sum, MessageSize);
+                MPI_Isend(sum, MessageSize, MPI_INT, vOther, 0, MPI_COMM_WORLD, &request);
             }
             else
             {
-                MPI_Recv(tmp, MessageSize, MPI_INT, other, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+                MPI_Recv(tmp, MessageSize, MPI_INT, vOther, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+                printf("%d recv: ", vMyID);
+                print_message(tmp, MessageSize);
                 for ( j = 0; j < MessageSize; j++) sum[j] += tmp[j];
             }
         }
