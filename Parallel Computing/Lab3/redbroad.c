@@ -25,7 +25,16 @@ int shell_arg_int( int argc, char* argv[], char* arg_switch, int default_value)
     return default_value;
 }
 
-void reduce(void)
+void print_message(int* msg, int size)
+{
+    int i;
+    for ( i = 0; i < size; i++ ) printf( "%d ", msg[i] );
+    printf( "\n" );
+    
+}
+
+// vnode = ((iproc + nproc) - root) % nproc
+void reduce(int* initial_values)
 {
     int i;
     int mask = 0;
@@ -33,7 +42,8 @@ void reduce(void)
     MPI_Status status;
     
     int* sum = calloc( sizeof(int), MessageSize );
-    memcpy( sum, Message, sizeof(int) * MessageSize );
+    int* tmp = calloc( sizeof(int), MessageSize );
+    memcpy( sum, initial_values, sizeof(int) * MessageSize );
     
     for ( i = 0; i < Dimensions; i++)
     {
@@ -42,28 +52,30 @@ void reduce(void)
         {
             if ( (MyID & (1<<i)) != 0)
             {
+                printf( "%d send: ", MyID);
+                print_message( sum, MessageSize );
                 MPI_Isend(sum, MessageSize, MPI_INT, other, 0, MPI_COMM_WORLD, &request);
             }
             else
             {
                 int j;
-                MPI_Recv(sum, MessageSize, MPI_INT, other, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-                for ( j = 0; j < NumNodes; j++)
+                MPI_Recv(tmp, MessageSize, MPI_INT, other, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+                printf( "%d recv: ", MyID);
+                print_message( tmp, MessageSize );
+                for ( j = 0; j < MessageSize; j++)
                 {
-                    sum[j] += Message[j];
+                    sum[j] += tmp[j];
                 }
+                printf( "%d sum: ", MyID);
+                print_message( sum, MessageSize );
             }
         }
         mask = mask ^ (1<<i);
     }
     
-    printf( "%d sum: ", MyID );
-    for ( i = 0; i < MessageSize; i++ )
-    {
-        printf( "%d ", sum[i] );
-    }
-    printf( "\n" );
-
+    free(sum);
+    free(tmp);
+    
     // Procedure SingleNodeAccum(d, MyID, m, X, sum)
     //     for j = 0 to m-1 sum[j] = X[j];
     //     mask = 0
@@ -114,7 +126,7 @@ int main(int argc, char *argv[])
     gethostname(host,253);
     printf("I am proc %d of %d running on %s\n", MyID, NumNodes, host);
     
-    reduce();
+    reduce(Message);
     
     // printf("%d sending messages\n", MyID);
     // sprintf(message, "%d: Hello", MyID);
@@ -134,4 +146,6 @@ int main(int argc, char *argv[])
     // }
 
     MPI_Finalize();
+    
+    free(Message);
 }
