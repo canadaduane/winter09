@@ -34,66 +34,42 @@ void print_message(int* msg, int size)
 }
 
 // vnode = ((iproc + nproc) - root) % nproc
-void reduce(int* initial_values)
+void reduce(int root, int* boxes)
 {
-    int i;
+    int i, j;
+    int vMyID = ((MyID + NumNodes) - root) % NumNodes;
     int mask = 0;
     MPI_Request request;
     MPI_Status status;
     
     int* sum = calloc( sizeof(int), MessageSize );
     int* tmp = calloc( sizeof(int), MessageSize );
-    memcpy( sum, initial_values, sizeof(int) * MessageSize );
+    memcpy( sum, boxes, sizeof(int) * MessageSize );
+    
+    printf("MyID: %d, vMyID: %d\n", MyID, vMyID);
     
     for ( i = 0; i < Dimensions; i++)
     {
-        int other = MyID ^ (1<<i);
-        if ( (MyID & mask) == 0 && other < NumNodes )
+        int other = vMyID ^ (1<<i);
+        if ( (vMyID & mask) == 0 && other < NumNodes )
         {
-            if ( (MyID & (1<<i)) != 0)
+            if ( (vMyID & (1<<i)) != 0)
             {
-                printf( "%d send: ", MyID);
-                print_message( sum, MessageSize );
                 MPI_Isend(sum, MessageSize, MPI_INT, other, 0, MPI_COMM_WORLD, &request);
             }
             else
             {
-                int j;
                 MPI_Recv(tmp, MessageSize, MPI_INT, other, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-                printf( "%d recv: ", MyID);
-                print_message( tmp, MessageSize );
-                for ( j = 0; j < MessageSize; j++)
-                {
-                    sum[j] += tmp[j];
-                }
-                printf( "%d sum: ", MyID);
-                print_message( sum, MessageSize );
+                for ( j = 0; j < MessageSize; j++) sum[j] += tmp[j];
             }
         }
         mask = mask ^ (1<<i);
     }
     
+    memcpy( boxes, sum, sizeof(int) * MessageSize );
+    
     free(sum);
     free(tmp);
-    
-    // Procedure SingleNodeAccum(d, MyID, m, X, sum)
-    //     for j = 0 to m-1 sum[j] = X[j];
-    //     mask = 0
-    //     for i = 0 to d-1
-    //  if ((MyID AND mask) == 0)
-    //      if ((MyID AND 2^i) != 0
-    //      msg_dest = MyID XOR 2^i
-    //      send(sum, msg_dest)
-    //      else
-    //      msg_src = MyID XOR 2^i
-    //      recv(sum, msg_src)
-    //      for j = 0 to m-1
-    //          sum[j] += X[j]
-    //      endif
-    //  endif
-    //  mask = mask XOR 2^i
-    //     endfor
-    // end
 }
 
 
@@ -123,27 +99,13 @@ int main(int argc, char *argv[])
         printf("Dimensionality: %d\n", Dimensions);
     }
     
-    gethostname(host,253);
+    gethostname(host, 253);
     printf("I am proc %d of %d running on %s\n", MyID, NumNodes, host);
     
-    reduce(Message);
+    reduce(0, Message);
     
-    // printf("%d sending messages\n", MyID);
-    // sprintf(message, "%d: Hello", MyID);
-    // for (i = 0; i < NumNodes; i++)
-    // {
-    //     if (i != MyID)
-    //         MPI_Send(message, 35, MPI_CHAR, i, 0, MPI_COMM_WORLD);
-    // }
-    // printf("%d receiving messages\n", MyID);
-    // for (i = 0; i < NumNodes; i++)
-    // {
-    //     if (i != MyID)
-    //     {
-    //         MPI_Recv(message, 35, MPI_CHAR, i, 0, MPI_COMM_WORLD, &status);
-    //         printf("%d recv \"%s\"\n",MyID, message);
-    //     }
-    // }
+    printf ("Final values for %d: ", MyID);
+    print_message( Message, MessageSize );
 
     MPI_Finalize();
     
