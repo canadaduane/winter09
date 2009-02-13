@@ -50,15 +50,17 @@ void reduce(int root, int* boxes)
     {
         int other = vMyID ^ (1<<i);
         int vOther = (other + root) % (1<<Dimensions);
-        
-        if ( (vMyID & mask) == 0 && vMyID < NumNodes && vOther < NumNodes )
+        printf("(%d) mine: %d, other: %d\n", i, vMyID, vOther);
+        if ( (vMyID & mask) == 0 && vOther < NumNodes )
         {
             if ( (vMyID & (1<<i)) != 0)
             {
+                printf("%d send\n", vMyID);
                 MPI_Isend(sum, MessageSize, MPI_INT, vOther, 0, MPI_COMM_WORLD, &request);
             }
             else
             {
+                printf("%d recv\n", vMyID);
                 MPI_Recv(tmp, MessageSize, MPI_INT, vOther, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
                 for ( j = 0; j < MessageSize; j++) sum[j] += tmp[j];
             }
@@ -114,15 +116,26 @@ void broadcast( int root, int* boxes )
     }
 }
 
+/* Return the current time in seconds, using a double precision number. */
+double when()
+{
+	struct timeval tp;
+	gettimeofday(&tp, NULL);
+	return ((double) tp.tv_sec + (double) tp.tv_usec * 1e-6);
+}
+
 
 
 int main(int argc, char *argv[])
 {
+    double start = when(), finish = 0.0;
     int i;
+    int root = 0;
     char host[255], message[55];
     MPI_Status status;
     
     // Initialize message array
+    root = shell_arg_int(argc, argv, "--root", 0);
     MessageSize = shell_arg_int(argc, argv, "--msg-size", 10);
     Message = calloc( sizeof(int), MessageSize );
     for (i = 0; i < MessageSize; i++) Message[i] = i;
@@ -132,26 +145,33 @@ int main(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &MyID);
     Dimensions = (int)ceil(sqrt((double)NumNodes));
     
-    if (MyID == 0)
+    if (MyID == root)
     {
         printf("Nodes: %d\n", NumNodes);
         printf("Dimensionality: %d\n", Dimensions);
-        for (i = 0; i < MessageSize; i++) Message[i] = 1;
+        printf("Vector size: %d\n", MessageSize);
+        printf("Root node: %d\n", root);
+        printf("Initial vector values for each node: ");
+        print_message( Message, MessageSize );
     }
     
     gethostname(host, 253);
-    printf("I am proc %d of %d running on %s\n", MyID, NumNodes, host);
+    // printf("I am proc %d of %d running on %s\n", MyID, NumNodes, host);
     
-    reduce(0, Message);
-    broadcast(0, Message);
-    
-    // if (MyID == 0)
-    // {
-        printf ("%d final values: ", MyID );
-        print_message( Message, MessageSize );
-    // }
+    reduce(root, Message);
+    // broadcast(root, Message);
     
     MPI_Finalize();
     
+    
+    finish = when();
+
+    if (MyID == root)
+    {
+        printf ("Final vector values for all nodes: " );
+        print_message( Message, MessageSize );
+        printf("Completed in %f seconds.\n", finish - start);
+    }
+
     free(Message);
 }
