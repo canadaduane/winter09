@@ -50,6 +50,7 @@ void reduce(int root, int* boxes)
     {
         int vOtherID = vMyID ^ (1<<i);
         int OtherID = (vOtherID + root) % NumNodes;
+        
         if ( (vMyID & mask) == 0 && vMyID < NumNodes && vOtherID < NumNodes )
         {
             if ( (vMyID & (1<<i)) != 0)
@@ -76,7 +77,7 @@ void reduce(int root, int* boxes)
 void broadcast( int root, int* boxes )
 {
     int i, j;
-    int vMyID = ((MyID + (1<<Dimensions)) - root) % (1<<Dimensions);
+    int vMyID = ((MyID + NumNodes) - root) % NumNodes;
     MPI_Request request;
     MPI_Status status;
     
@@ -90,19 +91,19 @@ void broadcast( int root, int* boxes )
     { /* Loop through each dimension */
         
         /* The sender (if we are a recipient), or recipient (if we are a sender) */
-        int other = vMyID ^ flip;
-        int vOther = (other + root) % (1<<Dimensions);
+        int vOtherID = vMyID ^ flip;
+        int OtherID = (vOtherID + root) % NumNodes;
 
-        if ( ( vMyID & mask ) == 0 && vMyID < NumNodes && vOther < NumNodes)
+        if ( ( vMyID & mask ) == 0 && vMyID < NumNodes && vOtherID < NumNodes)
         { /* Bits indicate it's our turn to send or receive */
             
             if ( ( vMyID & flip ) == 0 )
             { /* The bits indicate it's our turn to send ... */
-                MPI_Isend(boxes, MessageSize, MPI_INT, vOther, 0, MPI_COMM_WORLD, &request);
+                MPI_Isend(boxes, MessageSize, MPI_INT, OtherID, 0, MPI_COMM_WORLD, &request);
             }
             else
             { /* ... or the bits indicate it's our turn to receive */
-                MPI_Recv(boxes, MessageSize, MPI_INT, vOther, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+                MPI_Recv(boxes, MessageSize, MPI_INT, OtherID, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
             }
             
         }
@@ -158,19 +159,19 @@ int main(int argc, char *argv[])
     // printf("I am proc %d of %d running on %s\n", MyID, NumNodes, host);
     
     reduce(root, Message);
-    // broadcast(root, Message);
+    broadcast(root, Message);
     
     MPI_Finalize();
     
     
     finish = when();
 
-    if (MyID == root)
-    {
-        printf ("Final vector values for all nodes: " );
+    // if (MyID == root)
+    // {
+        printf ( "Final vector values for node %d: ", MyID );
         print_message( Message, MessageSize );
-        printf("Completed in %f seconds.\n", finish - start);
-    }
+        printf( "Completed in %f seconds.\n", finish - start );
+    // }
 
     free(Message);
 }
