@@ -37,7 +37,7 @@ void print_message(int* msg, int size)
 void reduce(int root, int* boxes)
 {
     int i, j;
-    int vMyID = ((MyID + (1<<Dimensions)) - root) % (1<<Dimensions);
+    int vMyID = ((MyID + NumNodes) - root) % NumNodes;
     int mask = 0;
     MPI_Request request;
     MPI_Status status;
@@ -48,20 +48,19 @@ void reduce(int root, int* boxes)
     
     for ( i = 0; i < Dimensions; i++)
     {
-        int other = vMyID ^ (1<<i);
-        int vOther = (other + root) % (1<<Dimensions);
-        printf("(%d) mine: %d, other: %d\n", i, vMyID, vOther);
-        if ( (vMyID & mask) == 0 && vOther < NumNodes )
+        int vOtherID = vMyID ^ (1<<i);
+        int OtherID = (vOtherID + root) % NumNodes;
+        if ( (vMyID & mask) == 0 && vMyID < NumNodes && vOtherID < NumNodes )
         {
             if ( (vMyID & (1<<i)) != 0)
             {
-                printf("%d send\n", vMyID);
-                MPI_Isend(sum, MessageSize, MPI_INT, vOther, 0, MPI_COMM_WORLD, &request);
+                // fprintf(stderr, "[%d]: %d (%d) send to %d (%d)\n", i, vMyID, MyID, vOtherID, OtherID);
+                MPI_Isend(sum, MessageSize, MPI_INT, OtherID, 0, MPI_COMM_WORLD, &request);
             }
             else
             {
-                printf("%d recv\n", vMyID);
-                MPI_Recv(tmp, MessageSize, MPI_INT, vOther, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+                // fprintf(stderr, "[%d]: %d (%d) recv from %d (%d)\n", i, vMyID, MyID, vOtherID, OtherID);
+                MPI_Recv(tmp, MessageSize, MPI_INT, OtherID, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
                 for ( j = 0; j < MessageSize; j++) sum[j] += tmp[j];
             }
         }
