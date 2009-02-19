@@ -50,20 +50,20 @@ void hp_dump(Hotplate* self, int characters);
 void hp_etch_hotspots(Hotplate* self);
 static inline int hp_is_hotspot(Hotplate* self, int x, int y);
 
-typedef struct HOT_PLATE_THREAD_STRUCT
-{
-	int id;
-	pthread_t pthread;
-	pthread_attr_t pattr;
-	Hotplate* hotplate;
-} HotplateThread;
-
-HotplateThread* hpt_initialize( int id, Hotplate* hotplate, void* (*action)( void* ) );
-HotplateThread* hpt_initialize_static( HotplateThread* self, int id, Hotplate* hotplate, void* (*action)( void* ) );
-void hpt_destroy( HotplateThread* self );
-void hpt_destroy_static( HotplateThread* self );
-void hpt_join( HotplateThread* self );
-void* hp_calculate_heat_transfer_parallel_thread( void* );
+// typedef struct HOT_PLATE_THREAD_STRUCT
+// {
+// 	int id;
+// 	pthread_t pthread;
+// 	pthread_attr_t pattr;
+// 	Hotplate* hotplate;
+// } HotplateThread;
+// 
+// HotplateThread* hpt_initialize( int id, Hotplate* hotplate, void* (*action)( void* ) );
+// HotplateThread* hpt_initialize_static( HotplateThread* self, int id, Hotplate* hotplate, void* (*action)( void* ) );
+// void hpt_destroy( HotplateThread* self );
+// void hpt_destroy_static( HotplateThread* self );
+// void hpt_join( HotplateThread* self );
+// void* hp_calculate_heat_transfer_parallel_thread( void* );
 
 
 /* * * * * * * * * * * * * * * */
