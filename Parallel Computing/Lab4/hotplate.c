@@ -33,14 +33,6 @@ void hp_destroy(Hotplate* self)
     free(self->matrix_data2);
     free(self);
 }
-4 slices
-14 pieces
-hgt = 3
-rem = 2
-nnnr
-nnnr
-nnn
-nnn
 
 void hp_slice(Hotplate* self, int slices, int slice_index)
 {
