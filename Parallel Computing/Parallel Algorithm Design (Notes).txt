@@ -1,0 +1,55 @@
+Parallel Processing
+NOTES
+
+Ian Foster's "PCAM"
+	- Partitioning is often the most difficult step, determines other steps
+	- Communication & Agglomeration not usually as flexible
+	- Mapping is a difficult problem
+
+Many different ways to partition: the "right" way is the fastest way.
+Sometimes we don't know the size of the partitions.
+	- Coarse grain : large tasks
+	- Fine grain : very small tasks
+Task dependency graph is a directed graph
+	- "dependency" means the result of one task depends on the result of another
+	- hotplate is an example of a dependency graph where all nodes are dependent on neighbors from past iteration
+
+Degree of Concurrency: number of tasks that can be executed in parallel
+	- Mandelbrot set is an example of an algorithm that could be split up into several tasks (segments of an image, for example), but you could try to break it up even further by making each instruction in the program a "task"... the problem with that is that these very fine grain "tasks" will have to be serialized, which shows that the degree of concurrency remains the same, even though we tried to make more tasks.
+
+Critical Path Length: longest path in the dependency graph
+	- weighted edges in dependency graph can be used to show various times for tasks to complete
+
+Communication vs. Computation is a tradeoff for parallel performance
+	- If tasks are too small, the advantages may be overwhelmed by high communication overhead
+
+Partitioning Techniques
+	Recursive Decomposition
+		- Divide & Conquer often results in natural concurrency
+		- but not in the degenerate case of dividing the work into "1 piece" and "the rest of the pieces"
+		- try to split it into the largest pieces possible
+			- e.g. quicksort divides in half
+		- Can often be mapped to a hypercube algorithm which makes it blindingly fast
+		- Task of dividing it up has to be "worth it" in comparison to work to be done
+	Data Decomposition
+		- Most common approach, i.e. identify the data, partition it across tasks
+		- Output Data Decomposition
+			- look at the output, i.e. "what's the answer?" and then break up the problem that way
+			- often decomposes the problem naturally, i.e. "embarassingly parallel"
+				- on supercomputer today, most people have single processor applications that divide up a task
+			- examples
+				- matrix multiplication
+			NOTE: change slide of "count the instances"
+		- Input Data Decomposition
+			- when it doesn't make sense to look at output, e.g. "what is the minimum value in this list?" has only one output, but we can consider parallelizing the input to this question
+		- Combine Input & Output Data Decomposition
+		- Domain Decomposition
+			- similar to Input Data Decomposition, but often we have to think about how to make the domain into many pieces, rather than just figuring out how to assign the many pieces of data to tasks
+			- superset of Input Data Decomposition
+
+Is overhead decreasing for parallel processing?
+	- communication and computation were about on par
+	- ethernet networks gave huge computation increases (Beowolf), but not communication
+	- today's architectures, about 3GHz cycle times, 5 microseconds for communication latency (i.e. nanoseconds vs. microseconds)
+	- processing will always be faster: i.e. multiple order of magnitude higher than communication
+	- "PRAM" Parallel Ram theoretical architecture: no delay between ram and processor, no limit to how many can be connected to it
