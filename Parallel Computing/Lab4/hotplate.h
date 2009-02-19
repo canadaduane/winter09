@@ -3,8 +3,12 @@
 
 typedef struct HOT_PLATE_STRUCT
 {
+    /* Dimensions of hotplate */
     int width;
     int height;
+    /* Each process needs to know the start and end of its "slice" */
+    int start_y;
+    int end_y;
     /* Pointers to matrix data */
     float* src_matrix;
     float* dst_matrix;
@@ -15,6 +19,7 @@ typedef struct HOT_PLATE_STRUCT
 
 Hotplate* hp_initialize(int w, int h);
 void hp_destroy(Hotplate* self);
+void hp_slice(Hotplate* self, int slices, int slice_index);
 void hp_swap(Hotplate* self);
 void hp_fill(Hotplate* self, float value);
 void hp_copy_to_source(Hotplate* self);

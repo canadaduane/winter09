@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "hotplate.h"
 
 Hotplate* hp_initialize(int w, int h)
@@ -28,6 +32,40 @@ void hp_destroy(Hotplate* self)
     free(self->matrix_data1);
     free(self->matrix_data2);
     free(self);
+}
+4 slices
+14 pieces
+hgt = 3
+rem = 2
+nnnr
+nnnr
+nnn
+nnn
+
+void hp_slice(Hotplate* self, int slices, int slice_index)
+{
+    int hgt = self->height / slices;
+    int rem = self->height % slices;
+    if (rem == 0)
+    {
+        self->start_y = (slice_index + 0) * hgt;
+        self->end_y   = self->start_y + hgt - 1;
+    }
+    else
+    {
+        if (slice_index < rem)
+        {
+            self->start_y = (slice_index + 0) * (hgt + 1);
+            self->end_y   = self->start_y + hgt;
+        }
+        else
+        {
+            self->start_y =
+                              (rem + 0) * (hgt + 1) +
+                (slice_index - rem + 0) * (hgt + 0);
+            self->end_y   = self->start_y + hgt - 1;
+        }
+    }
 }
 
 void hp_swap(Hotplate* self)

@@ -5,7 +5,11 @@
 
 #include "misc.h"
 
+#define WIDTH 768
+#define HEIGHT 768
+
 int nproc, iproc;
+Hotplate *plate;
 
 int main(int argc, char *argv[])
 {
@@ -21,16 +25,22 @@ int main(int argc, char *argv[])
     {
         printf("Number of nodes: %d\n", nproc);
     }
+
     // All nodes:
     {
         printf("Node %d started...\n", iproc);
+        start = when();
+        // Do our job:
+        
+        plate = hp_initialize(WIDTH, HEIGHT);
+        hp_slice(plate, nproc, iproc);
+        
+        hp_destroy(plate);
+        
+        // Done job
+        finish = when();
     }
     
-    start = when();
-    // Do our job:
-    
-    // Done job
-    finish = when();
     
     MPI_Finalize();
     
