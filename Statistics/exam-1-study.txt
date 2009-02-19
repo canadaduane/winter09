@@ -1,0 +1,8 @@
+CRD : Completely Randomized Design
+RBD : Randomized Block Design
+Matched Pairs
+
+<h2>Princples of Good Experiments</h2>
+RAT : random allocation of treatments
+Replication : multiple subjects
+Control or Comparison : Placebo or More than 1 Treatment
