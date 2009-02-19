@@ -1,0 +1,65 @@
+Quiz 3 study
+
+Butt caps / Round caps / Projected end caps
+
+Mitre joint / Round joint / Bevel joint
+
+Antialiasing
+	supersampling - use subpixels
+	area sampling - compute area of overlap for each pixel
+	bresenham     - use magnitude of decision variable
+	pixel phasing - micropositioning of electron beam
+	
+Translating coordinate systems
+	- change the destination to look like the source
+
+Affine
+	parallel lines remain parallel
+	finite points -> finite points
+
+
+What is a polyline? How is it always the result of scan-converting a curve?
+Why is supersampling sometimes called postfiltering?
+Can we review bundled attributes?
+Why can't reflection in 3D occur across a plane?
+What is shearing in 3D like?
+To transform from an arbitrary 3D coordinate system to another arbitrary 3D coordinate system, how many matrices are composed?
+How many matrices are composed at runtime (0) and "in advance" for rotation of a 2D polygon?
+How many are composed for a 3D rotation? (5?)
+How does the following matrix represent scaling, rotation and reflection?
+	[-1  0  0]
+	[ 0 -1  0]
+	[ 0  0  1]
+Why prefer to attribute a "window" to the world, over the display? (2006, q. 14)
+What is the difference between a window and a viewport?
+Nicholl Lee Nicoll, Liang-Barsky, Cohen-Sutherland
+
+23.  When three matrices are composed to provide rotation about an arbitrary point and the composed matrix is applied to the data describing the shape to be rotated, the arbitrary point is translated to the origin, the rotation occurs about the origin, and the arbitrary point is returned to its original position.
+
+               1. true
+               2. false (√)
+
+25.  To realize the composite matrix described in the previous question, the values of ___ matrix elements need to be determined (assuming the operations are taking place in the xy-plane).
+
+              1. 3
+              2. 6 (√)
+              3. 9
+              4. 12
+
+31.  An arbitrary composable matrix for 3D translation always has  ____ elements with the value of zero.
+
+              1. 3
+              2. 6
+              3. 9 (√)
+              4. 12
+              5. none of the above
+
+34.  A arbitrary composed matrix representing translation, scaling, rotation, reflection, and shearing in 3D always has ____ elements with the value of zero.
+
+              1. no
+              2. 3 (√)
+              3. 6
+              4. 9
+              5. 12
+              6. none of the above
+

@@ -1,0 +1,111 @@
+Drawing Lines
+	DDA => Digital Differential Algorithm
+	symmetric DDA
+	- use 2^n as denominator
+
+	Bresenham's Algorithm
+
+Drawing Circles
+	x^2 + y^2 = r^2 ("We may be slow, but we're shoddy")
+	polar parametric (uses sin and cos)
+	Bresenham's Algorithm
+
+Drawing Ellipses
+
+Filling Polygons
+
+Planar Polygon
+
+How do you find the Normal?
+	x1,y1,z1 | x2,y2,z2 | x3,y3,z3
+
+	x-x1 , y-y1 , z-z1
+	x2-y1, y2-y1, z2-z1
+	x3-x1, y3-y1, z3-z1
+
+	find determinant
+
+
+	ex.
+
+	A = y1(z2-z3) + y2(z3-z1) + y3(z1-z2)
+	B = z1(x2-x3) + z2(x3-x1) + z3(x1-x2)
+	C = x1(y2-y3) + x2(y3-y1) + x3(y1-y2)
+	D = -x1...
+
+=====
+
+1.  The ink is an ink jet printer is deflected
+      1. magnetically
+      2. electrostatically
+      3. mechanically
+      4. (it is not deflected; it is deposited in a raster fashion on a selenium drum)
+
+8.  The line segment goes between (0,0) and (50, -60).  Which of the following happens at every step of the execution of the symmetric  DDA algorithm?
+      1. x increases by 1
+      2. y increases by 1
+      3. x decreases by 1
+      4. y decreases by 1
+      5. (none of the above)
+
+14.  What’s wrong using the DDA technique (vs. Bresenham) for a circle to determine x and y values?
+       1. nothing
+       2. it’s slow, but uniform
+       3. is fast, but not uniform
+       4. it’s both slow and nonuniform
+       5. it doesn’t really make a circle
+
+17.  For drawing a hollow circle, all the pixels should
+       1. be centered as close as possible on the actual circle
+       2. be contained inside the actual circle
+       3. be on the outside of the actual circle
+
+21.  The plane Ax + By + Cz + D = 0 has at least one feature different from the plane –Ax – By – Cz – D = 0.
+       1. true
+       2. false
+
+23.  What is a polymarker?
+       1. a marker with RGB components
+       2. a collection of markers
+       3. an attribute of a polygon describing its visibility (or invisibility)
+
+24.  Graphics systems are not capable of presenting either points or line segments.  At best, they can present small or narrow areas.
+       1. true
+       2. false
+
+5. Which of the following touch panels is likely to be least accurate? (why optical?)
+      1. optical
+      2. electrical
+      3. acoustical
+
+How is the ink in an inkjet printer deflected?
+
+11. With the advent of raster displays, it was necessary, for the first time, to pick discrete points with which to represent a line segment on a graphics display. (What discrete points preceded?)
+       1. true
+       2. false
+
+Why do we use the lower-left corner of pixels again?
+
+24. Ellipses, parabolas, and hyperbolas, while standard geometric shapes, are not particularly useful in most graphics applications because shapes are rarely elliptical, parabolic, or hyperbolic. (why false?)
+       1. true
+       2. false
+
+31. Which of the following poses the least problems: (why b? Does a pose problems?)
+       1. a 4-connect boundary and a 4-connect fill
+       2. a 4 connect boundary and an 8-connect fill
+       3. an 8 connect boundary and an 8-connect fill
+       4. an 8 connect boundary and a 4-connect fill
+
+33. A polygon consists on n vertices. Into how many polygons does it need to be split so that each polygon lies entirely in plane? Assume n >= 3. (why c?)
+       1. n
+       2. n-1
+       3. n-2
+       4. n-3
+       5. (can’t say in general)
+
+36. When filling a polygon with a repeating pattern (think “tiles”), the starting point for the first tile can be anywhere EXCEPT (e. no exceptions)
+       1. at a vertex
+       2. at a corner of the bounding rectangle
+       3. interior to the polygon
+       4. outside the bounding rectangle
+       5. (no exceptions here)

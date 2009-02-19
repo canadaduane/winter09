@@ -1,0 +1,31 @@
+For a "yz" plane, let the x axis "point into your eye" and read the direction of rotation (e.g. "y into z") to see if it's clockwise or counter-clockwise.
+
+Viewport vs. Window
+	Window is the "what" we are seeing
+	Viewport has an inverse relationship, e.g.
+		if you make the window bigger, the contents of the corresponding viewport shrink
+		if you move the window right, the contents of the corresponding viewport move left
+	If you move the viewport (e.g. on the computer screen), the contents don't change
+
+Window-to-viewport transformation
+	- 3 derivations
+		- dest to source (matrix derivation)
+		- source to dest (matrix derivation)
+		- ratios & algebra
+
+Clipping & Clipping Region
+	- It's best to clip after getting the viewing coordinates, because we can compose the transformation from master coords to world coords with the transformation from world coords to viewing coords.
+	- Clipping points is easy, e.g. reject the point if x < xmin or x > xmax or y < ymin or y > ymax
+	- Clipping lines is a little more complex, e.g.
+		- Cohen-Sutherland algorithm with bitcodes:
+			
+			0101 | 0001 | 1001
+			-----+------+-----
+			0100 | 0000 | 1000
+			-----+------+-----
+			0110 | 0010 | 1010
+			
+			RLBT = Right, Left, Bottom, Top
+			
+			Assign each pair of points in a line one of the 9 bitcodes, depending on the point's location inside or outside of the viewport.
+		
