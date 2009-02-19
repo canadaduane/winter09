@@ -34,6 +34,12 @@ def scene_clear():
 def scene_a():
   scene_clear()
   radius = 90.0
+  
+  begin(GL_POINTS)
+  color3f(1.0, 1.0, 1.0)
+  vertex2i(50, 50)
+  end()
+  
   begin(GL_TRIANGLES)
   for r in frange(0, 2*math.pi, math.pi/4):
     color3f(1.0, 0.0, 0.0)
