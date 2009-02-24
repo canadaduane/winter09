@@ -17,6 +17,7 @@ Hotplate *plate;
 
 int main(int argc, char *argv[])
 {
+    int iter = 0;
     double start = 0.0, finish = 0.0;
     
     MPI_Init(&argc, &argv);
@@ -38,6 +39,8 @@ int main(int argc, char *argv[])
         // Do our job:
         
         plate = hp_initialize(WIDTH, HEIGHT);
+        plate->iproc = iproc;
+        plate->nproc = nproc;
         hp_slice(plate, nproc, iproc);
 
         hp_fill(plate, 50.0);
@@ -48,9 +51,8 @@ int main(int argc, char *argv[])
         hp_etch_hotspots(plate);
         hp_copy_to_source(plate);
         
-        int done = FALSE;
-        int iter = 0;
-        while (!done)
+        int processes_done = 0;
+        while (processes_done < nproc)
         {
             // fprintf(stderr, "[%d] Node: %d\n", iter, iproc);
             
@@ -70,10 +72,15 @@ int main(int argc, char *argv[])
             
             hp_slice_heat(plate);
             hp_etch_hotspots(plate);
-            hp_swap(plate);
             
+            if (hp_is_steady_state(plate)) {
+                processes_done++;
+                printf("%d reached steady state (%d)\n", iproc, iter);
+            }
             // if (iproc == 0)
                 // hp_dump(plate, TRUE, 10, 10);
+
+            hp_swap(plate);
             
             iter++;
         }
@@ -90,7 +97,7 @@ int main(int argc, char *argv[])
     // All nodes:
     {
         printf("Node %d completed %d iterations in %f seconds.\n", iproc, iter, finish - start);
-        printf("%d cells had a value greater than 50.0.\n", gt_count);
+        // printf("%d cells had a value greater than 50.0.\n", gt_count);
     }
     
     return 0;

@@ -74,7 +74,7 @@ void hp_slice_heat(Hotplate* self)
     if (end_y   >= self->height - 1)
         end_y = self->height - 1;
     
-    // printf("Process calculating y: %d to %d\n", start_y, end_y);
+    printf("[%d] heat: %d to %d\n", self->iproc, start_y, end_y);
     for (y = start_y; y < end_y; y++)
     {
         for (x = 1; x < self->width - 1; x++)
@@ -109,13 +109,17 @@ void hp_swap(Hotplate* self)
     }
 }
 
-/* Fill all parts of the dst_matrix with a specific value */
+/* Fill all parts of the dst_matrix (within the slice range) with a specific value */
 void hp_fill(Hotplate* self, float value)
 {
-    int square = self->width * self->height;
-    int i;
-    for (i = 0; i < square; i++)
-        self->dst_matrix[i] = value;
+    int x, y;
+    for (y = self->start_y; y <= self->end_y; y++)
+    {
+        for (x = 0; x < self->width; x++)
+        {
+            hp_set_unsafe(self, x, y, value);
+        }
+    }
 }
 
 /* Copy the dst_matrix to the src_matrix */
@@ -130,8 +134,18 @@ int hp_is_steady_state(Hotplate* self)
 {
     float avg_nearby = 0.0f;
     int x, y;
+    int start_y = self->start_y;
+    int end_y = self->end_y;
+    
+    if (self->steady_state) return TRUE;
+    
+    if (start_y <= 0)
+        start_y = 1;
+    if (end_y   >= self->height - 1)
+        end_y = self->height - 1;
+
     // int steady_state = TRUE;
-    for (y = 1; y < self->height - 1; y++)
+    for (y = start_y; y < end_y; y++)
     {
         for (x = 1; x < self->width - 1; x++)
         {
@@ -147,6 +161,8 @@ int hp_is_steady_state(Hotplate* self)
             }
         }
     }
+    /* Store result so that we don't have to recalculate every time after reaching steady state */
+    self->steady_state = TRUE;
     return TRUE;
 }
 

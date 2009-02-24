@@ -10,6 +10,10 @@
 
 typedef struct HOT_PLATE_STRUCT
 {
+    int steady_state = FALSE;
+    /* Each process needs to know its ID */
+    int iproc;
+    int nproc;
     /* Dimensions of hotplate */
     int width;
     int height;
