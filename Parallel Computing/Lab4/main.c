@@ -4,16 +4,19 @@
 #include <mpi.h>
 
 #include "misc.h"
+#include "hotplate.h"
 
 #define WIDTH 768
 #define HEIGHT 768
+#define MSG_SLICE_START 0
+#define MSG_SLICE_END 1
+#define MSG_DONE 2
 
 int nproc, iproc;
 Hotplate *plate;
 
 int main(int argc, char *argv[])
 {
-    int i;
     double start = 0.0, finish = 0.0;
     
     MPI_Init(&argc, &argv);
@@ -28,12 +31,52 @@ int main(int argc, char *argv[])
 
     // All nodes:
     {
+        // int i;
+        MPI_Status status;
         printf("Node %d started...\n", iproc);
         start = when();
         // Do our job:
         
         plate = hp_initialize(WIDTH, HEIGHT);
         hp_slice(plate, nproc, iproc);
+
+        hp_fill(plate, 50.0);
+        hp_hline(plate, 0,        0, WIDTH-1,    0.0);
+        hp_hline(plate, HEIGHT-1, 0, WIDTH-1,  100.0);
+        hp_vline(plate, 0,        0, HEIGHT-1,   0.0);
+        hp_vline(plate, WIDTH-1,  0, HEIGHT-1,   0.0);
+        hp_etch_hotspots(plate);
+        hp_copy_to_source(plate);
+        
+        int done = FALSE;
+        int iter = 0;
+        while (!done)
+        {
+            // fprintf(stderr, "[%d] Node: %d\n", iter, iproc);
+            
+            // Send top row up
+            if (iproc > 0)
+                MPI_Send(hp_slice_start_row(plate), plate->width, MPI_FLOAT, iproc-1, MSG_SLICE_START, MPI_COMM_WORLD);
+            // Send bottom row down
+            if (iproc < nproc-1)
+                MPI_Send(hp_slice_end_row(plate), plate->width, MPI_FLOAT, iproc+1, MSG_SLICE_END, MPI_COMM_WORLD);
+            
+            // Receive top row from above
+            if (iproc > 0)
+                MPI_Recv(hp_slice_start_row(plate) - plate->width, plate->width, MPI_FLOAT, iproc-1, MSG_SLICE_END, MPI_COMM_WORLD, &status);
+            // Receive bottom row from below
+            if (iproc < nproc-1)
+                MPI_Recv(hp_slice_end_row(plate) + plate->width, plate->width, MPI_FLOAT, iproc+1, MSG_SLICE_START, MPI_COMM_WORLD, &status);
+            
+            hp_slice_heat(plate);
+            hp_etch_hotspots(plate);
+            hp_swap(plate);
+            
+            // if (iproc == 0)
+                // hp_dump(plate, TRUE, 10, 10);
+            
+            iter++;
+        }
         
         hp_destroy(plate);
         
@@ -46,7 +89,9 @@ int main(int argc, char *argv[])
     
     // All nodes:
     {
-        printf( "Node %d completed in %f seconds.\n", iproc, finish - start );
+        printf("Node %d completed %d iterations in %f seconds.\n", iproc, iter, finish - start);
+        printf("%d cells had a value greater than 50.0.\n", gt_count);
     }
     
+    return 0;
 }

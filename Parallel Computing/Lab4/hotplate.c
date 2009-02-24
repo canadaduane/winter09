@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
+#include <math.h>
 
 #include "hotplate.h"
 
@@ -60,6 +62,39 @@ void hp_slice(Hotplate* self, int slices, int slice_index)
     }
 }
 
+void hp_slice_heat(Hotplate* self)
+{
+    float new_heat_value = 0.0;
+    int x, y;
+    int start_y = self->start_y;
+    int end_y = self->end_y;
+    
+    if (start_y <= 0)
+        start_y = 1;
+    if (end_y   >= self->height - 1)
+        end_y = self->height - 1;
+    
+    // printf("Process calculating y: %d to %d\n", start_y, end_y);
+    for (y = start_y; y < end_y; y++)
+    {
+        for (x = 1; x < self->width - 1; x++)
+        {
+            new_heat_value = hp_get_total_heat_unsafe(self, x, y);
+            hp_set_unsafe(self, x, y, new_heat_value);
+        }
+    }
+}
+
+float* hp_slice_start_row(Hotplate* self)
+{
+    return self->src_matrix + (self->start_y * self->width);
+}
+
+float* hp_slice_end_row(Hotplate* self)
+{
+    return self->src_matrix + (self->end_y * self->width);
+}
+
 void hp_swap(Hotplate* self)
 {
     if (self->src_matrix == self->matrix_data1)
@@ -90,128 +125,78 @@ void hp_copy_to_source(Hotplate* self)
     memcpy(self->src_matrix, self->dst_matrix, bytes);
 }
 
-static inline float hp_get(Hotplate* self, int x, int y)
+/* Determine if the source and destination matrices are close enough to be considered "steady state" */
+int hp_is_steady_state(Hotplate* self)
 {
-    assert(x >= 0 && x < self->width);
-    assert(y >= 0 && y < self->height);
-    return hp_get_unsafe(self, x, y);
-}
-
-static inline float hp_get_unsafe(Hotplate* self, int x, int y)
-{
-    return self->src_matrix[y * self->width + x];
-}
-
-static inline void hp_set(Hotplate* self, int x, int y, float value)
-{
-    assert(x >= 0 && x < self->width);
-    assert(y >= 0 && y < self->height);
-    hp_set_unsafe(self, x, y, value);
-}
-
-static inline void hp_set_unsafe(Hotplate* self, int x, int y, float value)
-{
-    self->dst_matrix[y * self->width + x] = value;
-}
-
-static inline void hp_hline(Hotplate* self, int y, int x1, int x2, float value)
-{
-    int x;
-    assert(y >= 0 && y < self->height);
-    assert(x1 >= 0 && x1 < self->width);
-    assert(x2 >= 0 && x2 < self->width);
-    for (x = x1; x <= x2; x++)
-        hp_set_unsafe(self, x, y, value);
-}
-
-static inline void hp_vline(Hotplate* self, int x, int y1, int y2, float value)
-{
-    int y;
-    assert(x >= 0 && x < self->width);
-    assert(y1 >= 0 && y1 < self->height);
-    assert(y2 >= 0 && y2 < self->height);
-    for (y = y1; y <= y2; y++)
-        hp_set_unsafe(self, x, y, value);
-}
-
-/* Get the heat sum of a cell's four neighbors */
-static inline float hp_get_neighbors_sum_unsafe(Hotplate* self, int x, int y)
-{
-    return
-        hp_get_unsafe(self, x, y - 1) +
-        hp_get_unsafe(self, x, y + 1) +
-        hp_get_unsafe(self, x - 1, y) +
-        hp_get_unsafe(self, x + 1, y);
-}
-
-/* Get the heat at the given cell, with the heat values of its 4 neighbors in consideration */
-static inline float hp_get_total_heat_unsafe(Hotplate* self, int x, int y)
-{
-    float neighbors = hp_get_neighbors_sum_unsafe(self, x, y);
-    return (neighbors + 4.0f * hp_get_unsafe(self, x, y)) / 8.0f;
-}
-
-void hp_calculate_heat_transfer_single(Hotplate* self)
-{
-    float new_heat_value = 0.0;
+    float avg_nearby = 0.0f;
     int x, y;
-    // printf("Process calculating y: %d to %d (lines = %d).\n", 1, self->height - 1, self->height - 2);
+    // int steady_state = TRUE;
     for (y = 1; y < self->height - 1; y++)
     {
         for (x = 1; x < self->width - 1; x++)
         {
-            new_heat_value = hp_get_total_heat_unsafe(self, x, y);
-            hp_set_unsafe(self, x, y, new_heat_value);
+            avg_nearby = hp_get_neighbors_sum_unsafe(self, x, y) / 4.0f;
+            if (
+                // If the current temp is greater than the average temp by a certain threshold, then
+                // we haven't reached a steady state yet...
+                fabs(hp_get_unsafe(self, x, y) - avg_nearby) >= 0.1 &&
+                // Make sure this is not a special hostpot
+                !hp_is_hotspot(self, x, y))
+            {
+                return FALSE;
+            }
         }
     }
+    return TRUE;
 }
 
-void hp_calculate_heat_transfer_parallel(Hotplate* self)
+/* Count the # of cells with a value greater than _value_ */
+int hp_cells_greater_than(Hotplate* self, float value)
 {
-    int i;
-    HotplateThread threads[NUM_THREADS];
-    for (i = 0; i < NUM_THREADS; i++)
-    {
-        hpt_initialize_static( threads + i, i, self, hp_calculate_heat_transfer_parallel_thread );
-    }
-    
-    for (i = 0; i < NUM_THREADS; i++)
-    {
-        hpt_join( threads + i );
-        hpt_destroy_static( threads + i );
-    }
-}
-
-void* hp_calculate_heat_transfer_parallel_thread( void* v )
-{
-    HotplateThread* thread = (HotplateThread*)v;
-    int lines = thread->hotplate->height / NUM_THREADS;
+    int count = 0;
     int x, y;
-    int x_min = 1, x_max = thread->hotplate->width - 1;
-    int y_min = 1 + (lines * thread->id);
-    int y_max = y_min + lines;
-    
-    /* Make sure the last thread takes care of the remainder of the integer division of the hotplate */
-    if (thread->id == NUM_THREADS - 1) y_max = thread->hotplate->height - 1;
-    
-    // printf("Thread %d calculating y: %d to %d (lines = %d).\n", thread->id, y_min, y_max, lines);
-    
-    float new_heat_value;
-    for (y = y_min; y < y_max; y++)
+    for (y = 0; y < self->height; y++)
     {
-        for (x = x_min; x < x_max; x++)
+        for (x = 0; x < self->width; x++)
         {
-            new_heat_value = hp_get_total_heat_unsafe(thread->hotplate, x, y);
-            hp_set_unsafe(thread->hotplate, x, y, new_heat_value);
+            if (hp_get_unsafe(self, x, y) > value) count++;
         }
+    }
+    return count;
+}
+
+/* Print the hotplate state as ASCII values to the terminal */
+void hp_dump(Hotplate* self, int characters, int max_x, int max_y)
+{
+    int x, y;
+    char intensity[] = {'.', '=', 'x', '%', 'M'};
+    if ( max_x == 0 ) max_x = self->width;
+    if ( max_y == 0 ) max_y = self->height;
+    
+    // printf("Dimensions: %d x %d\n", self->width, self->height);
+    for (y = 0; y < max_y; y++)
+    {
+        for (x = 0; x < max_x; x++)
+        {
+            if (characters == TRUE)
+            {
+                int value = hp_get_unsafe(self, x, y) / 20;
+                if (value > 4) value = 4;
+                printf("%c", intensity[value]);
+            }
+            else
+            {
+                float value = hp_get_unsafe(self, x, y);
+                printf("[%.01f]", value);
+            }
+        }
+        printf("\n");
     }
 }
 
-/* Transfer heat according to algorithm */
-void hp_calculate_heat_transfer(Hotplate* self, int iter)
+/* Etch the specific hot spots from the CS 484 Hotplate lab */
+void hp_etch_hotspots(Hotplate* self)
 {
-    // printf("Start iteration %d...\n", iter);
-    // hp_calculate_heat_transfer_single(self);
-    hp_calculate_heat_transfer_parallel(self);
-    // printf("end iteration %d.\n", iter);
+    hp_hline(self, 400, 0, 330, 100.0);
+    hp_set(self, 500, 200, 100.0);
 }
