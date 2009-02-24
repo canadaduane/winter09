@@ -6,6 +6,7 @@ Viewport vs. Window
 		if you make the window bigger, the contents of the corresponding viewport shrink
 		if you move the window right, the contents of the corresponding viewport move left
 	If you move the viewport (e.g. on the computer screen), the contents don't change
+	An oblique (rotated) viewport doesn't make sense, it's like hanging a picture crooked
 
 Window-to-viewport transformation
 	- 3 derivations
@@ -28,4 +29,19 @@ Clipping & Clipping Region
 			RLBT = Right, Left, Bottom, Top
 			
 			Assign each pair of points in a line one of the 9 bitcodes, depending on the point's location inside or outside of the viewport.
-		
+
+
+	Liang & Barsky
+		- parametric form of line equation lets us describe a line with a parameter that varies between 0 and 1
+	Nicholl-Lee-Nicholl
+		- is not technically a clipping algorithm, because it just tells if a line can be rejected
+		- still needs another algorithm to get the "clipped" points of a line
+		- uses 9-grid again
+		- tells us which of the 4 edges of the window need to be clipped against
+	
+	When clipping areas, we need a set of areas as result
+	When clipping lines, we need a set of lines as result
+	When clipping points, we need a set of points as a result
+	
+	It's possible that when clipping areas, we end up with MORE areas than when we started
+		- not so for lines and points

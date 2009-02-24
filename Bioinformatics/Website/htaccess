@@ -1,5 +1,0 @@
-AuthType Basic
-AuthName "Password Required"
-AuthUserFile "/users/guest/d/dmj35/.htpasswd"
-Require valid-user
-
