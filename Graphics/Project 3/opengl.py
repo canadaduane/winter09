@@ -31,28 +31,36 @@ def scene_clear():
   pointSize(1)
   lineWidth(1)
   
+def vx(value):
+  return (float(value) - 320) / 640
+
+def vy(value):
+  return (float(value) - 240) / 480
+
 def scene_a():
   scene_clear()
   radius = 90.0
   
+  viewport(0, 0, 480, 480)
+  
   begin(GL_POINTS)
   color3f(1.0, 1.0, 1.0)
-  vertex2i(50, 50)
+  vertex2f(vx(50), vy(50))
   end()
   
   begin(GL_TRIANGLES)
   for r in frange(0, 2*math.pi, math.pi/4):
     color3f(1.0, 0.0, 0.0)
-    x, y = 320, 240
-    vertex2i(x, y)
+    x, y = vx(320), vy(240)
+    vertex2f(x, y)
 
     color3f(0.0, 1.0, 0.0)
-    x, y = int(320 + radius*math.sin(r)), int(240 + radius*math.cos(r))
-    vertex2i(x, y)
+    x, y = vx(320 + radius*math.sin(r)), vy(240 + radius*math.cos(r))
+    vertex2f(x, y)
 
     color3f(0.0, 0.0, 1.0)
-    x, y = int(320 + radius*math.sin(r+math.pi/8)), int(240 + radius*math.cos(r+math.pi/8))
-    vertex2i(x, y)
+    x, y = vx(320 + radius*math.sin(r+math.pi/8)), vy(240 + radius*math.cos(r+math.pi/8))
+    vertex2f(x, y)
   end()
   
 
@@ -219,7 +227,7 @@ def ReSizeGLScene(width, height):
     height = 1
 
   # Reset The Current Viewport And Perspective Transformation
-  glViewport(0, 0, width, height)
+  # glViewport(0, 0, width, height)
   glMatrixMode(GL_PROJECTION)
   glLoadIdentity()
   glMatrixMode(GL_MODELVIEW)

@@ -2,10 +2,15 @@ from numpy import *
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
-from copy import copy
+from copy import copy, deepcopy
 
 from color import Color
 from point import Point
+
+class Viewport:
+  def __init__(self, xmin, ymin, width, height):
+    self.xmin, self.ymin = float(xmin), float(ymin)
+    self.width, self.height = float(width), float(height)
 
 def n_at_a_time(list_, n):
     return [list_[i:i+n] for i in xrange(0, len(list_), n)]
@@ -19,7 +24,7 @@ raster = array([ 0.0 for i in range(0, RASTER_SIZE) ], dtype='float32')
 clear_color = Color.black
 curr_color = Color.white
 
-vport = []
+vport = Viewport(0, 0, 640, 480)
 vertex_mode = 0
 vertices = []
 
@@ -50,6 +55,7 @@ def end():
   global vertices, vertex_mode
   glEnd()
 
+  print "vertices before", vertices
   # Call the appropriate "end" function
   {
     GL_POINTS:         _end_points,
@@ -62,111 +68,95 @@ def end():
     GL_QUADS:          _end_quads,
     GL_QUAD_STRIP:     _end_quad_strip,
     GL_POLYGON:        _end_triangle_fan
-  }[vertex_mode]()
+  }[vertex_mode](transformed(vertices))
   
   vertices = []
   vertex_mode = 0
 
-def _end_points():
-  global vertices, point_size
+def transformed(vertices):
+  vertices_prime = []
   
-  for p, c in vertices:
-    _point( p, c, point_size, isEnabled(GL_POINT_SMOOTH) )
+  def viewport_transform(point):
+    x = point.x * vport.width  + vport.width/2  + vport.xmin
+    y = point.y * vport.height + vport.height/2 + vport.ymin
+    z = point.z
+    return Point(x, y, z, copy(point.color))
+  
+  vertices_prime = [viewport_transform(v) for v in vertices]
+  
+  print "transformed vertices", vertices_prime
+  return vertices_prime
 
-def _end_lines():
-  global vertices, line_width
+def _end_points(vertices):
+  global point_size
   
-  def draw_point( p, c ):
-    _point( p, c, line_width, True )
-  
-  for vstart, vend in n_at_a_time( vertices, 2 ):
-    p1, c1 = vstart
-    p2, c2 = vend
-    _bresenham_line( p1, p2, c1, c2, draw_point )
+  for v in vertices:
+    _point( v, point_size, isEnabled(GL_POINT_SMOOTH) )
 
-def _end_triangles():
-  global vertices
+def _end_lines(vertices):
+  global line_width
   
-  for vfirst, vsecond, vthird in n_at_a_time( vertices, 3 ):
-    p1, c1 = vfirst
-    p2, c2 = vsecond
-    p3, c3 = vthird
-    _triangle( p1, p2, p3, c1, c2, c3, _set_pixel )
-
-def _end_line_strip():
-  global vertices, line_width
+  def draw_point( p ):
+    _point( p, line_width, True )
   
-  def draw_point( p, c ):
-    _point( p, c, line_width, True )
+  for p1, p2 in n_at_a_time( vertices, 2 ):
+    _bresenham_line( p1, p2, draw_point )
+
+def _end_triangles(vertices):
+  for p1, p2, p3 in n_at_a_time( vertices, 3 ):
+    _triangle( p1, p2, p3, _set_pixel )
+
+def _end_line_strip(vertices):
+  global line_width
   
-  p1, c1 = vertices[0]
-  for vertex in vertices[1:len(vertices)]:
-    p2, c2 = vertex
-    _bresenham_line( p1, p2, c1, c2, draw_point )
-    p1, c1 = p2, c2
+  def draw_point( p ):
+    _point( p, line_width, True )
+  
+  p1 = vertices[0]
+  for p2 in vertices[1:len(vertices)]:
+    _bresenham_line( p1, p2, draw_point )
+    p1 = p2
 
-def _end_line_loop():
-  global vertices, line_width
+def _end_line_loop(vertices):
+  global line_width
 
-  def draw_point( p, c ):
-    _point( p, c, line_width, True )
+  def draw_point( p ):
+    _point( p, line_width, True )
   
   _end_line_strip()
-  p1, c1 = vertices[0]
-  p2, c2 = vertices[len(vertices)-1]
-  _bresenham_line( p1, p2, c1, c2, draw_point )
+  p1 = vertices[0]
+  p2 = vertices[len(vertices)-1]
+  _bresenham_line( p1, p2, draw_point )
 
-def _end_triangle_strip():
-  global vertices
-  
+def _end_triangle_strip(vertices):
   n = 0
-  for vfirst, vsecond, vthird in n_at_a_time( vertices, 3 ):
-    p1, c1 = vfirst
-    p2, c2 = vsecond
-    p3, c3 = vthird
+  for p1, p2, p3 in n_at_a_time( vertices, 3 ):
     if (n % 2 == 0):
-      _triangle( p1, p2, p3, c1, c2, c3, _set_pixel )
+      _triangle( p1, p2, p3, _set_pixel )
     else:
-      _triangle( p2, p3, p1, c2, c3, c1, _set_pixel )
+      _triangle( p2, p3, p1, _set_pixel )
     n += 1
 
-def _end_triangle_fan():
-  global vertices
-  
-  vfirst, vsecond = vertices[0:2]
-  p1, c1 = vfirst
-  p2, c2 = vsecond
-  for vertex in vertices[2:len(vertices)]:
-    p3, c3 = vertex
-    _triangle( p1, p2, p3, c1, c2, c3, _set_pixel )
-    p2, c2 = p3, c3
+def _end_triangle_fan(vertices):
+  p1, p2 = vertices[0:2]
+  for p3 in vertices[2:len(vertices)]:
+    _triangle( p1, p2, p3, _set_pixel )
+    p2 = p3
 
-def _end_quads():
-  global vertices
-  
-  for vfirst, vsecond, vthird, vfourth in n_at_a_time( vertices, 4 ):
-    p1, c1 = vfirst
-    p2, c2 = vsecond
-    p3, c3 = vthird
-    p4, c4 = vfourth
-    _triangle( p1, p2, p3, c1, c2, c3, _set_pixel )
-    _triangle( p3, p1, p4, c3, c1, c4, _set_pixel )
+def _end_quads(vertices):
+  for p1, p2, p3, p4 in n_at_a_time( vertices, 4 ):
+    _triangle( p1, p2, p3, _set_pixel )
+    _triangle( p3, p1, p4, _set_pixel )
   
 
-def _end_quad_strip():
-  global vertices
-  
+def _end_quad_strip(vertices):
   vertices.reverse()
-  vfirst, vsecond = vertices[0:2]
-  p1, c1 = vfirst
-  p2, c2 = vsecond
-  for vthird, vfourth in n_at_a_time(vertices[2:len(vertices)], 2):
-    p3, c3 = vthird
-    p4, c4 = vfourth
-    _triangle( p1, p2, p4, c1, c2, c4, _set_pixel )
-    _triangle( p3, p4, p1, c3, c4, c1, _set_pixel )
-    p1, c1 = p3, c3
-    p2, c2 = p4, c4
+  p1, p2 = vertices[0:2]
+  for p3, p4 in n_at_a_time(vertices[2:len(vertices)], 2):
+    _triangle( p1, p2, p4, _set_pixel )
+    _triangle( p3, p4, p1, _set_pixel )
+    p1 = p3
+    p2 = p4
 
 
 def isEnabled(feature):
@@ -221,7 +211,11 @@ def vertex3f(x, y, z):
 
 def _set_pixel(point):
   global raster
-  pos = ( int(point.y) * RASTER_WIDTH + int(point.x) )*3
+  # x = int(point.x * vport.width  + vport.width/2  + vport.xmin)
+  # y = int(point.y * vport.height + vport.height/2 + vport.ymin)
+  x = int(point.x)
+  y = int(point.y)
+  pos = ( y * RASTER_WIDTH + x )*3
   raster[pos+0] = point.color.r;
   raster[pos+1] = point.color.g;
   raster[pos+2] = point.color.b;
@@ -268,8 +262,8 @@ def _circle(point, radius, fn):
 def _circle_filled(point, radius, fn):
   bucket = []
   
-  def add_point_to_bucket( p ):
-    bucket.append( p )
+  def add_point_to_bucket( point ):
+    bucket.append( deepcopy( point ) )
   
   _circle(point, radius, add_point_to_bucket)
   
@@ -290,8 +284,8 @@ def _rect(point1, point2, fn):
 def _rect_filled(point1, point2, fn):
   bucket = []
   
-  def add_point_to_bucket( p ):
-    bucket.append( p )
+  def add_point_to_bucket( point ):
+    bucket.append( deepcopy( point ) )
   
   _rect(point1, point2, add_point_to_bucket)
   
@@ -301,16 +295,14 @@ def _yline(p1, p2, fn = _set_pixel):
   # Always draw from bottom to top
   if (p2.y < p1.y):
     p1, p2 = p2, p1
-  
   dx = float(p2.x - p1.x)
   dy = float(p2.y - p1.y)
   if (dy != 0):
     gradient = dx/dy
-    point = copy(p1)
-    length = sqrt(dx**2 + dy**2)
+    point = deepcopy(p1)
     r_inc, g_inc, b_inc = p1.color.increments(p2.color, abs(dy))
     while (point.y < p2.y):
-      fn( copy(point) )
+      fn( point )
       point.color.inc(r_inc, g_inc, b_inc)
       point.x += gradient
       point.y += 1
@@ -320,9 +312,8 @@ def _hline(p1, p2, fn = _set_pixel):
     p1, p2 = p2, p1
   
   x_delta = p2.x - p1.x
-  point = copy(p1)
+  point = deepcopy(p1)
   r_inc, g_inc, b_inc = p1.color.increments(p2.color, x_delta)
-  
   for x in range(int(p1.x), int(p2.x) + 1):
     fn( point )
     point.color.inc(r_inc, g_inc, b_inc)
@@ -339,7 +330,7 @@ def _bresenham_line(p1, p2, fn):
   x_delta = abs(p2.x - p1.x)
   y_delta = abs(p2.y - p1.y)
 
-  point = copy(p1)
+  point = deepcopy(p1)
   
   # Generic line-drawing functions that need to be set up properly
   def x_line(xinc, yinc):
@@ -382,7 +373,7 @@ def _triangle(v1, v2, v3, fn = _set_pixel):
   bucket = []
   
   def add_point_to_bucket( point ):
-    bucket.append( point )
+    bucket.append( deepcopy( point ) )
   
   if (v1.y != v2.y): # Draw line from v1 to v2
     _yline(v1, v2, add_point_to_bucket)
@@ -416,12 +407,12 @@ def _fill(points, fn):
     left_point = points.pop(0)
     right_point = None
     for point in points:
-      if (point.y == left_point.y): # same scan line as left_point
+      if (int(point.y) == int(left_point.y)): # same scan line as left_point
         right_point = point
       else:
         if (right_point == None):
           _set_pixel( left_point )
-        elif(left_point.x != right_point.x):
+        elif(int(left_point.x) != int(right_point.x)):
           _hline( left_point, right_point, fn)
         left_point = point
 
@@ -429,4 +420,6 @@ def _fill(points, fn):
     _hline( left_point, right_point, fn )
   
 def viewport(xmin, ymin, width, height):
-  vport = [xmin, ymin, width, height]
+  global vport
+  glViewport(xmin, ymin, width, height)
+  vport = Viewport(xmin, ymin, width, height)
