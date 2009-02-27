@@ -19,6 +19,7 @@ raster = array([ 0.0 for i in range(0, RASTER_SIZE) ], dtype='float32')
 clear_color = Color.black
 curr_color = Color.white
 
+vport = []
 vertex_mode = 0
 vertices = []
 
@@ -206,30 +207,40 @@ def lineWidth(w):
 def vertex2i(x, y):
   global vertices
   glVertex2i(x, y)
-  vertices.append( [Point(x, y, 0), curr_color] )
+  vertices.append( Point(x, y, 0, curr_color) )
 
-def _set_pixel(point, color):
+def vertex2f(x, y):
+  global vertices
+  glVertex2f(x, y)
+  vertices.append( Point(x, y, 0, curr_color) )
+
+def vertex3f(x, y, z):
+  global vertices
+  glVertex3f(x, y, z)
+  vertices.append( Point(x, y, z, curr_color) )
+
+def _set_pixel(point):
   global raster
   pos = ( int(point.y) * RASTER_WIDTH + int(point.x) )*3
-  raster[pos+0] = color.r;
-  raster[pos+1] = color.g;
-  raster[pos+2] = color.b;
+  raster[pos+0] = point.color.r;
+  raster[pos+1] = point.color.g;
+  raster[pos+2] = point.color.b;
 
-def _point( point, color, size = 1, smooth = False ):
+def _point( point, size = 1, smooth = False ):
   if (size <= 0):
     pass
   elif (size == 1):
-    _set_pixel( point, color )
+    _set_pixel( point )
   else:
     half = size / 2
     if (smooth):
-      _circle_filled( point, color, half, _set_pixel )
+      _circle_filled( point, half, _set_pixel )
     else:
-      ul = Point( point.x - half, point.y + half )
-      lr = Point( point.x + half, point.y - half )
-      _rect_filled( ul, lr, color, _set_pixel )
+      ul = Point( point.x - half, point.y + half, 0.0, point.color )
+      lr = Point( point.x + half, point.y - half, 0.0, point.color )
+      _rect_filled( ul, lr, _set_pixel )
 
-def _circle(point, color, radius, fn):
+def _circle(point, radius, fn):
   if (radius < 1):
     return
   elif (radius == 1):
@@ -239,14 +250,14 @@ def _circle(point, color, radius, fn):
     y = radius
     decision = 5.0/4 - radius
     while (x <= y):
-      fn( Point(point.x + x, point.y + y), color )
-      fn( Point(point.x - x, point.y + y), color )
-      fn( Point(point.x + x, point.y - y), color )
-      fn( Point(point.x - x, point.y - y), color )
-      fn( Point(point.x + y, point.y + x), color )
-      fn( Point(point.x - y, point.y + x), color )
-      fn( Point(point.x + y, point.y - x), color )
-      fn( Point(point.x - y, point.y - x), color )
+      fn( Point(point.x + x, point.y + y, 0.0, color) )
+      fn( Point(point.x - x, point.y + y, 0.0, color) )
+      fn( Point(point.x + x, point.y - y, 0.0, color) )
+      fn( Point(point.x - x, point.y - y, 0.0, color) )
+      fn( Point(point.x + y, point.y + x, 0.0, color) )
+      fn( Point(point.x - y, point.y + x, 0.0, color) )
+      fn( Point(point.x + y, point.y - x, 0.0, color) )
+      fn( Point(point.x - y, point.y - x, 0.0, color) )
       x = x + 1
       if (decision < 0):
         decision = decision + 2 * x + 1
@@ -254,77 +265,74 @@ def _circle(point, color, radius, fn):
         y = y - 1 
         decision = decision + 2 * x + 1 - 2 * y
 
-def _circle_filled(point, color, radius, fn):
+def _circle_filled(point, radius, fn):
   bucket = []
   
-  def add_point_to_bucket( p, c ):
-    bucket.append( [p, c] )
+  def add_point_to_bucket( p ):
+    bucket.append( p )
   
-  _circle(point, color, radius, add_point_to_bucket)
+  _circle(point, radius, add_point_to_bucket)
   
   _fill( bucket, fn )
 
 
-def _rect(point1, point2, color, fn):
+def _rect(point1, point2, fn):
   min_x = min(point1.x, point2.x)
   for x in range(abs(int(point2.x - point1.x))):
-    fn( Point(min_x + x, point1.y), color )
-    fn( Point(min_x + x, point2.y), color )
+    fn( Point(min_x + x, point1.y, 0.0, color) )
+    fn( Point(min_x + x, point2.y, 0.0, color) )
 
   min_y = min(point1.y, point2.y)
   for y in range(abs(int(point2.y - point1.y))):
-    fn( Point(point1.x, min_y + y), color )
-    fn( Point(point2.x, min_y + y), color )
+    fn( Point(point1.x, min_y + y, 0.0, color) )
+    fn( Point(point2.x, min_y + y, 0.0, color) )
 
-def _rect_filled(point1, point2, color, fn):
+def _rect_filled(point1, point2, fn):
   bucket = []
   
-  def add_point_to_bucket( p, c ):
-    bucket.append( [p, c] )
+  def add_point_to_bucket( p ):
+    bucket.append( p )
   
-  _rect(point1, point2, color, add_point_to_bucket)
+  _rect(point1, point2, add_point_to_bucket)
   
   _fill( bucket, fn )
 
-def _yline(p1, p2, c1, c2, fn = _set_pixel):
+def _yline(p1, p2, fn = _set_pixel):
   # Always draw from bottom to top
   if (p2.y < p1.y):
     p1, p2 = p2, p1
-    c1, c2 = c2, c1
+  
   dx = float(p2.x - p1.x)
   dy = float(p2.y - p1.y)
   if (dy != 0):
     gradient = dx/dy
     point = copy(p1)
-    color = copy(c1)
     length = sqrt(dx**2 + dy**2)
-    r_inc, g_inc, b_inc = c1.increments(c2, abs(dy))
+    r_inc, g_inc, b_inc = p1.color.increments(p2.color, abs(dy))
     while (point.y < p2.y):
-      fn( copy(point), copy(color) )
-      color.inc(r_inc, g_inc, b_inc)
+      fn( copy(point) )
+      point.color.inc(r_inc, g_inc, b_inc)
       point.x += gradient
       point.y += 1
 
-def _hline(p1, p2, c1, c2, fn = _set_pixel):
+def _hline(p1, p2, fn = _set_pixel):
   if (p1.x > p2.x):
     p1, p2 = p2, p1
-    c1, c2 = c2, c1
+  
   x_delta = p2.x - p1.x
   point = copy(p1)
-  color = copy(c1)
-  r_inc, g_inc, b_inc = c1.increments(c2, x_delta)
+  r_inc, g_inc, b_inc = p1.color.increments(p2.color, x_delta)
   
   for x in range(int(p1.x), int(p2.x) + 1):
-    fn( point, color )
-    color.inc(r_inc, g_inc, b_inc)
+    fn( point )
+    point.color.inc(r_inc, g_inc, b_inc)
     point.x += 1
   
-def _bresenham_line(p1, p2, c1, c2, fn):
+def _bresenham_line(p1, p2, fn):
   """Draw's a line from point 1 to point 2, with a color gradient from c1 to c2"""
   # Get our delta values, making sure we stay in quadrant I or IV
   if (p1.x > p2.x):
     p1, p2 = p2, p1
-    c1, c2 = c2, c1
   
   y_positive = (p1.y <= p2.y)
   
@@ -332,34 +340,33 @@ def _bresenham_line(p1, p2, c1, c2, fn):
   y_delta = abs(p2.y - p1.y)
 
   point = copy(p1)
-  color = copy(c1)
   
   # Generic line-drawing functions that need to be set up properly
   def x_line(xinc, yinc):
     decision = 2 * y_delta - x_delta
-    r_inc, g_inc, b_inc = c1.increments(c2, x_delta)
+    r_inc, g_inc, b_inc = p1.color.increments(p2.color, x_delta)
     for i in range(x_delta):
-      fn( point, color )
+      fn( point )
       if (decision < 0):
         decision = decision + 2 * y_delta
       else:
         decision = decision + 2 * (y_delta - x_delta)
         point.y += yinc
       point.x += xinc
-      color.inc(r_inc, g_inc, b_inc)
+      point.color.inc(r_inc, g_inc, b_inc)
   
   def y_line(xinc, yinc):
     decision = 2 * x_delta - y_delta
-    r_inc, g_inc, b_inc = c1.increments(c2, y_delta)
+    r_inc, g_inc, b_inc = p1.color.increments(p2.color, y_delta)
     for i in range(y_delta):
-      fn( point, color )
+      fn( point )
       if (decision < 0):
         decision = decision + 2 * x_delta
       else:
         decision = decision + 2 * (x_delta - y_delta)
         point.x += xinc
       point.y += yinc
-      color.inc(r_inc, g_inc, b_inc)
+      point.color.inc(r_inc, g_inc, b_inc)
   
   # Determine which "Octant" the line is in
   if (y_positive):
@@ -369,57 +376,57 @@ def _bresenham_line(p1, p2, c1, c2, fn):
     if (x_delta > y_delta): x_line(1, -1) # Octant 8
     else:                   y_line(1, -1) # Octant 7
 
-def _triangle(v1, v2, v3, c1, c2, c3, fn = _set_pixel):
-  """Draws a shaded triangle from v1 to v2 to v3, with corresponding colors c1, c2, c3"""
+def _triangle(v1, v2, v3, fn = _set_pixel):
+  """Draws a shaded triangle from v1 to v2 to v3"""
   
   bucket = []
   
-  def add_point_to_bucket( point, color ):
-    bucket.append( [point, color] )
+  def add_point_to_bucket( point ):
+    bucket.append( point )
   
   if (v1.y != v2.y): # Draw line from v1 to v2
-    _yline(v1, v2, c1, c2, add_point_to_bucket)
+    _yline(v1, v2, add_point_to_bucket)
   else:
-    _hline(v1, v2, c1, c2, add_point_to_bucket)
+    _hline(v1, v2, add_point_to_bucket)
   
   if (v2.y != v3.y): # Draw line from v2 to v3
-    _yline(v2, v3, c2, c3, add_point_to_bucket)
+    _yline(v2, v3, add_point_to_bucket)
   else:
-    _hline(v2, v3, c2, c3, add_point_to_bucket)
+    _hline(v2, v3, add_point_to_bucket)
   
   if (v3.y != v1.y): # Draw line from v3 to v1
-    _yline(v3, v1, c3, c1, add_point_to_bucket)
+    _yline(v3, v1, add_point_to_bucket)
   else:
-    _hline(v3, v1, c3, c1, add_point_to_bucket)
+    _hline(v3, v1, add_point_to_bucket)
   
   _fill( bucket, fn )
 
-def _fill(pairs, fn):
+def _fill(points, fn):
   def y_then_x(a, b):
-    if (a[0].y > b[0].y):     return 1
-    elif (a[0].y < b[0].y):   return -1
+    if (a.y > b.y):     return 1
+    elif (a.y < b.y):   return -1
     else:
-      if (a[0].x > b[0].x):   return 1
-      elif (a[0].x < b[0].x): return -1
-      else:                   return 0
+      if (a.x > b.x):   return 1
+      elif (a.x < b.x): return -1
+      else:             return 0
   
-  if (len(pairs) > 0):
-    pairs.sort(y_then_x)
+  if (len(points) > 0):
+    points.sort(y_then_x)
 
-    left_point, left_color = pairs.pop(0)
-    right_point, right_color = None, None
-    for point, color in pairs:
+    left_point = points.pop(0)
+    right_point = None
+    for point in points:
       if (point.y == left_point.y): # same scan line as left_point
         right_point = point
-        right_color = color
       else:
         if (right_point == None):
-          _set_pixel( left_point, left_color )
+          _set_pixel( left_point )
         elif(left_point.x != right_point.x):
-          _hline( left_point, right_point, left_color, right_color, fn)
+          _hline( left_point, right_point, fn)
         left_point = point
-        left_color = color
 
     # Need to complete the final scan line
-    _hline( left_point, right_point, left_color, right_color, fn )
+    _hline( left_point, right_point, fn )
   
+def viewport(xmin, ymin, width, height):
+  vport = [xmin, ymin, width, height]

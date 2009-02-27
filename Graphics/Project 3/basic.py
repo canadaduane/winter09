@@ -11,7 +11,7 @@ def init():
   # gluOrtho2D(0.0,640.0, 0.0,480.0)
   # glClearDepth(1.0)
   glDisable(GL_DEPTH_TEST)
-  glOrtho(0,640, 0,480, -1,1);
+  # glOrtho(0,640, 0,480, -1,1);
   # glRasterPos2i(-50, -50)
 
 def draw():

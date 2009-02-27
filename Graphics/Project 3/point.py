@@ -1,8 +1,9 @@
 from color import Color
 
 class Point:
-  def __init__(self, x = 0.0, y = 0.0, z = 0.0):
+  def __init__(self, x = 0.0, y = 0.0, z = 0.0, color = Color(1.0, 1.0, 1.0)):
     self.x, self.y, self.z = [x, y, z]
+    self.color = color
   
   def xy(self):
     return [self.x, self.y]
