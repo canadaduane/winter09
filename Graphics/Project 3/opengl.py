@@ -224,7 +224,7 @@ def ReSizeGLScene(width, height):
   glLoadIdentity()
   glMatrixMode(GL_MODELVIEW)
   glLoadIdentity()
-  glOrtho(0,width, 0,height, -1,1);
+  # glOrtho(0,width, 0,height, -1,1);
   
   DrawGLScene()
 
@@ -237,8 +237,16 @@ def DrawGLScene():
   [scene_a, scene_b, scene_c, scene_d][sceneChoice]()
   
   if drawMode == 2:
+    
+    clippingWasOn = [glIsEnabled(GL_CLIP_PLANE0 + i) for i in range(6)]
+    [glDisable(GL_CLIP_PLANE0+i) for i in range(6)]
+    
     depthWasEnabled = glIsEnabled(GL_DEPTH_TEST)
     glDisable(GL_DEPTH_TEST)
+
+    oldViewport = glGetIntegerv(GL_VIEWPORT)
+    glViewport(0,0,640,480);
+    
     oldMatrixMode = glGetIntegerv(GL_MATRIX_MODE)
     
     glMatrixMode(GL_MODELVIEW)
@@ -254,15 +262,23 @@ def DrawGLScene():
     glDrawPixels(640, 480, GL_RGB, GL_FLOAT, duanegl.raster);
     
     # Set the state back to what it was
+    glMatrixMode(GL_PROJECTION)
     glPopMatrix()
+
     glMatrixMode(GL_MODELVIEW)
-    
     glPopMatrix()
+
     glMatrixMode(oldMatrixMode)
-    # 
+    
+    glViewport(oldViewport[0], oldViewport[1], oldViewport[2], oldViewport[3])
+    
     if (depthWasEnabled):
       glEnable(GL_DEPTH_TEST)
-
+    
+    for i in range(6):
+      if clippingWasOn[i]:
+        glEnable(GL_CLIP_PLANE0 + i)
+    
   glFlush()
     
   glutSwapBuffers()
