@@ -16,7 +16,7 @@ from duanegl import *
 ESCAPE = '\033'
 window = 0
 drawMode = 2
-sceneChoice = 0
+sceneChoice = 3
 
 # Helper Function for floating-point ranges
 def frange(fr, to, step):
@@ -26,7 +26,7 @@ def frange(fr, to, step):
 
 def scene_clear():
   clearColor(0.0, 0.0, 0.0)
-  clear(GL_COLOR_BUFFER_BIT)
+  clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
   disable(GL_POINT_SMOOTH)
   pointSize(1)
   lineWidth(1)
@@ -41,7 +41,7 @@ def scene_a():
   scene_clear()
   radius = 90.0
   
-  viewport(0, 0, 480, 480)
+  viewport(0, 0, 680, 480)
   
   begin(GL_POINTS)
   color3f(1.0, 1.0, 1.0)
@@ -71,147 +71,47 @@ def scene_b():
   begin(GL_LINES)
   for r in frange(0, 2*math.pi, step):
     color3f(1.0, 0.5, 0.0)
-    vertex2i(int(320 + radius*math.sin(r)), int(240 + radius*math.cos(r)))
+    vertex2f(vx(320 + radius*math.sin(r)), vy(240 + radius*math.cos(r)))
     color3f(0.5, 0.5, 1.0)
-    vertex2i(int(320 + radius*math.sin(r+step)), int(240 + radius*math.cos(r+step)))
+    vertex2f(vx(320 + radius*math.sin(r+step)), vy(240 + radius*math.cos(r+step)))
   end()
 
 def scene_c():
   scene_clear()
-  radius = 10.0
-  pointSize(10)
-  lineWidth(6)
+  begin(GL_TRIANGLES)
+  color3f(1.0, 0.5, 0.0)
+  vertex3f(-0.5, 0.2, 0.5)
+  color3f(1.0, 0.8, 0.0)
+  vertex3f(0.0, -0.5, 0.0)
+  color3f(1.0, 0.2, 0.0)
+  vertex3f(0.5, 0.2, -0.5)
   
-  # Draw square points
-  disable(GL_POINT_SMOOTH)
-  begin(GL_POINTS)
-  rgb = [[1.0, 1.0, 0.0], [1.0, 0.5, 0.0], [0.5, 0.0, 1.0]]
-  for i in range(3):
-    apply(color3f, rgb[i])
-    vertex2i(260 + i*40, 240)
-  end()
-  
-  # Now draw circular points
-  enable(GL_POINT_SMOOTH)
-  begin(GL_POINTS)
-  for i in range(3):
-    apply(color3f, rgb[i])
-    vertex2i(260 + i*40, 200)
-  end()
-  
-  # Draw a thick line
-  begin(GL_LINES)
-  apply(color3f, rgb[0])
-  vertex2i(260, 150)
-  apply(color3f, rgb[1])
-  vertex2i(380, 160)
+  color3f(0.0, 0.2, 1.0)
+  vertex3f(-0.5, -0.2, -0.5)
+  color3f(0.0, 0.4, 1.0)
+  vertex3f(0.0, 0.5, 0.0)
+  color3f(0.0, 0.1, 1.0)
+  vertex3f(0.5, -0.2, 0.5)
   end()
 
 def scene_d():
   scene_clear()
-  begin(GL_LINE_STRIP)
-  color3f(1.0, 0.0, 0.0)
-  vertex2i(320, 140)
-  color3f(1.0, 1.0, 0.0)
-  vertex2i(380, 100)
-  color3f(1.0, 0.0, 0.0)
-  vertex2i(330, 60)
-  color3f(1.0, 1.0, 0.0)
-  vertex2i(200, 80)
-  end()
-
-  begin(GL_LINE_LOOP)
-  color3f(1.0, 0.0, 0.0)
-  vertex2i(320, 240)
-  color3f(1.0, 1.0, 0.0)
-  vertex2i(380, 200)
-  color3f(1.0, 0.0, 0.0)
-  vertex2i(330, 160)
-  color3f(1.0, 1.0, 0.0)
-  vertex2i(200, 180)
-  end()
+  viewport(0, 0, 320, 240)
   
-  begin(GL_TRIANGLE_STRIP)
-  color3f(0.0, 0.5, 0.0)
-  vertex2i(100, 380)
-  color3f(1.0, 0.5, 0.0)
-  vertex2i(120, 370)
-  color3f(0.0, 0.5, 1.0)
-  vertex2i(140, 390)
-
-  color3f(0.0, 0.5, 0.0)
-  vertex2i(140, 390)
-  color3f(1.0, 0.5, 0.0)
-  vertex2i(120, 370)
-  color3f(0.0, 0.5, 1.0)
-  vertex2i(180, 380)
-
-  color3f(1.0, 0.0, 0.0)
-  vertex2i(180, 380)
-  color3f(0.0, 0.0, 1.0)
-  vertex2i(120, 370)
-  color3f(1.0, 0.0, 1.0)
-  vertex2i(200, 350)
-  end()
+  matrixMode(GL_MODELVIEW)
+  loadMatrix([1, 0, 0, 0,     0, -1, 0, 0,   0, 0, 1, 0,   0, 0, 0, 1])
+  multMatrix([0.5, 0, 0, 0,   0, 1, 0, 0,    0, 0, 1, 0,   0, 0, 0, 1])
+  # print current_matrix
+  # print modelview_matrix_stack
   
-  radius = 50.0
-  step = math.pi/8
-  begin(GL_TRIANGLE_FAN)
-  color3f(1.0, 0.0, 0.0)
-  vertex2i(400, 400)
-  color3f(0.0, 0.0, 1.0)
-  vertex2i(450, 400)
-  n = 0
-  for r in frange(math.pi + step, 2*math.pi - step, step):
-    if (n % 2 == 0):
-      color3f(1.0, 0.5, 0.0)
-    else:
-      color3f(1.0, 1.0, 1.0)
-    vertex2i(int(425 + radius*math.sin(r)), int(400 - radius*math.cos(r)))
-    n += 1
+  begin(GL_TRIANGLES)
+  color3f(1.0, 0.5, 0.0)
+  vertex3f(-0.5, 0.2, 0.5)
+  color3f(1.0, 0.8, 0.0)
+  vertex3f(0.0, -0.5, 1.3)
+  color3f(1.0, 0.2, 0.0)
+  vertex3f(0.5, 0.2, -0.5)
   end()
-  
-  begin(GL_QUADS)
-  color3f(0.0, 0.5, 0.0)
-  vertex2i(450, 380)
-  color3f(1.0, 0.5, 0.0)
-  vertex2i(440, 360)
-  color3f(0.0, 0.5, 1.0)
-  vertex2i(500, 365)
-  color3f(1.0, 1.0, 1.0)
-  vertex2i(510, 390)
-
-  color3f(0.0, 0.5, 0.0)
-  vertex2i(450, 330)
-  color3f(1.0, 0.5, 0.0)
-  vertex2i(440, 310)
-  color3f(0.0, 0.5, 1.0)
-  vertex2i(500, 315)
-  color3f(1.0, 1.0, 1.0)
-  vertex2i(510, 340)
-  end()
-
-  begin(GL_QUAD_STRIP)
-  color3f(0.0, 0.5, 0.0)
-  vertex2i(450, 180)
-  color3f(1.0, 0.5, 0.0)
-  vertex2i(440, 160)
-  color3f(0.0, 0.5, 1.0)
-  vertex2i(500, 165)
-  color3f(1.0, 1.0, 1.0)
-  vertex2i(510, 190)
-
-  color3f(0.0, 0.5, 0.0)
-  vertex2i(550, 180)
-  color3f(1.0, 0.5, 0.0)
-  vertex2i(560, 160)
-  
-  color3f(0.0, 0.5, 0.0)
-  vertex2i(600, 185)
-  color3f(1.0, 0.5, 0.0)
-  vertex2i(610, 170)
-  end()
-  
   
 # We call this right after our OpenGL window is created.
 def InitGL(width, height):
@@ -234,7 +134,7 @@ def ReSizeGLScene(width, height):
   glLoadIdentity()
   # glOrtho(0,width, 0,height, -1,1);
   
-  DrawGLScene()
+  # DrawGLScene()
 
 def DrawGLScene():
   global sceneChoice

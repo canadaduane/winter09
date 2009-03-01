@@ -20,13 +20,18 @@ RASTER_WIDTH = 640
 RASTER_HEIGHT = 480
 RASTER_SIZE = RASTER_WIDTH * RASTER_HEIGHT * 3
 raster = array([ 0.0 for i in range(0, RASTER_SIZE) ], dtype='float32')
+depth_buffer = array([ 10000 for i in range(0, RASTER_WIDTH * RASTER_HEIGHT) ], dtype='float32')
 
 clear_color = Color.black
 curr_color = Color.white
 
 vport = Viewport(0, 0, 640, 480)
+identity_matrix = matrix(array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]], dtype='float32'))
 vertex_mode = 0
+matrix_mode = GL_PROJECTION
 vertices = []
+projection_matrix_stack = [copy(identity_matrix)]
+modelview_matrix_stack = [copy(identity_matrix)]
 
 point_size = 1
 line_width = 1
@@ -40,11 +45,59 @@ def clearColor(r, g, b, a = 1.0):
 
 def clear(mode):
   """Fills every pixel on the screen with the color last specified by glClearColor(r,g,b,a)."""
-  global raster
+  global raster, depth_buffer
   glClear(mode)
   if ((mode & GL_COLOR_BUFFER_BIT) != 0):
     raster = [clear_color.index(i % 3) for i in range(0, RASTER_SIZE)]
+  if ((mode & GL_DEPTH_BUFFER_BIT) != 0):
+    depth_buffer = array([ 10000 for i in range(0, RASTER_WIDTH * RASTER_HEIGHT) ], dtype='float32')
 
+def matrixMode(mode):
+  global matrix_mode, projection_matrix_stack, modelview_matrix_stack
+  
+  glMatrixMode(mode)
+  matrix_mode = mode
+
+def loadIdentity():
+  global matrix_mode, projection_matrix_stack, modelview_matrix_stack
+  glLoadIdentity()
+  if matrix_mode == GL_PROJECTION:
+    projection_matrix_stack[-1] = copy(identity_matrix)
+  elif matrix_mode == GL_MODELVIEW:
+    modelview_matrix_stack[-1] = copy(identity_matrix)
+
+def loadMatrix(v16):
+  global matrix_mode, projection_matrix_stack, modelview_matrix_stack
+  glLoadMatrixd(v16)
+  if matrix_mode == GL_PROJECTION:
+    projection_matrix_stack[-1] = matrix(v16).reshape(4, 4)
+  elif matrix_mode == GL_MODELVIEW:
+    modelview_matrix_stack[-1] = matrix(v16).reshape(4, 4)
+
+def multMatrix(v16):
+  global matrix_mode, projection_matrix_stack, modelview_matrix_stack
+  glMultMatrixd(v16)
+  if matrix_mode == GL_PROJECTION:
+    projection_matrix_stack[-1] = projection_matrix_stack[-1] * matrix(v16).reshape(4, 4)
+  elif matrix_mode == GL_MODELVIEW:
+    modelview_matrix_stack[-1] = modelview_matrix_stack[-1] * matrix(v16).reshape(4, 4)
+
+def pushMatrix():
+  global matrix_mode, projection_matrix_stack, modelview_matrix_stack
+  glPushMatrix()
+  if matrix_mode == GL_PROJECTION and len(projection_matrix_stack) < 3:
+    projection_matrix_stack.append(copy(projection_matrix_stack[-1]))
+  elif matrix_mode == GL_MODELVIEW and len(modelview_matrix_stack) < 33:
+    modelview_matrix_stack.append(copy(modelview_matrix_stack[-1]))
+
+def popMatrix():
+  global matrix_mode, projection_matrix_stack, modelview_matrix_stack
+  glPopMatrix();
+  if matrix_mode == GL_PROJECTION and len(projection_matrix_stack) > 1:
+    projection_matrix_stack.pop(-1)
+  elif matrix_mode == GL_MODELVIEW and len(modelview_matrix_stack) > 1:
+    modelview_matrix_stack.pop(-1)
+  
 def begin(mode):
   global vertices, vertex_mode
   glBegin(mode)
@@ -55,7 +108,6 @@ def end():
   global vertices, vertex_mode
   glEnd()
 
-  print "vertices before", vertices
   # Call the appropriate "end" function
   {
     GL_POINTS:         _end_points,
@@ -74,18 +126,45 @@ def end():
   vertex_mode = 0
 
 def transformed(vertices):
-  vertices_prime = []
+  p = projection_matrix_stack[-1]
+  m = modelview_matrix_stack[-1]
+  vvecs = matrix([v.vector() for v in vertices]).transpose()
+  intermediate = (p * m * vvecs).transpose()
+  # print "p", p
+  # print "m", m
+  # print "vvecs", vvecs
+  # print "intermediate", intermediate
   
-  def viewport_transform(point):
-    x = point.x * vport.width  + vport.width/2  + vport.xmin
-    y = point.y * vport.height + vport.height/2 + vport.ymin
-    z = point.z
-    return Point(x, y, z, copy(point.color))
+  # Divide by w
+  for i in range(len(intermediate)):
+    intermediate[i] = intermediate[i] / intermediate[i,3]
   
-  vertices_prime = [viewport_transform(v) for v in vertices]
+  vw = vport.width/2
+  vh = vport.height/2
+  def viewport_transform(vector, point):
+    x = vector[0,0] * vw + vw + vport.xmin
+    y = vector[1,0] * vh + vh + vport.ymin
+    z = vector[2,0]
+    return Point(x, y, z, point.color)
   
-  print "transformed vertices", vertices_prime
-  return vertices_prime
+  values = [ viewport_transform(intermediate[i].transpose(), vertices[i]) \
+             for i in range(len(vertices)) ]
+  return values
+
+def _set_pixel(point):
+  global raster, depth_buffer
+  x = int(point.x)
+  y = int(point.y)
+  z = point.z
+  if x >= 0 and x < RASTER_WIDTH and \
+     y >= 0 and y < RASTER_HEIGHT:
+    one_d = ( y * RASTER_WIDTH + x )
+    pos = one_d * 3
+    if z < depth_buffer[one_d] and z >= -1.0 and z <= 1.0:
+      depth_buffer[one_d] = z
+      raster[pos+0] = point.color.r;
+      raster[pos+1] = point.color.g;
+      raster[pos+2] = point.color.b;
 
 def _end_points(vertices):
   global point_size
@@ -209,17 +288,6 @@ def vertex3f(x, y, z):
   glVertex3f(x, y, z)
   vertices.append( Point(x, y, z, curr_color) )
 
-def _set_pixel(point):
-  global raster
-  # x = int(point.x * vport.width  + vport.width/2  + vport.xmin)
-  # y = int(point.y * vport.height + vport.height/2 + vport.ymin)
-  x = int(point.x)
-  y = int(point.y)
-  pos = ( y * RASTER_WIDTH + x )*3
-  raster[pos+0] = point.color.r;
-  raster[pos+1] = point.color.g;
-  raster[pos+2] = point.color.b;
-
 def _point( point, size = 1, smooth = False ):
   if (size <= 0):
     pass
@@ -297,27 +365,33 @@ def _yline(p1, p2, fn = _set_pixel):
     p1, p2 = p2, p1
   dx = float(p2.x - p1.x)
   dy = float(p2.y - p1.y)
+  dz = float(p2.z - p1.z)
   if (dy != 0):
     gradient = dx/dy
     point = deepcopy(p1)
     r_inc, g_inc, b_inc = p1.color.increments(p2.color, abs(dy))
+    z_inc = dz / dy
     while (point.y < p2.y):
       fn( point )
       point.color.inc(r_inc, g_inc, b_inc)
       point.x += gradient
       point.y += 1
+      point.z += z_inc
 
 def _hline(p1, p2, fn = _set_pixel):
   if (p1.x > p2.x):
     p1, p2 = p2, p1
   
-  x_delta = p2.x - p1.x
+  dx = p2.x - p1.x
+  dz = float(p2.z - p1.z)
   point = deepcopy(p1)
-  r_inc, g_inc, b_inc = p1.color.increments(p2.color, x_delta)
+  r_inc, g_inc, b_inc = p1.color.increments(p2.color, dx)
+  z_inc = dz / dx
   for x in range(int(p1.x), int(p2.x) + 1):
     fn( point )
     point.color.inc(r_inc, g_inc, b_inc)
     point.x += 1
+    point.z += z_inc
   
 def _bresenham_line(p1, p2, fn):
   """Draw's a line from point 1 to point 2, with a color gradient from c1 to c2"""
@@ -327,13 +401,14 @@ def _bresenham_line(p1, p2, fn):
   
   y_positive = (p1.y <= p2.y)
   
-  x_delta = abs(p2.x - p1.x)
-  y_delta = abs(p2.y - p1.y)
-
+  x_delta = int(abs(p2.x - p1.x))
+  y_delta = int(abs(p2.y - p1.y))
+  z_delta = float(abs(p2.z - p1.z))
+  
   point = deepcopy(p1)
   
   # Generic line-drawing functions that need to be set up properly
-  def x_line(xinc, yinc):
+  def x_line(xinc, yinc, zinc):
     decision = 2 * y_delta - x_delta
     r_inc, g_inc, b_inc = p1.color.increments(p2.color, x_delta)
     for i in range(x_delta):
@@ -344,9 +419,10 @@ def _bresenham_line(p1, p2, fn):
         decision = decision + 2 * (y_delta - x_delta)
         point.y += yinc
       point.x += xinc
+      point.z += zinc
       point.color.inc(r_inc, g_inc, b_inc)
   
-  def y_line(xinc, yinc):
+  def y_line(xinc, yinc, zinc):
     decision = 2 * x_delta - y_delta
     r_inc, g_inc, b_inc = p1.color.increments(p2.color, y_delta)
     for i in range(y_delta):
@@ -356,16 +432,18 @@ def _bresenham_line(p1, p2, fn):
       else:
         decision = decision + 2 * (x_delta - y_delta)
         point.x += xinc
+      point.z += zinc
       point.y += yinc
       point.color.inc(r_inc, g_inc, b_inc)
   
+  z_inc = z_delta / sqrt(x_delta ** 2 + y_delta ** 2)
   # Determine which "Octant" the line is in
   if (y_positive):
-    if (x_delta > y_delta): x_line(1, 1)  # Octant 1
-    else:                   y_line(1, 1)  # Octant 2
+    if (x_delta > y_delta): x_line(1, 1, z_inc)  # Octant 1
+    else:                   y_line(1, 1, z_inc)  # Octant 2
   else:
-    if (x_delta > y_delta): x_line(1, -1) # Octant 8
-    else:                   y_line(1, -1) # Octant 7
+    if (x_delta > y_delta): x_line(1, -1, z_inc) # Octant 8
+    else:                   y_line(1, -1, z_inc) # Octant 7
 
 def _triangle(v1, v2, v3, fn = _set_pixel):
   """Draws a shaded triangle from v1 to v2 to v3"""
