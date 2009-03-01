@@ -16,7 +16,7 @@ from duanegl import *
 ESCAPE = '\033'
 window = 0
 drawMode = 2
-sceneChoice = 3
+sceneChoice = 2
 
 # Helper Function for floating-point ranges
 def frange(fr, to, step):
@@ -78,6 +78,11 @@ def scene_b():
 
 def scene_c():
   scene_clear()
+  
+  matrixMode(GL_MODELVIEW)
+  loadIdentity()
+  rotate(15, 0, 0, 1.0)
+  
   begin(GL_TRIANGLES)
   color3f(1.0, 0.5, 0.0)
   vertex3f(-0.5, 0.2, 0.5)
@@ -103,6 +108,10 @@ def scene_d():
   multMatrix([0.5, 0, 0, 0,   0, 1, 0, 0,    0, 0, 1, 0,   0, 0, 0, 1])
   # print current_matrix
   # print modelview_matrix_stack
+  
+  # rotate(45, 0, 0, 1.0)
+  # translate(0.2, 0, 0)
+  # fixed_scale(0.6, 0.6, 0.6,  1.0, 1.0, 1.0)
   
   begin(GL_TRIANGLES)
   color3f(1.0, 0.5, 0.0)

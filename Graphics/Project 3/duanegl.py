@@ -74,9 +74,10 @@ def loadMatrix(v16):
   elif matrix_mode == GL_MODELVIEW:
     modelview_matrix_stack[-1] = matrix(v16).reshape(4, 4)
 
-def multMatrix(v16):
+def multMatrix(v16, useGl = True):
   global matrix_mode, projection_matrix_stack, modelview_matrix_stack
-  glMultMatrixd(v16)
+  if useGl:
+    glMultMatrixd(v16)
   if matrix_mode == GL_PROJECTION:
     projection_matrix_stack[-1] = projection_matrix_stack[-1] * matrix(v16).reshape(4, 4)
   elif matrix_mode == GL_MODELVIEW:
@@ -501,3 +502,69 @@ def viewport(xmin, ymin, width, height):
   global vport
   glViewport(xmin, ymin, width, height)
   vport = Viewport(xmin, ymin, width, height)
+
+def rotate(deg, x, y, z):
+  glRotatef(deg, x, y, z)
+  theta = float(deg)/180*pi
+  m = sqrt(x**2 + y**2 + z**2)
+  a = float(x) / m
+  b = float(y) / m
+  c = float(z) / m
+  d = sqrt(b**2 + c**2)
+  rx = matrix([
+    [1.0, 0.0, 0.0, 0.0],
+    [0.0, c/d, -b/d, 0.0],
+    [0.0, b/d, c/d, 0.0],
+    [0.0, 0.0, 0.0, 1.0]])
+  ry = matrix([
+    [d, 0.0, -a, 0.0],
+    [0.0, 1.0, 0.0, 0.0],
+    [a, 0.0, d, 0.0],
+    [0.0, 0.0, 0.0, 1.0]])
+  rz = matrix([
+    [cos(theta), -sin(theta), 0.0, 0.0],
+    [sin(theta), cos(theta), 0.0, 0.0],
+    [0.0, 0.0, 1.0, 0.0],
+    [0.0, 0.0, 0.0, 1.0]])
+  multMatrix(rx.I, False)
+  multMatrix(ry.I, False)
+  multMatrix(rz, False)
+  multMatrix(ry, False)
+  multMatrix(rx, False)
+
+def translate(tx, ty, tz):
+  multMatrix(matrix([
+    [1.0, 0.0, 0.0, float(tx)],
+    [0.0, 1.0, 0.0, float(ty)],
+    [0.0, 0.0, 1.0, float(tz)],
+    [0.0, 0.0, 0.0, 1.0]]))
+
+def scale(sx, sy, sz):
+  multMatrix(matrix([
+    [float(sx), 0.0, 0.0, 0.0],
+    [0.0, float(sy), 0.0, 0.0],
+    [0.0, 0.0, float(sz), 0.0],
+    [0.0, 0.0, 0.0, 1.0]]))
+
+def ortho(l, r, b, t, n, f):
+  multMatrix(matrix([
+    [float(sx), 0.0, 0.0, 0.0],
+    [0.0, float(sy), 0.0, 0.0],
+    [0.0, 0.0, float(sz), 0.0],
+    [0.0, 0.0, 0.0, 1.0]]))
+
+def shear(sxy, sxz, syx, syz, szx, szy):
+  multMatrix(matrix([
+    [1.0, float(sxy), float(sxz), 0.0],
+    [float(syx), 1.0, float(syz), 0.0],
+    [float(szx), float(szy), 1.0, 0.0],
+    [0.0, 0.0, 0.0, 1.0]]))
+
+def fixed_scale(sx, sy, sz,  cx, cy, cz):
+  translate(-cx, -cy, -cz)
+  multMatrix(matrix([
+    [float(sx), 0.0, 0.0, 0.0],
+    [0.0, float(sy), 0.0, 0.0],
+    [0.0, 0.0, float(sz), 0.0],
+    [0.0, 0.0, 0.0, 1.0]]))
+  translate(cx, cy, cz)
