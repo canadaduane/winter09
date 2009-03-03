@@ -6,5 +6,5 @@ module Main (main) where
   
   main :: IO ()
   main = do
-    stateRef <- initialize
+    stateRef <- initializeGame
     startGame stateRef

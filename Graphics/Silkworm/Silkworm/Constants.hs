@@ -30,4 +30,8 @@ module Silkworm.Constants where
   -- | How much time should pass in each step.
   frameDelta :: Time
   frameDelta = 3.33e-3
-    
+  
+  -- | How much slower should the slow mode be.
+  slowdown :: Double
+  slowdown = 10
+  

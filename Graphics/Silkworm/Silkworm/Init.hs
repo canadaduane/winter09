@@ -1,9 +1,9 @@
-module Silkworm.Init (State, initialize) where
+module Silkworm.Init (State(..), initializeGame) where
   
   import Data.IORef (IORef, newIORef)
-  import Data.Map (Map, fromList)
+  import Data.Map (Map, assocs, fromList)
   import System.Exit
-  import Graphics.UI.GLFW (WindowMode(..), openWindow, windowTitle, windowCloseCallback)
+  import Graphics.UI.GLFW (WindowMode(..), initialize, openWindow, windowTitle, windowCloseCallback)
   import Graphics.Rendering.OpenGL
   import Physics.Hipmunk (initChipmunk, Shape, Space, newSpace, setGravity)
   import Silkworm.Constants
@@ -32,8 +32,8 @@ module Silkworm.Init (State, initialize) where
   generateRandomGround space =
     return ()
   
-  initialize :: IO (IORef State)
-  initialize = do
+  initializeGame :: IO (IORef State)
+  initializeGame = do
     -- Start physics engine
     initChipmunk
     
@@ -41,6 +41,7 @@ module Silkworm.Init (State, initialize) where
     stateRef <- initialState >>= newIORef
     
     -- Open a window using GLFW
+    assertTrue initialize "Failed to init GLFW"
     let size = (uncurry Size) windowDimensions
     assertTrue (openWindow size [] Window) "Failed to open a window"
     windowTitle $= "Silkworm"

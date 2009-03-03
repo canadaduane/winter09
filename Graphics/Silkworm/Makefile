@@ -1,5 +1,5 @@
 # Compile and link the game executable
-SilkwormGame:
+Build:
 	ghc -o SilkwormGame --make Main.hs
 
 # Make the SilkwormGame.app application for Mac OS X
