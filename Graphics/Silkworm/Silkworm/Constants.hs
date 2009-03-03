@@ -1,10 +1,10 @@
-module Silkworm.Init where
+module Silkworm.Constants where
   
-  import Physics.Hipmunk as H
+  import Physics.Hipmunk
   
   -- | Strength of the gravitational force
-  gravity :: H.Vector
-  gravity = H.Vector 0 (-800)
+  gravity :: Vector
+  gravity = Vector 0 (-800)
   
   -- | Desired (and maximum) frames per second.
   desiredFPS :: Double
@@ -24,6 +24,6 @@ module Silkworm.Init where
   maxSteps = 20
 
   -- | How much time should pass in each step.
-  frameDelta :: H.Time
+  frameDelta :: Time
   frameDelta = 3.33e-3
   

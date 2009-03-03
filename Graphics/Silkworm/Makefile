@@ -1,20 +1,14 @@
-OBJS=Silkworm.o
+OBJS=Silkworm/Constants.o Silkworm/Init.o Silkworm/Misc.o
 
 # Make the Silkworm application for Mac OS X
-MacSilkworm: Silkworm
-	utils/macosx-app Silkworm
+MacSilkworm: SilkwormGame
+	utils/macosx-app SilkwormGame
 
-Silkworm: Main.hs $(OBJS)
-	ghc -o Silkworm --make Main.hs $(OBJS)
-
-Init.o: Init.hs
-	ghc -c Init.hs
-
-Misc.o: Misc.hs
-	ghc -c Misc.hs
+SilkwormGame: Main.hs $(OBJS)
+	ghc -o SilkwormGame --make Main.hs $(OBJS)
 
 Run: MacSilkworm
-	open Silkworm.app
+	open SilkwormGame.app
 
 run: Run
 
@@ -32,5 +26,7 @@ RunPlayground: MacPlayground
 
 # Cleanup
 clean:
-	rm -f Main Silkworm Playground *.hi *.o
+	rm -f SilkwormGame Playground
+	rm -f *.hi *.o
+	rm -f Silkworm/*.hi Silkworm/*.o
 	rm -rf Playground.app Silkworm.app
