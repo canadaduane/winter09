@@ -79,24 +79,26 @@ def multMatrix(v16, useGl = True):
   if useGl:
     glMultMatrixd(v16)
   if matrix_mode == GL_PROJECTION:
-    projection_matrix_stack[-1] = projection_matrix_stack[-1] * matrix(v16).reshape(4, 4)
+    projection_matrix_stack[-1] = projection_matrix_stack[-1] * matrix(copy(v16)).reshape(4, 4)
   elif matrix_mode == GL_MODELVIEW:
-    modelview_matrix_stack[-1] = modelview_matrix_stack[-1] * matrix(v16).reshape(4, 4)
+    modelview_matrix_stack[-1] = modelview_matrix_stack[-1] * matrix(copy(v16)).reshape(4, 4)
 
 def pushMatrix():
   global matrix_mode, projection_matrix_stack, modelview_matrix_stack
   glPushMatrix()
-  if matrix_mode == GL_PROJECTION and len(projection_matrix_stack) < 3:
-    projection_matrix_stack.append(copy(projection_matrix_stack[-1]))
-  elif matrix_mode == GL_MODELVIEW and len(modelview_matrix_stack) < 33:
-    modelview_matrix_stack.append(copy(modelview_matrix_stack[-1]))
+  if matrix_mode == GL_PROJECTION:
+    newmatrix = copy(projection_matrix_stack[-1])
+    projection_matrix_stack.append(newmatrix)
+  elif matrix_mode == GL_MODELVIEW:
+    newmatrix = copy(modelview_matrix_stack[-1])
+    modelview_matrix_stack.append(newmatrix)
 
 def popMatrix():
   global matrix_mode, projection_matrix_stack, modelview_matrix_stack
   glPopMatrix();
-  if matrix_mode == GL_PROJECTION and len(projection_matrix_stack) > 1:
+  if matrix_mode == GL_PROJECTION:
     projection_matrix_stack.pop(-1)
-  elif matrix_mode == GL_MODELVIEW and len(modelview_matrix_stack) > 1:
+  elif matrix_mode == GL_MODELVIEW:
     modelview_matrix_stack.pop(-1)
   
 def begin(mode):
@@ -157,8 +159,8 @@ def _set_pixel(point):
   x = int(point.x)
   y = int(point.y)
   z = point.z
-  if x >= 0 and x < RASTER_WIDTH and \
-     y >= 0 and y < RASTER_HEIGHT:
+  if x >= vport.xmin and x < vport.width and \
+     y >= vport.ymin and y < vport.height:
     one_d = ( y * RASTER_WIDTH + x )
     pos = one_d * 3
     if z < depth_buffer[one_d] and z >= -1.0 and z <= 1.0:
@@ -548,10 +550,10 @@ def scale(sx, sy, sz):
 
 def ortho(l, r, b, t, n, f):
   multMatrix(matrix([
-    [float(sx), 0.0, 0.0, 0.0],
-    [0.0, float(sy), 0.0, 0.0],
-    [0.0, 0.0, float(sz), 0.0],
-    [0.0, 0.0, 0.0, 1.0]]))
+    [2.0/float(r-l), 0.0, 0.0, float(r+l)/float(r-l)],
+    [0.0, 2.0/float(t-b), 0.0, float(t+b)/float(t-b)],
+    [0.0, 0.0, -2.0/float(f-n), float(f+n)/float(f-n)],
+    [0.0, 0.0, 0.0, 1.0]]).transpose())
 
 def shear(sxy, sxz, syx, syz, szx, szy):
   multMatrix(matrix([
@@ -561,10 +563,11 @@ def shear(sxy, sxz, syx, syz, szx, szy):
     [0.0, 0.0, 0.0, 1.0]]))
 
 def fixed_scale(sx, sy, sz,  cx, cy, cz):
-  translate(-cx, -cy, -cz)
+  translate(cx, cy, cz)
   multMatrix(matrix([
     [float(sx), 0.0, 0.0, 0.0],
     [0.0, float(sy), 0.0, 0.0],
     [0.0, 0.0, float(sz), 0.0],
     [0.0, 0.0, 0.0, 1.0]]))
-  translate(cx, cy, cz)
+  translate(-cx, -cy, -cz)
+

@@ -16,7 +16,7 @@ from duanegl import *
 ESCAPE = '\033'
 window = 0
 drawMode = 2
-sceneChoice = 2
+sceneChoice = 3
 
 # Helper Function for floating-point ranges
 def frange(fr, to, step):
@@ -30,6 +30,8 @@ def scene_clear():
   disable(GL_POINT_SMOOTH)
   pointSize(1)
   lineWidth(1)
+  matrixMode(GL_MODELVIEW)
+  loadIdentity()
   
 def vx(value):
   return (float(value) - 320) / 640
@@ -41,7 +43,7 @@ def scene_a():
   scene_clear()
   radius = 90.0
   
-  viewport(0, 0, 680, 480)
+  viewport(0, 0, 640, 480)
   
   begin(GL_POINTS)
   color3f(1.0, 1.0, 1.0)
@@ -99,28 +101,63 @@ def scene_c():
   vertex3f(0.5, -0.2, 0.5)
   end()
 
+def tree(depth):
+  r2 = 1.0/sqrt(2);
+  mdown = matrix(array([[0,-r2,0,0], [r2,0,0,0], [0,0,1,0], [0,-r2,0,1]], dtype='float32')).transpose()
+  mup = matrix(array([[0,r2,0,0], [-r2,0,0,0], [0,0,1,0], [0,r2,0,1]], dtype='float32')).transpose()
+  
+  if (depth <= 0):
+    return
+  
+  begin(GL_LINES)
+  vertex2f(0,-r2)
+  vertex2f(0, r2)
+  end()
+  
+  pushMatrix()
+  multMatrix(mdown)
+  tree(depth-1)
+  popMatrix()
+  pushMatrix()
+  multMatrix(mup)
+  tree(depth-1)
+  popMatrix()
+
 def scene_d():
   scene_clear()
-  viewport(0, 0, 320, 240)
+  viewport(0, 0, 640, 480)
   
-  matrixMode(GL_MODELVIEW)
-  loadMatrix([1, 0, 0, 0,     0, -1, 0, 0,   0, 0, 1, 0,   0, 0, 0, 1])
-  multMatrix([0.5, 0, 0, 0,   0, 1, 0, 0,    0, 0, 1, 0,   0, 0, 0, 1])
+  # loadMatrix([1, 0, 0, 0,     0, -1, 0, 0,   0, 0, 1, 0,   0, 0, 0, 1])
+  # multMatrix([0.5, 0, 0, 0,   0, 1, 0, 0,    0, 0, 1, 0,   0, 0, 0, 1])
   # print current_matrix
   # print modelview_matrix_stack
   
-  # rotate(45, 0, 0, 1.0)
-  # translate(0.2, 0, 0)
-  # fixed_scale(0.6, 0.6, 0.6,  1.0, 1.0, 1.0)
+  ortho(-1, 2, -1, 2, -1, 2)
+  tree(8)
   
-  begin(GL_TRIANGLES)
-  color3f(1.0, 0.5, 0.0)
-  vertex3f(-0.5, 0.2, 0.5)
-  color3f(1.0, 0.8, 0.0)
-  vertex3f(0.0, -0.5, 1.3)
-  color3f(1.0, 0.2, 0.0)
-  vertex3f(0.5, 0.2, -0.5)
-  end()
+  # rotate(45, 0.5, 0, 1.0)
+  # translate(0.2, 0.5, 0)
+  # scale(0.5, 0.5, 1.0)
+  # fixed_scale(0.6, 0.6, 0.6,  0.0, 0.0, 0.0)
+  # shear(0.5, 0.5, 0.0, 0.0, 0.0, 0.0)
+    
+  # begin(GL_TRIANGLES)
+  # color3f(1.0, 0.5, 0.0)
+  # vertex3f(-0.5, 0.2, 0.5)
+  # color3f(1.0, 0.8, 0.0)
+  # vertex3f(0.0, -0.5, 1.3)
+  # color3f(1.0, 0.2, 0.0)
+  # vertex3f(0.5, 0.2, -0.5)
+  # end()
+
+  # begin(GL_TRIANGLES)
+  # color3f(1.0, 0.5, 0.0)
+  # vertex3f(0.0, 0.0, 0.0)
+  # color3f(1.0, 0.8, 0.0)
+  # vertex3f(0.0, 2.0, 0.0)
+  # color3f(2.0, 2.0, 0.0)
+  # vertex3f(0.5, 0.2, -0.5)
+  # end()
   
 # We call this right after our OpenGL window is created.
 def InitGL(width, height):
