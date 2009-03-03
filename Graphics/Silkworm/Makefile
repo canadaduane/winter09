@@ -1,13 +1,14 @@
-OBJS=Silkworm/Constants.o Silkworm/Init.o Silkworm/Misc.o
-
-# Make the Silkworm application for Mac OS X
-MacSilkworm: SilkwormGame
-	utils/macosx-app SilkwormGame
-
-SilkwormGame: *.hs
+# Compile and link the game executable
+SilkwormGame:
 	ghc -o SilkwormGame --make Main.hs
 
-run: MacSilkworm
+# Make the SilkwormGame.app application for Mac OS X
+MacSilkwormGame:
+	ghc -o SilkwormGame --make Main.hs
+	utils/macosx-app SilkwormGame
+
+# Run the Mac OS X app
+run: MacSilkwormGame
 	open SilkwormGame.app
 
 
@@ -27,4 +28,4 @@ clean:
 	rm -f SilkwormGame Playground
 	rm -f *.hi *.o
 	rm -f Silkworm/*.hi Silkworm/*.o
-	rm -rf Playground.app Silkworm.app
+	rm -rf Playground.app SilkwormGame.app

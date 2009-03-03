@@ -1,9 +1,13 @@
-module Silkworm.Init (State, initialState) where
+module Silkworm.Init (State, initialize) where
   
-  import Data.Map
-  import Physics.Hipmunk
+  import Data.IORef (IORef, newIORef)
+  import Data.Map (Map, fromList)
+  import System.Exit
+  import Graphics.UI.GLFW (WindowMode(..), openWindow, windowTitle, windowCloseCallback)
+  import Graphics.Rendering.OpenGL
+  import Physics.Hipmunk (initChipmunk, Shape, Space, newSpace, setGravity)
   import Silkworm.Constants
-  -- import Const
+  import Silkworm.Misc
   
   data State = State {
     stSpace  :: Space,
@@ -27,4 +31,35 @@ module Silkworm.Init (State, initialState) where
   generateRandomGround :: Space -> IO ()
   generateRandomGround space =
     return ()
+  
+  initialize :: IO (IORef State)
+  initialize = do
+    -- Start physics engine
+    initChipmunk
+    
+    -- Initialize state reference variable
+    stateRef <- initialState >>= newIORef
+    
+    -- Open a window using GLFW
+    let size = (uncurry Size) windowDimensions
+    assertTrue (openWindow size [] Window) "Failed to open a window"
+    windowTitle $= "Silkworm"
+    
+    -- Initialize OpenGL
+    clearColor  $= Color4 1 1 1 1
+    pointSmooth $= Enabled
+    pointSize   $= 3
+    lineSmooth  $= Enabled
+    lineWidth   $= 2.5
+    blend       $= Enabled
+    blendFunc   $= (SrcAlpha, OneMinusSrcAlpha)
+    matrixMode  $= Projection
+    loadIdentity
+    ortho (-320) 320 (-240) 240 (-1) 1
+    translate (Vector3 0.5 0.5 0 :: Vector3 GLfloat)
+    
+    -- Close window nicely
+    windowCloseCallback   $= exitWith ExitSuccess
+    
+    return stateRef
     

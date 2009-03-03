@@ -1,9 +1,10 @@
 module Main (main) where
 
-  import Silkworm.Constants
+  import Data.IORef
   import Silkworm.Init
-  import Silkworm.Misc
+  import Silkworm.Game
   
   main :: IO ()
   main = do
-    putStrLn "Ok."
+    stateRef <- initialize
+    startGame stateRef

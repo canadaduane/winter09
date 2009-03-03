@@ -1,4 +1,4 @@
-module HipmunkHelper where
+module Silkworm.HipmunkHelper where
   
   import Physics.Hipmunk
   

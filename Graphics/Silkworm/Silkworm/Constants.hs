@@ -1,6 +1,10 @@
 module Silkworm.Constants where
   
+  import GHC.Int (Int32)
   import Physics.Hipmunk
+  
+  windowDimensions :: (Int32, Int32)
+  windowDimensions = (800, 600)
   
   -- | Strength of the gravitational force
   gravity :: Vector
@@ -26,4 +30,4 @@ module Silkworm.Constants where
   -- | How much time should pass in each step.
   frameDelta :: Time
   frameDelta = 3.33e-3
-  
+    
