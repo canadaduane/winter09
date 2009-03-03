@@ -68,7 +68,7 @@ initialState = do
   -- The (empty) space
   space  <- H.newSpace
   H.setElasticIterations space 10
-  H.setGravity space $ H.Vector 0 (-230)
+  H.setGravity space $ H.Vector 0 (-800)
 
   -- The ground
   static <- H.newBody H.infinity H.infinity

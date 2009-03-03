@@ -5,10 +5,13 @@ MacSilkworm: Silkworm
 	utils/macosx-app Silkworm
 
 Silkworm: Main.hs $(OBJS)
-	ghc --make Main.hs $(OBJS)
+	ghc -o Silkworm --make Main.hs $(OBJS)
 
-Silkworm.o: Silkworm.hs
-	ghc -c Silkworm.hs
+Init.o: Init.hs
+	ghc -c Init.hs
+
+Misc.o: Misc.hs
+	ghc -c Misc.hs
 
 Run: MacSilkworm
 	open Silkworm.app
