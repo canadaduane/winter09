@@ -1,0 +1,156 @@
+#------------------------------------------------------------------------
+#  Helper script to create a MacOS X application from a binary.
+#
+#  Daan Leijen and Arthur Baars.
+#
+#  Copyright (c) 2003,2004 Daan Leijen, Arthur Baars
+#------------------------------------------------------------------------
+
+# $Id: macosx-app-template,v 1.4 2005/04/29 14:16:51 dleijen Exp $
+arg=""
+
+# variables
+program=""
+verbose="no"
+
+if test -z "$rezcomp"; then
+ rezcomp="/Developer/Tools/Rez -t APPL Carbon.r $rezfile -o"
+fi
+ 
+# Parse command-line arguments
+while : ; do
+  # put optional argument in the $arg variable
+  case "$1" in
+   -*=*) arg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+   *)    arg= ;;
+  esac
+
+  # match on the arguments
+  case "$1" in
+    "") break;;
+    -\?|--help)
+        echo "usage:"
+        echo "  macosx-app [options] <program (a.out)>"
+        echo ""
+        echo "options: [defaults in brackets]"
+        echo "  --help | -?         show this information"
+	echo "  --verbose | -v      be verbose"
+        echo ""
+        exit 1;;
+    -v|--verbose)
+        verbose="yes";;
+    -*) echo "error: Unknown option \"$1\". Use \"--help\" to show valid options." 1>&2
+        echo "" 1>&2
+        exit 2;;
+    *)  if test "$program"; then
+         echo "error: [program] is specified twice. Use \"--help\" to show valid options." 1>&2
+	 echo ""1>&2
+	 exit 2
+	fi
+	program="$1";;
+  esac
+  shift
+done
+
+# default program
+if test -z "$program"; then
+  echo "error: you need to specify a program. Use \"--help\" to show valid options." 1>&2
+  echo "" 1>&2
+  exit 2
+fi
+
+# show when verbose is true.
+show()
+{
+  if test "$verbose" = "yes"; then 
+    echo "$1"
+  fi
+}
+
+# link with default resources
+if test "$rezcomp"; then
+ show "creating resource:" 
+ show " > $rezcomp $program"
+ $rezcomp $program
+fi
+
+# create a bundle
+bundle="$program.app/Contents"
+
+# create bundle directories
+show "creating app directories:"
+show " - $program.app"
+mkdir -p $program.app
+show " - $bundle"
+mkdir -p $bundle
+show " - $bundle/MacOS"
+mkdir -p $bundle/MacOS
+show " - $bundle/Resources"
+mkdir -p $bundle/Resources
+
+# standard files
+if test "$rezfile"; then
+ cp -f ${rezfile}src $bundle/Resources/$program.rsrc
+fi
+cp -f $program $bundle/MacOS/
+
+# no icons for now :-(
+# cp -f $wxwinsrc/mac/wxmac.icns $bundle/Resources/wxmac.icns
+
+# package info
+show "creating package info:"
+show " - $bundle/PkgInfo"
+echo -n "APPL????" > $bundle/PgkInfo
+
+
+#sed -e "s/IDENTIFIER/`echo $programdir | sed 's,/,.,g'`/" \
+#    -e "s/EXECUTABLE/$program/" \
+#    -e "s/VERSION/$majorversion.$minorversion.$release/" $wxwinsrc/mac/Info.plist.in > $bundle/Info.plist
+
+# program identifier & version
+curdir="`pwd`"
+identifier="`echo $curdir | sed 's|/|.|g'`"
+programversion="$version"
+
+# create program information file
+cat > $bundle/Info.plist << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+        <key>CFBundleInfoDictionaryVersion</key>
+        <string>6.0</string>
+        <key>CFBundleIdentifier</key>
+        <string>org.wxwindows.$identifier</string>
+        <key>CFBundleDevelopmentRegion</key>
+        <string>English</string>
+        <key>CFBundleExecutable</key>
+        <string>$program</string>
+        <key>CFBundleIconFile</key>
+        <string>wxmac.icns</string>
+        <key>CFBundleName</key>
+        <string>$program</string>
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
+        <key>CFBundleSignature</key>
+        <string>????</string>
+        <key>CFBundleVersion</key>
+        <string>$programversion</string>
+        <key>CFBundleShortVersionString</key>
+        <string>$programversion</string>
+        <key>CFBundleGetInfoString</key>
+        <string>$program version $programversion, (c) 2004 wxWidgets</string>
+        <key>CFBundleLongVersionString</key>
+        <string>$programversion, (c) 2004 wxWidgets</string>
+        <key>NSHumanReadableCopyright</key>
+        <string>Copyright 2004 wxWidgets</string>
+        <key>LSRequiresCarbon</key>
+        <true/>
+        <key>CSResourcesFileMapped</key>
+        <true/>
+</dict>
+</plist>
+EOF
+
+show "done."
+show ""
