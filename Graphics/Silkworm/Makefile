@@ -4,13 +4,11 @@ OBJS=Silkworm/Constants.o Silkworm/Init.o Silkworm/Misc.o
 MacSilkworm: SilkwormGame
 	utils/macosx-app SilkwormGame
 
-SilkwormGame: Main.hs $(OBJS)
-	ghc -o SilkwormGame --make Main.hs $(OBJS)
+SilkwormGame: *.hs
+	ghc -o SilkwormGame --make Main.hs
 
-Run: MacSilkworm
+run: MacSilkworm
 	open SilkwormGame.app
-
-run: Run
 
 
 # Make the Hipmunk Playground application for Mac OS X
