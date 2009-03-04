@@ -1,6 +1,7 @@
 module Silkworm.HipmunkHelper where
   
   import Physics.Hipmunk
+  import Silkworm.Constants (gravity)
   
   midpoint :: Vector -> Vector -> Vector
   midpoint (Vector x1 y1) (Vector x2 y2) = Vector ((x1 + x2) / 2) ((y1 + y2) / 2)
@@ -19,4 +20,9 @@ module Silkworm.HipmunkHelper where
     return body
     where
       line = LineSegment p1 p2 1.0
-    
+  
+  newSpaceWithGravity :: IO Space
+  newSpace = do
+    space  <- newSpace
+    setGravity space gravity
+    return space

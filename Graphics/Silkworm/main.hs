@@ -1,10 +1,23 @@
 module Main (main) where
 
-  import Data.IORef
-  import Silkworm.Init
-  import Silkworm.Game
+  import Physics.Hipmunk (initChipmunk)
+  import Silkworm.WindowHelper (initWindow)
+  import Silkworm.OpenGLHelper (initOpenGL)
+  import Silkworm.Title (showTitleScreen)
   
   main :: IO ()
   main = do
-    stateRef <- initializeGame
-    startGame stateRef
+    initializeSilkworm
+    showTitleScreen
+  
+  initializeSilkworm :: IO ()
+  initializeSilkworm = do
+    -- Open the game window
+    initWindow
+
+    -- Prepare OpenGL
+    initOpenGL
+
+    -- Start physics engine
+    initChipmunk
+  
