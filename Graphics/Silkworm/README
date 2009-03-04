@@ -1,0 +1,25 @@
+Installation:
+
+  Silkworm requires the following external libraries:
+
+    - OpenGL
+        Standardized 3D graphics library
+    - libdevil @1.6.8-rc2 (devel, multimedia)
+        Library to develop applications with powerful image loading capabilities
+        (sudo port install libdevil)
+    
+  Install the following Cabal packages for Haskell:
+    
+    - OpenGL
+        Bindings to the OpenGL library
+        (cabal install opengl)
+    - DevIL
+        Bindings to the libdevil image library
+        (cabal install codec-image-devil)
+    - Hipmunk-0.2.1
+        Chipmunk 2D physics engine + binding
+        (cabal install hipmunk)
+    - GLFW-0.3
+        Cross-platform native window toolkit
+        (cabal install glfw)
+  
