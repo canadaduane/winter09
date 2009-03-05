@@ -20,4 +20,3 @@ module Main (main) where
 
     -- Start physics engine
     initChipmunk
-  

@@ -1,5 +1,6 @@
 module Silkworm.Title where
   
+  import Control.Monad (forM, forM_)
   import qualified Data.Map as Map
   import Data.IORef (IORef, newIORef)
   import Graphics.UI.GLFW (
@@ -14,55 +15,70 @@ module Silkworm.Title where
     preservingMatrix)
   import Graphics.Rendering.OpenGL.GL.StateVar (get)
   import Silkworm.WindowHelper (getPressedKeys, keyIsPressed)
+  import Silkworm.ImageHelper (loadTexture, renderTexture)
   
   type KeyMap = Map.Map Key Bool
   
   data TitleObject = TitleObject {
     tPosition   :: (GLfloat, GLfloat),
     tPoints     :: [(GLfloat, GLfloat)],
-    tRadians    :: Float
+    tRadians    :: Float,
+    tTextureId  :: Integer
   }
   
   data TitleState = TitleState {
     tsObjects :: [TitleObject]
   }
-
+  
   -- | Return a TitleState object set to reasonable initial values
   newTitleState :: IO TitleState
   newTitleState = do
+    -- bgImage <- readImage "background.png"
+    -- let objs = [TitleObject (0, 0) [] 0.0 bgImage]
     let objs = []
     return (TitleState objs)
   
   showTitleScreen :: IO ()
   showTitleScreen = do
-    tsStateVar <- newTitleState >>= newIORef
-    titleScreenLoop tsStateVar
-
-  titleScreenLoop :: IORef TitleState -> IO ()
-  titleScreenLoop tsStateVar = do
+    loadTextures
+    state <- newTitleState
+    titleScreenLoop state
+  
+  titleScreenLoop :: TitleState -> IO ()
+  titleScreenLoop state = do
     keySet <- getPressedKeys [SpecialKey ESC]
-    updateDisplay tsStateVar
+    updateDisplay state
     if keyIsPressed (SpecialKey ESC) keySet
       then return ()
-      else titleScreenLoop tsStateVar
-
+      else titleScreenLoop state
+  
+  -- | Load title screen textures into OpenGL buffers
+  loadTextures :: IO ()
+  loadTextures = do
+    loadTexture "background.png" 0
+    return ()
+    
   -- | Renders the current state.
-  updateDisplay :: IORef TitleState -> IO ()
-  updateDisplay tsStateVar = do
-    state <- get tsStateVar
+  updateDisplay :: TitleState -> IO ()
+  updateDisplay state = do
     clear [ColorBuffer]
-    drawTitle
+    drawTitle state
     -- when (slowKey == Press) drawSlowMotion
     -- forM_ (M.assocs $ stShapes state) (fst . snd) -- Draw each one
     swapBuffers
-
-  drawTitle :: IO ()
-  drawTitle = preservingMatrix $ do
-    scale 0.75 0.75 (1.0 :: GLfloat)
+  
+  -- | Draw the Silkworm title screen
+  drawTitle :: TitleState -> IO ()
+  drawTitle state = preservingMatrix $ do
+    -- forM_ (tsObjects state) $ \(TitleObject {tImage = image}) -> do
+    --   
+    renderTexture 0 (-400) (-300) 800 600
+    
+    scale 3.75 3.75 (1.0 :: GLfloat)
     let render str = do
           translate (Vector3 0.0 (-16) (0.0 :: GLfloat))
           renderString Fixed8x16 str
-
-    color $ Color3 0.0 0.0 (1.0 :: GLfloat)
+    
+    color $ Color3 1.0 1.0 (1.0 :: GLfloat)
     render "Silkworm!"
     

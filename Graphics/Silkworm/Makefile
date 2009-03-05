@@ -6,6 +6,7 @@ Build:
 MacSilkwormGame:
 	ghc -o SilkwormGame --make Main.hs
 	utils/macosx-app SilkwormGame
+	cp -r Resources/ SilkwormGame.app/Contents/Resources/
 
 # Run the Mac OS X app
 run: MacSilkwormGame

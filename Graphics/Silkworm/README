@@ -1,25 +1,52 @@
-Installation:
+Silkworm!
+Copyright (C) 2009 Duane Johnson
+
+== About:
+
+  Author:  Duane Johnson
+  Email:   duane.johnson@gmail.com
+  License: LGPL
+
+== Installation:
 
   Silkworm requires the following external libraries:
 
     - OpenGL
         Standardized 3D graphics library
-    - libdevil @1.6.8-rc2 (devel, multimedia)
-        Library to develop applications with powerful image loading capabilities
-        (sudo port install libdevil)
     
   Install the following Cabal packages for Haskell:
     
     - OpenGL
         Bindings to the OpenGL library
         (cabal install opengl)
-    - DevIL
-        Bindings to the libdevil image library
-        (cabal install codec-image-devil)
+    - pngload-0.1 (Codec.Image.PNG)
+        Native Haskell PNG loader
+        (cabal install pngload)
     - Hipmunk-0.2.1
         Chipmunk 2D physics engine + binding
         (cabal install hipmunk)
     - GLFW-0.3
-        Cross-platform native window toolkit
+        Cross-platform native window library
         (cabal install glfw)
+
+== Compiling:
+
+  Silkworm has been developed and tested on a Mac, so it currently does not support Linux or Windows (but feel free to try if you'd like, and let me know how it goes!).
+
+  After following the installation instructions above:
+  
+  $ make
+  
+  And if that is successful:
+  
+  $ make run
+
+  If things go terriby wrong, you might first try to get the playground running:
+  
+  $ make Playground
+  
+  And then:
+  
+  $ make RunPlayground
+  
   
