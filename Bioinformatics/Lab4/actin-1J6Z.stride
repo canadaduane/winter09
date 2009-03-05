@@ -1,0 +1,494 @@
+REM  --------------------------------------------------------------------  1J6Z
+REM                                                                        1J6Z
+REM  STRIDE: Knowledge-based secondary structure assignment                1J6Z
+REM  Please cite: D.Frishman & P.Argos, Proteins XX, XXX-XXX, 1995         1J6Z
+REM                                                                        1J6Z
+REM  Residue accessible surface area calculation                           1J6Z
+REM  Please cite: F.Eisenhaber & P.Argos, J.Comp.Chem. 14, 1272-1280, 1993 1J6Z
+REM               F.Eisenhaber et al., J.Comp.Chem., 1994, submitted       1J6Z
+REM                                                                        1J6Z
+REM  ------------------------ General information -----------------------  1J6Z
+REM                                                                        1J6Z
+HDR  CONTRACTILE PROTEIN                     15-MAY-01   1J6Z              1J6Z
+CMP  MOL_ID: 1;                                                            1J6Z
+CMP   MOLECULE: ACTIN ALPHA 1;                                             1J6Z
+CMP   CHAIN: A                                                             1J6Z
+SRC  MOL_ID: 1;                                                            1J6Z
+SRC   ORGANISM_SCIENTIFIC: ORYCTOLAGUS CUNICULUS;                          1J6Z
+SRC   ORGANISM_COMMON: RABBIT;                                             1J6Z
+SRC   OTHER_DETAILS: MUSCLE                                                1J6Z
+AUT  L.R.OTTERBEIN,P.GRACEFFA,R.DOMINGUEZ                                  1J6Z
+REM                                                                        1J6Z
+REM  -------------------- Secondary structure summary -------------------  1J6Z
+REM                                                                        1J6Z
+CHN  /home/proj/stride/tmp/tmpxG33nspdb A                                  1J6Z
+REM                                                                        1J6Z
+REM                .         .         .         .         .               1J6Z
+SEQ  1    ETTALVCDNGSGLVKAGFAGDDAPRAVFPSIVGRPRHQGVMVGMGQKDSY   50          1J6Z
+STR           EEEEETTTEEEEEETTTTTTTEEEETTEEE   HHHHHHH     E               1J6Z
+REM                                                                        1J6Z
+REM                .         .         .         .         .               1J6Z
+SEQ  51   VGDEAQSKRGILTLKYPIEGIITNWDDMEKIWHHTFYNELRVAPEEHPTL  100          1J6Z
+STR       EHHHHHHHTTTTEEETTTTTT   HHHHHHHHHHHHHHH    GGG  EE               1J6Z
+REM                                                                        1J6Z
+REM                .         .         .         .         .               1J6Z
+SEQ  101  LTEAPLNPKANREKMTQIMFETFNVPAMYVAIQAVLSLYASGRTTGIVLD  150          1J6Z
+STR       EEETTTT HHHHHHHHHHHHHHH   EEEEEEHHHHHHHHH    EEEEE               1J6Z
+REM                                                                        1J6Z
+REM                .         .         .         .         .               1J6Z
+SEQ  151  SGDGVTHNVPIYEGYALPHAIMRLDLAGRDLTDYLMKILTERGYSFVTTA  200          1J6Z
+STR       ETTTTEEEEEEETTEE GGG EEETT HHHHHHHHHHHHHHH      HH               1J6Z
+REM                                                                        1J6Z
+REM                .         .         .         .         .               1J6Z
+SEQ  201  EREIVRDIKEKLCYVALDFENEMATAASSSSLEKSYELPDGQVITIGNER  250          1J6Z
+STR       HHHHHHHHHHHH   TTTHHHHHHHGGGTTTT EEEETTTT EEEE HHH               1J6Z
+REM                                                                        1J6Z
+REM                .         .         .         .         .               1J6Z
+SEQ  251  FRCPETLFQPSFIGMESAGIHETTYNSIMKCDIDIRKDLYANNVMSGGTT  300          1J6Z
+STR       HHHHHHHH GGGG      HHHHHHHHHH   GGGHHHHHH EEEE GGG               1J6Z
+REM                                                                        1J6Z
+REM                .         .         .         .         .               1J6Z
+SEQ  301  MYPGIADRMQKEITALAPSTMKIKIIAPPERKYSVWIGGSILASLSTFQQ  350          1J6Z
+STR        TTTHHHHHHHHHHHH TTTT   EE TTTGGGHHHHHHHHHHHTGGGGG               1J6Z
+REM                                                                        1J6Z
+REM                .                                                       1J6Z
+SEQ  351  MWITKQEYDEAGPSIVHR                                  368          1J6Z
+STR       G EEHHHHHHHTTTTTT                                                1J6Z
+REM                                                                        1J6Z
+REM                                                                        1J6Z
+REM                                                                        1J6Z
+LOC  AlphaHelix   GLN    41 A      MET     47 A                            1J6Z
+LOC  AlphaHelix   GLY    55 A      LYS     61 A                            1J6Z
+LOC  AlphaHelix   TRP    79 A      GLU     93 A                            1J6Z
+LOC  AlphaHelix   LYS   113 A      PHE    127 A                            1J6Z
+LOC  AlphaHelix   GLN   137 A      SER    145 A                            1J6Z
+LOC  AlphaHelix   GLY   182 A      ARG    196 A                            1J6Z
+LOC  AlphaHelix   THR   203 A      LEU    216 A                            1J6Z
+LOC  AlphaHelix   PHE   223 A      THR    229 A                            1J6Z
+LOC  AlphaHelix   ASN   252 A      PHE    262 A                            1J6Z
+LOC  AlphaHelix   ILE   274 A      MET    283 A                            1J6Z
+LOC  AlphaHelix   ARG   290 A      ALA    295 A                            1J6Z
+LOC  AlphaHelix   ILE   309 A      LEU    320 A                            1J6Z
+LOC  AlphaHelix   SER   338 A      SER    348 A                            1J6Z
+LOC  AlphaHelix   LYS   359 A      ALA    365 A                            1J6Z
+LOC  310Helix     PRO    98 A      GLU    100 A                            1J6Z
+LOC  310Helix     PRO   172 A      ALA    174 A                            1J6Z
+LOC  310Helix     ALA   230 A      SER    232 A                            1J6Z
+LOC  310Helix     PRO   264 A      ILE    267 A                            1J6Z
+LOC  310Helix     ILE   287 A      ILE    289 A                            1J6Z
+LOC  310Helix     GLY   302 A      THR    304 A                            1J6Z
+LOC  310Helix     ARG   335 A      TYR    337 A                            1J6Z
+LOC  310Helix     SER   350 A      MET    355 A                            1J6Z
+LOC  Strand       LEU     8 A      ASN     12 A                            1J6Z
+LOC  Strand       LEU    16 A      PHE     21 A                            1J6Z
+LOC  Strand       ALA    29 A      PRO     32 A                            1J6Z
+LOC  Strand       VAL    35 A      ARG     37 A                            1J6Z
+LOC  Strand       TYR    53 A      VAL     54 A                            1J6Z
+LOC  Strand       THR    66 A      LYS     68 A                            1J6Z
+LOC  Strand       THR   103 A      GLU    107 A                            1J6Z
+LOC  Strand       ALA   131 A      ILE    136 A                            1J6Z
+LOC  Strand       GLY   150 A      SER    155 A                            1J6Z
+LOC  Strand       THR   160 A      TYR    166 A                            1J6Z
+LOC  Strand       TYR   169 A      ALA    170 A                            1J6Z
+LOC  Strand       MET   176 A      LEU    178 A                            1J6Z
+LOC  Strand       LYS   238 A      GLU    241 A                            1J6Z
+LOC  Strand       VAL   247 A      ILE    250 A                            1J6Z
+LOC  Strand       ASN   297 A      SER    300 A                            1J6Z
+LOC  Strand       ILE   329 A      ILE    330 A                            1J6Z
+LOC  Strand       ILE   357 A      THR    358 A                            1J6Z
+LOC  TurnI        GLY    13 A      LEU     16 A                            1J6Z
+LOC  TurnII       PHE    21 A      ASP     24 A                            1J6Z
+LOC  TurnIV       ASP    24 A      PRO     27 A                            1J6Z
+LOC  TurnVIII     PRO    27 A      VAL     30 A                            1J6Z
+LOC  TurnII       LYS    61 A      ILE     64 A                            1J6Z
+LOC  TurnIV       ARG    62 A      LEU     65 A                            1J6Z
+LOC  TurnIV       TYR    69 A      GLU     72 A                            1J6Z
+LOC  TurnIV       ILE    71 A      ILE     75 A                            1J6Z
+LOC  TurnII       ALA   108 A      ASN    111 A                            1J6Z
+LOC  TurnI        GLY   156 A      VAL    159 A                            1J6Z
+LOC  TurnIV       ILE   165 A      GLY    168 A                            1J6Z
+LOC  TurnI'       TYR   166 A      TYR    169 A                            1J6Z
+LOC  TurnVIII     ALA   220 A      PHE    223 A                            1J6Z
+LOC  TurnI        SER   233 A      LEU    236 A                            1J6Z
+LOC  TurnI        LEU   242 A      GLY    245 A                            1J6Z
+LOC  TurnII       TYR   306 A      ILE    309 A                            1J6Z
+LOC  TurnI        PRO   322 A      MET    325 A                            1J6Z
+LOC  TurnI        PRO   332 A      ARG    335 A                            1J6Z
+LOC  TurnI        GLY   366 A      ILE    369 A                            1J6Z
+LOC  TurnI        PRO   367 A      VAL    370 A                            1J6Z
+LOC  TurnI        SER   368 A      HIS    371 A                            1J6Z
+LOC  GammaInv     PRO    32 A      ILE     34 A                            1J6Z
+LOC  GammaInv     LEU   178 A      LEU    180 A                            1J6Z
+LOC  GammaInv     SER   348 A      SER    350 A                            1J6Z
+REM                                                                        1J6Z
+REM  --------------- Detailed secondary structure assignment-------------  1J6Z
+REM                                                                        1J6Z
+REM  |---Residue---|    |--Structure--|   |-Phi-|   |-Psi-|  |-Area-|      1J6Z
+ASG  GLU A    4    1    C          Coil    360.00    112.49     126.1      1J6Z
+ASG  THR A    5    2    C          Coil   -135.99    -74.49     137.2      1J6Z
+ASG  THR A    6    3    C          Coil   -110.19    119.21      60.1      1J6Z
+ASG  ALA A    7    4    C          Coil    -79.18    151.34       9.4      1J6Z
+ASG  LEU A    8    5    E        Strand   -105.63    145.68       2.2      1J6Z
+ASG  VAL A    9    6    E        Strand   -122.28    123.39       0.9      1J6Z
+ASG  CYS A   10    7    E        Strand   -123.51    108.51       4.2      1J6Z
+ASG  ASP A   11    8    E        Strand    -97.51    105.37       7.6      1J6Z
+ASG  ASN A   12    9    E        Strand    -78.91     81.94       3.0      1J6Z
+ASG  GLY A   13   10    T          Turn    -81.44    156.35       7.5      1J6Z
+ASG  SER A   14   11    T          Turn    -59.53    -29.60      10.7      1J6Z
+ASG  GLY A   15   12    T          Turn   -124.34    -29.39       6.0      1J6Z
+ASG  LEU A   16   13    E        Strand   -131.12    134.52      68.6      1J6Z
+ASG  VAL A   17   14    E        Strand    -85.67    129.15       0.0      1J6Z
+ASG  LYS A   18   15    E        Strand   -112.52    117.94      29.7      1J6Z
+ASG  ALA A   19   16    E        Strand   -141.49    153.90       0.2      1J6Z
+ASG  GLY A   20   17    E        Strand    179.21   -159.98       0.0      1J6Z
+ASG  PHE A   21   18    E        Strand   -106.61    138.23      26.3      1J6Z
+ASG  ALA A   22   19    T          Turn    -59.10    138.64      17.3      1J6Z
+ASG  GLY A   23   20    T          Turn    100.50    -31.42      49.2      1J6Z
+ASG  ASP A   24   21    T          Turn    -64.91    153.84      41.9      1J6Z
+ASG  ASP A   25   22    T          Turn    -79.81    -17.59     146.8      1J6Z
+ASG  ALA A   26   23    T          Turn   -155.94    158.83      45.6      1J6Z
+ASG  PRO A   27   24    T          Turn    -68.56    138.11      15.5      1J6Z
+ASG  ARG A   28   25    T          Turn    -78.90    -25.46     163.5      1J6Z
+ASG  ALA A   29   26    E        Strand   -121.21    121.71       2.9      1J6Z
+ASG  VAL A   30   27    E        Strand   -130.15    112.11      52.9      1J6Z
+ASG  PHE A   31   28    E        Strand   -145.45    163.96       2.5      1J6Z
+ASG  PRO A   32   29    E        Strand    -68.45    140.29      10.6      1J6Z
+ASG  SER A   33   30    T          Turn    -86.83     65.12       0.0      1J6Z
+ASG  ILE A   34   31    T          Turn   -131.15    140.47       2.0      1J6Z
+ASG  VAL A   35   32    E        Strand   -125.56    131.66       0.8      1J6Z
+ASG  GLY A   36   33    E        Strand   -117.50    138.74       0.0      1J6Z
+ASG  ARG A   37   34    E        Strand   -129.68    136.25      71.3      1J6Z
+ASG  PRO A   38   35    C          Coil    -60.13    155.51      17.8      1J6Z
+ASG  ARG A   39   36    C          Coil   -106.37     -1.90     159.0      1J6Z
+ASG  HIS A   40   37    C          Coil   -147.21    137.69     118.3      1J6Z
+ASG  GLN A   41   38    H    AlphaHelix    -61.60    -40.87     120.4      1J6Z
+ASG  GLY A   42   39    H    AlphaHelix    -62.19    -39.52      44.3      1J6Z
+ASG  VAL A   43   40    H    AlphaHelix    -67.78    -41.09      52.3      1J6Z
+ASG  MET A   44   41    H    AlphaHelix    -57.24    -50.75      34.7      1J6Z
+ASG  VAL A   45   42    H    AlphaHelix    -66.92    -42.85      65.9      1J6Z
+ASG  GLY A   46   43    H    AlphaHelix    -64.75    -25.62      69.5      1J6Z
+ASG  MET A   47   44    H    AlphaHelix    -94.29      4.77      51.4      1J6Z
+ASG  GLY A   48   45    C          Coil    121.98      5.30      51.3      1J6Z
+ASG  GLN A   49   46    C          Coil     73.63      5.85     138.4      1J6Z
+ASG  LYS A   50   47    C          Coil    -74.93    128.73     104.3      1J6Z
+ASG  ASP A   51   48    C          Coil    -66.86    -30.14      98.6      1J6Z
+ASG  SER A   52   49    C          Coil   -161.67    163.14      25.3      1J6Z
+ASG  TYR A   53   50    E        Strand   -131.97    147.89       4.9      1J6Z
+ASG  VAL A   54   51    E        Strand   -126.52    147.65       9.6      1J6Z
+ASG  GLY A   55   52    H    AlphaHelix     69.89   -136.64       0.6      1J6Z
+ASG  ASP A   56   53    H    AlphaHelix    -62.96    -31.02     102.4      1J6Z
+ASG  GLU A   57   54    H    AlphaHelix    -63.58    -39.23      98.5      1J6Z
+ASG  ALA A   58   55    H    AlphaHelix    -66.59    -45.55       0.0      1J6Z
+ASG  GLN A   59   56    H    AlphaHelix    -61.82    -36.15      45.5      1J6Z
+ASG  SER A   60   57    H    AlphaHelix    -64.90    -30.31     105.0      1J6Z
+ASG  LYS A   61   58    H    AlphaHelix    -94.08     21.55      64.3      1J6Z
+ASG  ARG A   62   59    T          Turn    -61.01    147.20     136.1      1J6Z
+ASG  GLY A   63   60    T          Turn     91.62    -26.67      45.3      1J6Z
+ASG  ILE A   64   61    T          Turn    -99.44    -61.89      82.9      1J6Z
+ASG  LEU A   65   62    T          Turn    -76.09    158.22       1.1      1J6Z
+ASG  THR A   66   63    E        Strand    -89.15    124.29      70.6      1J6Z
+ASG  LEU A   67   64    E        Strand    -91.56    144.85      49.8      1J6Z
+ASG  LYS A   68   65    E        Strand   -129.40    141.63      78.4      1J6Z
+ASG  TYR A   69   66    T          Turn   -108.82     95.86      64.7      1J6Z
+ASG  PRO A   70   67    T          Turn    -77.08     -4.44       0.0      1J6Z
+ASG  ILE A   71   68    T          Turn   -130.24     32.67       0.6      1J6Z
+ASG  GLU A   72   69    T          Turn    -43.79    360.00     119.5      1J6Z
+ASG  GLY A   74   70    T          Turn    360.00    -23.51      19.3      1J6Z
+ASG  ILE A   75   71    T          Turn   -100.16    134.85      47.4      1J6Z
+ASG  ILE A   76   72    C          Coil    -72.95    125.55       9.6      1J6Z
+ASG  THR A   77   73    C          Coil   -116.32     -7.80      90.0      1J6Z
+ASG  ASN A   78   74    C          Coil   -140.74    111.12      59.0      1J6Z
+ASG  TRP A   79   75    H    AlphaHelix    -76.83    -27.85      60.8      1J6Z
+ASG  ASP A   80   76    H    AlphaHelix    -71.04    -40.59     110.9      1J6Z
+ASG  ASP A   81   77    H    AlphaHelix    -65.03    -41.89       6.2      1J6Z
+ASG  MET A   82   78    H    AlphaHelix    -62.39    -38.79       0.0      1J6Z
+ASG  GLU A   83   79    H    AlphaHelix    -58.80    -41.07      80.8      1J6Z
+ASG  LYS A   84   80    H    AlphaHelix    -61.58    -42.32      41.8      1J6Z
+ASG  ILE A   85   81    H    AlphaHelix    -63.20    -43.95       0.0      1J6Z
+ASG  TRP A   86   82    H    AlphaHelix    -66.66    -37.77       0.6      1J6Z
+ASG  HIS A   87   83    H    AlphaHelix    -61.30    -41.64      85.8      1J6Z
+ASG  HIS A   88   84    H    AlphaHelix    -62.36    -44.08      10.8      1J6Z
+ASG  THR A   89   85    H    AlphaHelix    -56.13    -51.70       1.2      1J6Z
+ASG  PHE A   90   86    H    AlphaHelix    -72.57    -51.31       3.4      1J6Z
+ASG  TYR A   91   87    H    AlphaHelix    -89.08    -28.20      93.7      1J6Z
+ASG  ASN A   92   88    H    AlphaHelix   -104.56    -37.76      80.9      1J6Z
+ASG  GLU A   93   89    H    AlphaHelix    -90.09    -57.40      72.3      1J6Z
+ASG  LEU A   94   90    C          Coil    -84.01    -25.37      20.9      1J6Z
+ASG  ARG A   95   91    C          Coil     58.15     51.51     208.6      1J6Z
+ASG  VAL A   96   92    C          Coil   -117.29    164.59      16.3      1J6Z
+ASG  ALA A   97   93    C          Coil   -102.42    105.66      23.8      1J6Z
+ASG  PRO A   98   94    G      310Helix    -59.96    -22.60       0.0      1J6Z
+ASG  GLU A   99   95    G      310Helix    -70.74     -6.04      89.2      1J6Z
+ASG  GLU A  100   96    G      310Helix   -100.63     -5.88     122.0      1J6Z
+ASG  HIS A  101   97    C          Coil   -130.79    121.96      21.0      1J6Z
+ASG  PRO A  102   98    C          Coil    -52.66    135.71       9.0      1J6Z
+ASG  THR A  103   99    E        Strand   -127.91    125.28       0.0      1J6Z
+ASG  LEU A  104  100    E        Strand    -95.86    123.71       2.6      1J6Z
+ASG  LEU A  105  101    E        Strand   -110.95    147.12       0.0      1J6Z
+ASG  THR A  106  102    E        Strand   -102.29    154.47       0.5      1J6Z
+ASG  GLU A  107  103    E        Strand   -137.78    152.46      12.4      1J6Z
+ASG  ALA A  108  104    T          Turn    -68.71    159.63       3.0      1J6Z
+ASG  PRO A  109  105    T          Turn    -60.62    143.66       2.9      1J6Z
+ASG  LEU A  110  106    T          Turn     64.23     28.18      88.5      1J6Z
+ASG  ASN A  111  107    T          Turn    -72.71    128.19      18.4      1J6Z
+ASG  PRO A  112  108    C          Coil    -58.52    149.03      70.2      1J6Z
+ASG  LYS A  113  109    H    AlphaHelix    -58.78    -38.92     134.8      1J6Z
+ASG  ALA A  114  110    H    AlphaHelix    -65.10    -30.20      68.6      1J6Z
+ASG  ASN A  115  111    H    AlphaHelix    -71.05    -43.48      17.7      1J6Z
+ASG  ARG A  116  112    H    AlphaHelix    -63.17    -37.16      35.1      1J6Z
+ASG  GLU A  117  113    H    AlphaHelix    -62.59    -38.73      56.4      1J6Z
+ASG  LYS A  118  114    H    AlphaHelix    -71.21    -37.66      70.1      1J6Z
+ASG  MET A  119  115    H    AlphaHelix    -57.33    -46.19       1.6      1J6Z
+ASG  THR A  120  116    H    AlphaHelix    -62.81    -46.36       0.6      1J6Z
+ASG  GLN A  121  117    H    AlphaHelix    -56.16    -44.84      71.2      1J6Z
+ASG  ILE A  122  118    H    AlphaHelix    -65.14    -43.69       7.4      1J6Z
+ASG  MET A  123  119    H    AlphaHelix    -59.47    -46.29       0.0      1J6Z
+ASG  PHE A  124  120    H    AlphaHelix    -75.43    -44.58       1.7      1J6Z
+ASG  GLU A  125  121    H    AlphaHelix    -82.72    -42.94     117.4      1J6Z
+ASG  THR A  126  122    H    AlphaHelix    -80.88    -44.41      60.7      1J6Z
+ASG  PHE A  127  123    H    AlphaHelix   -104.30     -5.37       8.9      1J6Z
+ASG  ASN A  128  124    C          Coil     56.23     39.04      92.2      1J6Z
+ASG  VAL A  129  125    C          Coil    -66.01    152.53       0.3      1J6Z
+ASG  PRO A  130  126    C          Coil    -76.99    -28.33      47.1      1J6Z
+ASG  ALA A  131  127    E        Strand   -164.58    159.30       8.0      1J6Z
+ASG  MET A  132  128    E        Strand   -154.28    174.07       0.0      1J6Z
+ASG  TYR A  133  129    E        Strand   -156.43    145.49      70.2      1J6Z
+ASG  VAL A  134  130    E        Strand   -120.25    127.77       5.4      1J6Z
+ASG  ALA A  135  131    E        Strand   -123.29    148.21       9.6      1J6Z
+ASG  ILE A  136  132    E        Strand    -74.92    129.92      39.6      1J6Z
+ASG  GLN A  137  133    H    AlphaHelix    -54.10    -46.13      20.2      1J6Z
+ASG  ALA A  138  134    H    AlphaHelix    -66.05    -34.15       0.0      1J6Z
+ASG  VAL A  139  135    H    AlphaHelix    -64.90    -40.30      11.8      1J6Z
+ASG  LEU A  140  136    H    AlphaHelix    -62.10    -40.13       0.6      1J6Z
+ASG  SER A  141  137    H    AlphaHelix    -65.29    -37.40       0.9      1J6Z
+ASG  LEU A  142  138    H    AlphaHelix    -63.54    -43.23       0.0      1J6Z
+ASG  TYR A  143  139    H    AlphaHelix    -63.05    -36.71      75.3      1J6Z
+ASG  ALA A  144  140    H    AlphaHelix    -62.88    -22.28      32.5      1J6Z
+ASG  SER A  145  141    H    AlphaHelix    -92.02     -0.57      20.3      1J6Z
+ASG  GLY A  146  142    C          Coil     79.46     34.25      68.2      1J6Z
+ASG  ARG A  147  143    C          Coil   -143.03    162.85      63.2      1J6Z
+ASG  THR A  148  144    C          Coil   -117.49     -3.57      74.5      1J6Z
+ASG  THR A  149  145    C          Coil   -129.43    133.81      23.9      1J6Z
+ASG  GLY A  150  146    E        Strand    161.00    171.09       0.0      1J6Z
+ASG  ILE A  151  147    E        Strand   -113.73    123.98       2.0      1J6Z
+ASG  VAL A  152  148    E        Strand    -94.30    135.93       0.6      1J6Z
+ASG  LEU A  153  149    E        Strand   -103.42    113.91      10.5      1J6Z
+ASG  ASP A  154  150    E        Strand   -115.54    108.87      20.4      1J6Z
+ASG  SER A  155  151    E        Strand   -118.63    116.50       1.2      1J6Z
+ASG  GLY A  156  152    T          Turn   -114.35   -122.13      20.1      1J6Z
+ASG  ASP A  157  153    T          Turn   -100.96    -46.68      47.5      1J6Z
+ASG  GLY A  158  154    T          Turn   -112.74     -5.90       9.3      1J6Z
+ASG  VAL A  159  155    T          Turn   -154.42    154.95      16.9      1J6Z
+ASG  THR A  160  156    E        Strand   -130.48    133.87       0.5      1J6Z
+ASG  HIS A  161  157    E        Strand   -129.69    153.40      11.2      1J6Z
+ASG  ASN A  162  158    E        Strand   -113.52    119.49       0.8      1J6Z
+ASG  VAL A  163  159    E        Strand   -126.93    105.20       0.2      1J6Z
+ASG  PRO A  164  160    E        Strand    -80.78    138.01       0.0      1J6Z
+ASG  ILE A  165  161    E        Strand   -135.10    128.64       0.0      1J6Z
+ASG  TYR A  166  162    E        Strand   -121.28    117.64      75.8      1J6Z
+ASG  GLU A  167  163    T          Turn     48.68     48.40     135.7      1J6Z
+ASG  GLY A  168  164    T          Turn     86.60    -10.81      23.7      1J6Z
+ASG  TYR A  169  165    E        Strand    -99.98    121.44      96.6      1J6Z
+ASG  ALA A  170  166    E        Strand    -77.11    135.53      10.1      1J6Z
+ASG  LEU A  171  167    C          Coil    -93.24    103.67      21.4      1J6Z
+ASG  PRO A  172  168    G      310Helix    -62.56    -35.51      58.5      1J6Z
+ASG  HIS A  173  169    G      310Helix    -68.32    -14.89     121.8      1J6Z
+ASG  ALA A  174  170    G      310Helix   -107.89      5.40       0.0      1J6Z
+ASG  ILE A  175  171    C          Coil    -74.86    136.68      18.8      1J6Z
+ASG  MET A  176  172    E        Strand   -118.28    136.17      36.8      1J6Z
+ASG  ARG A  177  173    E        Strand   -120.02    127.12     147.2      1J6Z
+ASG  LEU A  178  174    E        Strand   -120.34    115.31       6.9      1J6Z
+ASG  ASP A  179  175    T          Turn    -84.34     61.72      80.0      1J6Z
+ASG  LEU A  180  176    T          Turn   -145.95    128.79       0.0      1J6Z
+ASG  ALA A  181  177    C          Coil   -160.85   -147.82       0.0      1J6Z
+ASG  GLY A  182  178    H    AlphaHelix    -59.95    -33.50       0.2      1J6Z
+ASG  ARG A  183  179    H    AlphaHelix    -65.44    -36.13      31.1      1J6Z
+ASG  ASP A  184  180    H    AlphaHelix    -68.26    -40.78      39.6      1J6Z
+ASG  LEU A  185  181    H    AlphaHelix    -64.16    -39.55       0.0      1J6Z
+ASG  THR A  186  182    H    AlphaHelix    -64.98    -44.03       1.4      1J6Z
+ASG  ASP A  187  183    H    AlphaHelix    -60.28    -38.79      73.6      1J6Z
+ASG  TYR A  188  184    H    AlphaHelix    -69.24    -41.31      23.6      1J6Z
+ASG  LEU A  189  185    H    AlphaHelix    -62.23    -37.08       0.0      1J6Z
+ASG  MET A  190  186    H    AlphaHelix    -59.49    -45.43      20.0      1J6Z
+ASG  LYS A  191  187    H    AlphaHelix    -64.19    -44.07     137.2      1J6Z
+ASG  ILE A  192  188    H    AlphaHelix    -72.07    -29.02       0.5      1J6Z
+ASG  LEU A  193  189    H    AlphaHelix    -71.58    -30.04       0.0      1J6Z
+ASG  THR A  194  190    H    AlphaHelix    -70.05    -21.65      43.2      1J6Z
+ASG  GLU A  195  191    H    AlphaHelix    -61.32    -34.55     113.1      1J6Z
+ASG  ARG A  196  192    H    AlphaHelix    -78.23     -4.09     106.8      1J6Z
+ASG  GLY A  197  193    C          Coil    106.22     -3.57      69.2      1J6Z
+ASG  TYR A  198  194    C          Coil    -77.68    170.69      67.0      1J6Z
+ASG  SER A  199  195    C          Coil   -138.54    102.83      75.4      1J6Z
+ASG  PHE A  200  196    C          Coil   -119.84    100.35      10.1      1J6Z
+ASG  VAL A  201  197    C          Coil   -135.52    -33.23     100.0      1J6Z
+ASG  THR A  202  198    C          Coil    -72.94    176.18      66.0      1J6Z
+ASG  THR A  203  199    H    AlphaHelix    -62.89    -45.38      63.2      1J6Z
+ASG  ALA A  204  200    H    AlphaHelix    -60.29    -39.55      64.1      1J6Z
+ASG  GLU A  205  201    H    AlphaHelix    -68.11    -33.13      52.9      1J6Z
+ASG  ARG A  206  202    H    AlphaHelix    -65.29    -39.57      57.7      1J6Z
+ASG  GLU A  207  203    H    AlphaHelix    -62.46    -40.50      67.8      1J6Z
+ASG  ILE A  208  204    H    AlphaHelix    -60.13    -48.95      27.6      1J6Z
+ASG  VAL A  209  205    H    AlphaHelix    -63.59    -38.04       0.0      1J6Z
+ASG  ARG A  210  206    H    AlphaHelix    -57.59    -39.18      88.6      1J6Z
+ASG  ASP A  211  207    H    AlphaHelix    -66.72    -43.61      41.3      1J6Z
+ASG  ILE A  212  208    H    AlphaHelix    -60.30    -45.37       0.2      1J6Z
+ASG  LYS A  213  209    H    AlphaHelix    -56.03    -50.26      11.4      1J6Z
+ASG  GLU A  214  210    H    AlphaHelix    -70.24    -25.02      95.9      1J6Z
+ASG  LYS A  215  211    H    AlphaHelix    -96.01    -32.26     134.1      1J6Z
+ASG  LEU A  216  212    H    AlphaHelix   -120.24    -11.97      28.1      1J6Z
+ASG  CYS A  217  213    C          Coil    -77.53    159.20       6.3      1J6Z
+ASG  TYR A  218  214    C          Coil   -156.26    162.76      34.9      1J6Z
+ASG  VAL A  219  215    C          Coil    -98.32    123.27       4.3      1J6Z
+ASG  ALA A  220  216    T          Turn    -75.44    151.08       1.3      1J6Z
+ASG  LEU A  221  217    T          Turn    -71.46    -29.80      93.2      1J6Z
+ASG  ASP A  222  218    T          Turn   -149.17    118.62      50.3      1J6Z
+ASG  PHE A  223  219    H    AlphaHelix    -58.13    -42.73      28.6      1J6Z
+ASG  GLU A  224  220    H    AlphaHelix    -75.39    -36.50     104.8      1J6Z
+ASG  ASN A  225  221    H    AlphaHelix    -71.21    -32.21     110.8      1J6Z
+ASG  GLU A  226  222    H    AlphaHelix    -66.18    -40.26      53.4      1J6Z
+ASG  MET A  227  223    H    AlphaHelix    -60.30    -37.79      56.7      1J6Z
+ASG  ALA A  228  224    H    AlphaHelix    -69.10    -31.11      77.2      1J6Z
+ASG  THR A  229  225    H    AlphaHelix    -79.96    -22.26      75.9      1J6Z
+ASG  ALA A  230  226    G      310Helix    -51.36    -43.16      24.2      1J6Z
+ASG  ALA A  231  227    G      310Helix    -57.74    -44.53     104.9      1J6Z
+ASG  SER A  232  228    G      310Helix    -99.83      0.85     102.0      1J6Z
+ASG  SER A  233  229    T          Turn    -63.63    134.77      36.6      1J6Z
+ASG  SER A  234  230    T          Turn    -94.27     -2.00     129.5      1J6Z
+ASG  SER A  235  231    T          Turn   -118.87     -6.48      81.7      1J6Z
+ASG  LEU A  236  232    T          Turn    -64.10    -55.01      10.3      1J6Z
+ASG  GLU A  237  233    C          Coil    -61.89    129.72     124.6      1J6Z
+ASG  LYS A  238  234    E        Strand   -125.33    145.85      82.9      1J6Z
+ASG  SER A  239  235    E        Strand    -96.36    148.52      86.3      1J6Z
+ASG  TYR A  240  236    E        Strand   -142.44    124.05      31.0      1J6Z
+ASG  GLU A  241  237    E        Strand    -85.13    125.11     135.3      1J6Z
+ASG  LEU A  242  238    T          Turn    -81.21    168.38      20.8      1J6Z
+ASG  PRO A  243  239    T          Turn    -60.99    -24.52     105.0      1J6Z
+ASG  ASP A  244  240    T          Turn    -87.70      4.42     103.1      1J6Z
+ASG  GLY A  245  241    T          Turn     90.18     -7.05      43.9      1J6Z
+ASG  GLN A  246  242    C          Coil    -72.95    157.91     126.0      1J6Z
+ASG  VAL A  247  243    E        Strand   -123.07    123.65      85.0      1J6Z
+ASG  ILE A  248  244    E        Strand   -100.93    161.94       4.8      1J6Z
+ASG  THR A  249  245    E        Strand   -114.37    132.91      39.4      1J6Z
+ASG  ILE A  250  246    E        Strand   -118.66    129.16       0.2      1J6Z
+ASG  GLY A  251  247    C          Coil   -125.00   -102.85       1.9      1J6Z
+ASG  ASN A  252  248    H    AlphaHelix    -66.00    -15.84      52.5      1J6Z
+ASG  GLU A  253  249    H    AlphaHelix    -62.29    -23.97       8.0      1J6Z
+ASG  ARG A  254  250    H    AlphaHelix    -57.33    -40.86      35.1      1J6Z
+ASG  PHE A  255  251    H    AlphaHelix   -107.58    -17.55       0.0      1J6Z
+ASG  ARG A  256  252    H    AlphaHelix    -63.57    -39.75      50.7      1J6Z
+ASG  CYS A  257  253    H    AlphaHelix    -57.84    -56.77       0.0      1J6Z
+ASG  PRO A  258  254    H    AlphaHelix    -75.24    -11.37       0.0      1J6Z
+ASG  GLU A  259  255    H    AlphaHelix    -58.04    -25.84       0.4      1J6Z
+ASG  THR A  260  256    H    AlphaHelix    -54.12    -34.47       0.0      1J6Z
+ASG  LEU A  261  257    H    AlphaHelix    -60.52    -35.87       0.4      1J6Z
+ASG  PHE A  262  258    H    AlphaHelix    -87.31    -25.53       6.8      1J6Z
+ASG  GLN A  263  259    C          Coil   -130.83     78.75      56.5      1J6Z
+ASG  PRO A  264  260    G      310Helix    -61.01    -14.75       4.4      1J6Z
+ASG  SER A  265  261    G      310Helix    -65.43    -15.41      77.3      1J6Z
+ASG  PHE A  266  262    G      310Helix    -62.71    -28.07      49.7      1J6Z
+ASG  ILE A  267  263    G      310Helix   -111.24     18.62      53.2      1J6Z
+ASG  GLY A  268  264    C          Coil     75.81     32.57      52.5      1J6Z
+ASG  MET A  269  265    C          Coil   -108.40    141.44      43.0      1J6Z
+ASG  GLU A  270  266    C          Coil    -88.20     -1.70     182.3      1J6Z
+ASG  SER A  271  267    C          Coil    -64.45    155.66      52.5      1J6Z
+ASG  ALA A  272  268    C          Coil    -68.28    149.90      32.9      1J6Z
+ASG  GLY A  273  269    C          Coil    -78.49    168.17       2.2      1J6Z
+ASG  ILE A  274  270    H    AlphaHelix    -62.53    -25.69       0.8      1J6Z
+ASG  HIS A  275  271    H    AlphaHelix    -75.44    -35.50      20.0      1J6Z
+ASG  GLU A  276  272    H    AlphaHelix    -70.07    -38.35      90.2      1J6Z
+ASG  THR A  277  273    H    AlphaHelix    -68.98    -32.22      14.8      1J6Z
+ASG  THR A  278  274    H    AlphaHelix    -62.11    -51.62       3.2      1J6Z
+ASG  TYR A  279  275    H    AlphaHelix    -60.09    -46.88      58.3      1J6Z
+ASG  ASN A  280  276    H    AlphaHelix    -61.00    -35.88      66.0      1J6Z
+ASG  SER A  281  277    H    AlphaHelix    -67.18    -45.33       0.0      1J6Z
+ASG  ILE A  282  278    H    AlphaHelix    -61.88    -34.66       0.0      1J6Z
+ASG  MET A  283  279    H    AlphaHelix    -77.40     -6.67      72.7      1J6Z
+ASG  LYS A  284  280    C          Coil    -95.90      1.97     117.1      1J6Z
+ASG  CYS A  285  281    C          Coil   -102.70    163.83       4.8      1J6Z
+ASG  ASP A  286  282    C          Coil    -55.31    132.93      99.2      1J6Z
+ASG  ILE A  287  283    G      310Helix    -51.59    -35.17     115.0      1J6Z
+ASG  ASP A  288  284    G      310Helix    -71.96    -11.92     133.7      1J6Z
+ASG  ILE A  289  285    G      310Helix   -108.71     -0.26      17.0      1J6Z
+ASG  ARG A  290  286    H    AlphaHelix    -63.66    -37.97      51.3      1J6Z
+ASG  LYS A  291  287    H    AlphaHelix    -57.93    -38.58     144.9      1J6Z
+ASG  ASP A  292  288    H    AlphaHelix    -67.96    -36.68      64.7      1J6Z
+ASG  LEU A  293  289    H    AlphaHelix    -68.12    -45.60       0.0      1J6Z
+ASG  TYR A  294  290    H    AlphaHelix    -59.69    -30.01       2.4      1J6Z
+ASG  ALA A  295  291    H    AlphaHelix    -91.78      1.47      16.8      1J6Z
+ASG  ASN A  296  292    C          Coil   -138.31     57.41      34.3      1J6Z
+ASG  ASN A  297  293    E        Strand    -88.31    109.52      10.6      1J6Z
+ASG  VAL A  298  294    E        Strand   -105.88    127.18       2.2      1J6Z
+ASG  MET A  299  295    E        Strand    -90.34    137.93       3.0      1J6Z
+ASG  SER A  300  296    E        Strand   -144.97    154.35       0.0      1J6Z
+ASG  GLY A  301  297    C          Coil    104.85    157.79      10.0      1J6Z
+ASG  GLY A  302  298    G      310Helix    -61.20    -35.46      35.5      1J6Z
+ASG  THR A  303  299    G      310Helix    -78.57     -1.73       7.0      1J6Z
+ASG  THR A  304  300    G      310Helix    -97.38     11.27       0.4      1J6Z
+ASG  MET A  305  301    C          Coil    -79.37    -11.66      72.8      1J6Z
+ASG  TYR A  306  302    T          Turn    -59.46    131.28      14.6      1J6Z
+ASG  PRO A  307  303    T          Turn    -54.81    138.48      86.0      1J6Z
+ASG  GLY A  308  304    T          Turn     93.50    -16.65      33.2      1J6Z
+ASG  ILE A  309  305    H    AlphaHelix    -62.20    -41.66       1.0      1J6Z
+ASG  ALA A  310  306    H    AlphaHelix    -64.78    -40.89      26.6      1J6Z
+ASG  ASP A  311  307    H    AlphaHelix    -67.16    -37.92     116.0      1J6Z
+ASG  ARG A  312  308    H    AlphaHelix    -66.33    -44.44       9.6      1J6Z
+ASG  MET A  313  309    H    AlphaHelix    -60.87    -40.22       5.8      1J6Z
+ASG  GLN A  314  310    H    AlphaHelix    -58.68    -44.90      62.7      1J6Z
+ASG  LYS A  315  311    H    AlphaHelix    -64.42    -46.92      72.5      1J6Z
+ASG  GLU A  316  312    H    AlphaHelix    -68.54    -41.44      34.9      1J6Z
+ASG  ILE A  317  313    H    AlphaHelix    -66.58    -39.56       0.0      1J6Z
+ASG  THR A  318  314    H    AlphaHelix    -58.72    -40.89      75.0      1J6Z
+ASG  ALA A  319  315    H    AlphaHelix    -65.39    -29.51      79.6      1J6Z
+ASG  LEU A  320  316    H    AlphaHelix    -89.98    -28.99      64.6      1J6Z
+ASG  ALA A  321  317    C          Coil    -83.56    160.61      12.9      1J6Z
+ASG  PRO A  322  318    T          Turn    -51.90    145.90      71.4      1J6Z
+ASG  SER A  323  319    T          Turn    -56.65    -30.06     129.8      1J6Z
+ASG  THR A  324  320    T          Turn    -94.80      7.36     129.8      1J6Z
+ASG  MET A  325  321    T          Turn    -77.15    128.84      47.2      1J6Z
+ASG  LYS A  326  322    C          Coil    -78.45    120.33     129.8      1J6Z
+ASG  ILE A  327  323    C          Coil   -116.40    133.83      17.4      1J6Z
+ASG  LYS A  328  324    C          Coil   -141.86    131.10      93.9      1J6Z
+ASG  ILE A  329  325    E        Strand   -109.44    127.90      23.6      1J6Z
+ASG  ILE A  330  326    E        Strand   -109.20    120.72      20.1      1J6Z
+ASG  ALA A  331  327    C          Coil   -130.21     87.16      32.6      1J6Z
+ASG  PRO A  332  328    T          Turn    -61.52    145.98      28.5      1J6Z
+ASG  PRO A  333  329    T          Turn    -59.00    -32.66     112.8      1J6Z
+ASG  GLU A  334  330    T          Turn    -94.14     17.46     122.2      1J6Z
+ASG  ARG A  335  331    G      310Helix    -63.13    -15.52      26.3      1J6Z
+ASG  LYS A  336  332    G      310Helix    -61.98    -27.86      86.7      1J6Z
+ASG  TYR A  337  333    G      310Helix   -122.21     20.82      67.4      1J6Z
+ASG  SER A  338  334    H    AlphaHelix    -68.03    -28.29       6.2      1J6Z
+ASG  VAL A  339  335    H    AlphaHelix    -61.65    -48.40      10.5      1J6Z
+ASG  TRP A  340  336    H    AlphaHelix    -61.84    -43.85       0.2      1J6Z
+ASG  ILE A  341  337    H    AlphaHelix    -60.64    -43.26      19.4      1J6Z
+ASG  GLY A  342  338    H    AlphaHelix    -59.61    -40.96       0.3      1J6Z
+ASG  GLY A  343  339    H    AlphaHelix    -61.47    -45.75       0.0      1J6Z
+ASG  SER A  344  340    H    AlphaHelix    -57.06    -42.46       6.4      1J6Z
+ASG  ILE A  345  341    H    AlphaHelix    -64.37    -44.50      74.4      1J6Z
+ASG  LEU A  346  342    H    AlphaHelix    -65.95    -49.51      53.1      1J6Z
+ASG  ALA A  347  343    H    AlphaHelix    -68.92    -16.77      10.3      1J6Z
+ASG  SER A  348  344    H    AlphaHelix    -91.40      0.74      58.0      1J6Z
+ASG  LEU A  349  345    T          Turn    -88.65     80.94      73.6      1J6Z
+ASG  SER A  350  346    G      310Helix    -65.59    -19.38      77.4      1J6Z
+ASG  THR A  351  347    G      310Helix    -60.42    -29.49     121.2      1J6Z
+ASG  PHE A  352  348    G      310Helix    -99.61     29.60     128.8      1J6Z
+ASG  GLN A  353  349    G      310Helix    -62.37    -23.81     129.5      1J6Z
+ASG  GLN A  354  350    G      310Helix    -65.88    -18.52     142.6      1J6Z
+ASG  MET A  355  351    G      310Helix    -72.13    -18.79      84.6      1J6Z
+ASG  TRP A  356  352    C          Coil    -61.32    150.08      34.0      1J6Z
+ASG  ILE A  357  353    E        Strand    -93.10    115.38      15.3      1J6Z
+ASG  THR A  358  354    E        Strand    -85.63    165.54      50.3      1J6Z
+ASG  LYS A  359  355    H    AlphaHelix    -60.02    -35.95      52.5      1J6Z
+ASG  GLN A  360  356    H    AlphaHelix    -66.91    -39.30     134.9      1J6Z
+ASG  GLU A  361  357    H    AlphaHelix    -64.66    -39.44      79.4      1J6Z
+ASG  TYR A  362  358    H    AlphaHelix    -64.21    -40.97      18.0      1J6Z
+ASG  ASP A  363  359    H    AlphaHelix    -65.28    -35.68     101.7      1J6Z
+ASG  GLU A  364  360    H    AlphaHelix    -84.37    -31.37     155.2      1J6Z
+ASG  ALA A  365  361    H    AlphaHelix   -103.36    -19.71      52.9      1J6Z
+ASG  GLY A  366  362    T          Turn     93.21   -168.98      22.2      1J6Z
+ASG  PRO A  367  363    T          Turn    -74.28    -23.95      62.8      1J6Z
+ASG  SER A  368  364    T          Turn    -64.31    -17.93      79.8      1J6Z
+ASG  ILE A  369  365    T          Turn    -66.08    -19.45      48.4      1J6Z
+ASG  VAL A  370  366    T          Turn    -82.90     -9.48       8.5      1J6Z
+ASG  HIS A  371  367    T          Turn    -92.51    154.95      25.8      1J6Z
+ASG  ARG A  372  368    C          Coil     41.37    360.00     239.1      1J6Z

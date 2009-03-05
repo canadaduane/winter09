@@ -1,0 +1,8 @@
+actin
+myosin
+phytochrome
+ribonuclease
+
+Application of Neural Networks for Protein Sequence Classification
+Sharma et al., 2004, Department of Computer and Information Sciences, University of Hyderabad,
+http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=01287676

@@ -1,0 +1,11 @@
+myosin trained, actin tested
+27.6056 %
+
+myosin trained, 10-fold tested
+37.0904 %
+
+actin trained, 10-fold tested
+38.8732 %
+
+actin trained, myosin tested
+33.4207 %
