@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Duane's Bioinformatics Website &mdash; Lab 1</title>
+	<meta name="author" content="Duane Johnson">
+	<!-- Date:  -->
+	<link rel="stylesheet" href="../default.css" type="text/css" charset="utf-8">
+	<link rel="stylesheet" href="../mac_classic_code.css" type="text/css" charset="utf-8">
+	<style type="text/css" media="screen">
+		p { font-weight: bold; margin: 0.5em 2em 1em 3em; text-indent: 2em; }
+		h1, h2, h3, h4, h5 { margin: 0.5em 2em 0.5em 1em; }
+		h2 { color: #81B700; }
+		h3 { padding: 0 1em 0 1em; }
+	</style>
+</head>
+<body>
+	<div id="header">
+		<div id="logo"></div>
+		<div id="green-line"></div>
+		<div id="title">&#8220;Duane's Bioinformatics Website&mdash;Lab 1&#8221;</div>
+		<div id="back-to-home"><a href="../">&lsaquo; Back to Home</a></div>
+	</div>
+	<div id="container">
+		<div class="code">
+			<h1>Lab 1 : Fragment Assembly</h1>
+			<h2>Objective</h2>
+			<p>As a first introduction to genetics, I am using this project both to understand the computational complexity
+				of the assembly process as well as to help me "catch up" with others in the class with regard to bioinformatics
+				as a whole.</p>
+			<p>In particular, I have used this project to learn about the various bioinformatics programming libraries that are
+				available and to experiment with different programming languages and genetic search tools.</p>
+			<p>I surveyed the Python, Perl, Ruby, R, and C languages as
+				potential candidates for this project.  Ruby was a good start for me because of its familiarity, but unfortunately
+				its "Bio" library is not quite as well-developed as Python's and Perl's, and so I abandoned that early start.  I
+				settled on C because I wanted to get as close to the internals of the project as possible and also see what kind
+				of speed could be obtained.</p>
+			
+			<h2>The C Program</h2>
+			<p>The C program that I wrote for this lab implements two contiguous matching methods: the Needleman-Wunsch algorithm
+				and the linear sliding-strings algorithm.  It turns out that, due to the simplicity of the input sequences for this
+				lab, the Needleman-Wunsch algorithm is both slow and unnecessary.  The sliding-strings algorithm (i.e. comparing two
+				DNA sequences next to one another in every possible position, and one nucleotide at a time) simply prefers higher
+				"overlap" scores than lower ones, and thus can be used to join or absorbs substrings as needed.</p>
+			<p>The "outer loop" is an n * log(n) algorithm that successively finds largest matches and eliminates them from the
+				list of fragments, starting over on the next iteration.  Its inner loop is the sliding-strings algorithm, so the
+				entire algorithm is in the &theta;(n<sup>2</sup> * log(n)) efficiency class.</p>
+			<p>I experimented with using the OpenMP library to parallelize the algorithm and succeeded in doing so for the
+				Needleman-Wunsch algorithm, but the processor overhead of doing so for the sliding-strings algorithm turned out
+				not to be worthwhile.</p>
+			<h3>Source Code</h3>
+			<ul>
+				<li><a href="lab1/lab1.c">lab1.c</a></li>
+				<li><a href="lab1/minmax.h">minmax.h</a></li>
+				<li><a href="lab1/readline.h">readline.h</a></li>
+			</ul>
+			
+			<h2>Outcomes</h2>
+			<h3>Data</h3>
+			<p>The first 2 sample datasets yielded a single contig each:</p>
+	<code><pre>
+	  1. CAAGCCATGTCTGACTGCCCCTTCAAGCACTGGCTCCAAGAGAGCAGTGGGTGATGG
+	</pre></code>
+	<code><pre>
+	  2. GGCCCCAGAAGCCCCCCTGGACAGTAGCACCCACTGGACCCTAACACCCATCTCCAC
+	     CACCAGGGAGGAGGAAGGGCAAGCCATGTCTGACTGCCCCTTCAAGCACTGGCTCCA
+	     AGAGAGCAGTGGGTGATGGGGAAGAGCCTCAACCCGACTCTCCTCCCTATCCCAAGA
+	     AGCCCTTTGAAAGGTTTTCCTGGCAGAGTTTA
+	</pre></code>
+			<p>The <a href="lab1/my-seq-3.fasta">3rd sample dataset</a> yielded a single 23,850 nucleotide contig.</p>
+			<p>The <a href="lab1/my-seq-4.fasta">4th sample dataset</a> yielded 44 contigs, totalling 273,170 nucleotides.</p>
+			
+			<h3>Analysis of Data</h3>
+			<p>I tried a <a href="http://blast.ncbi.nlm.nih.gov/">BLAST</a> search for the 44 contigs (as a single file) and in the results listed, there was a nearly exact
+				match on contig #15:</p>
+	<code><pre>
+		<a href="http://www.ncbi.nlm.nih.gov/mapview/maps.cgi?maps=blast_set&db=allcontig_and_rna&na=1&gnl=ref%7CNT_024972.7%7CHs17_25128&gi=37544595&term=37544595%5Bgi%5D&taxid=9606&RID=R24MW8AP01R&QUERY_NUMBER=1&log$=nuclalign">ref | NT_024972.7 | Hs17_25128</a>
+		
+		Score = 2.973e+04 bits (16101),  Expect = 0.0
+		Identities = 16101/16101 (100%), Gaps = 0/16101 (0%)
+		Strand=Plus/Plus
+	</pre></code>
+			
+			<p>I'm still trying to understand the meaning of all of the results on the blast search result page.</p>
+			
+			<h2>Conclusion</h2>
+			<p>I've concluded from this lab that I will most likely use Python for my future bioinformatics projects, with C as a
+				brute-force language to be used when speed becomes a significant factor in the algorithms we implement.  For this
+				project, it was unnecessary to use a low-level language such as C for most of the implementation.  I probably would
+				have benefited more by thinking about the algorithms rather than how to implement it in C.</p>
+			<p>Genomics is such a new and interesting field both historically and especially for me personally.  There is so much
+				to learn from the databases like BLAST that are available, and even more to learn from sources such as Wikipedia and
+				the Orengo, Jones &amp; Thornton text we've been assigned in this class.</p>
+			
+			<h2>Future Explorations</h2>
+			<p>I need to learn more about Velvet, and just discovered that its "bleeding edge" releases are
+				<a href="http://github.com/dzerbino/velvet/tree/master">available on Github.com</a>, so I will be able to play with
+				that some more.</p>
+			
+			<div style="clear:both; margin-bottom:5em"></div>
+		</div>
+	</div>
+	<div id="footer">
+		<span class="footer-info">&copy; 2009 Duane Johnson</span>
+		<span class="footer-info">
+			<a href="http://blog.inquirylabs.com/about">Contact</a>
+			<span class="sep">|</span>
+			<a href="http://blog.inquirylabs.com/">Blog</a>
+		</span>
+	</div>
+</body>
+</html>

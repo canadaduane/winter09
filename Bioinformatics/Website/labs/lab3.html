@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Duane's Bioinformatics Website &mdash; Lab 3</title>
+	<meta name="author" content="Duane Johnson">
+	<!-- Date:  -->
+	<link rel="stylesheet" href="../default.css" type="text/css" charset="utf-8">
+	<link rel="stylesheet" href="../mac_classic_code.css" type="text/css" charset="utf-8">
+	<style type="text/css" media="screen">
+		p { font-weight: bold; margin: 0.5em 2em 1em 3em; text-indent: 2em; }
+		h1, h2, h3, h4, h5 { margin: 0.5em 2em 0.5em 1em; }
+		h2 { color: #81B700; }
+		h3 { padding: 0 1em 0 1em; }
+	</style>
+</head>
+<body>
+	<div id="header">
+		<div id="logo"></div>
+		<div id="green-line"></div>
+		<div id="title">&#8220;Duane's Bioinformatics Website&mdash;Lab 3&#8221;</div>
+		<div id="back-to-home"><a href="../">&lsaquo; Back to Home</a></div>
+	</div>
+	<div id="container">
+		<div class="code">
+			<h1>Lab 3 : PSODA &amp; BioSuite</h1>
+			<h2>Objective</h2>
+			<p>Learn about BioSuite and its ability to align sequences, phylogenetically structure groups of alignments, and then heuristically highlight parts of the sequences that may be undergoing selection for certain properties.</p>
+			
+			<h2>My Experience</h2>
+			<p>I followed the <a href="http://dna.cs.byu.edu/biosuite/Tutorial.pdf">BioSuite tutorial</a> using the sample HIV alignment data to learn about TreeSAAP and BioSuite.  Everything went as expected, and I was able to see the resulting calculated significant chemical properties that were undergoing conservation and selection.  For example, a great deal of selection toward "Power to be at the C-terminal" as well as "Alpha-helical tendencies" were highlighted as points of interest.</p>
+			
+			<p>In order to complete the second portion of this lab, I went to <a href="http://pfam.sanger.ac.uk/">Pfam</a> and dug into the <a href="http://pfam.sanger.ac.uk/family?acc=PF10316">Serpentine type 7TM GPCR Chemoreceptor</a> family of proteins.  Before the dozens of proteins could be loaded into BioSuite, they needed to be converted to nucleotide sequences.  I used NCBI's "tblastn" (BLAST) search where it is possible to enter a protein sequence and find its likely corresponding DNA source(s).  Luckily, the Serpentine chemoreceptor family is well documented and has been made available on NCBI's database.</p>
+			
+			<p>Unfortunately, after loading the proteins' corresponding DNA into PSODA, the "align()" command failed with a segmentation fault.  Several attempts confirmed that this is a consistent bug of some sort.  The debugging information for this issue is available <a href="lab3/biosuite-crash.txt">here</a>.  The input which caused this crash is a fasta file available <a href="lab3/snake_nucleotides.fasta">here</a>.  Dr. Clement was also notified.</p>
+			
+			<h2>Conclusion</h2>
+			<p>The highlight of this project for me was understanding how to take a protein family, break it into specific protein sequences, and then BLAST those sequences for their corresponding nucleotide data.  The alignment algorithm and chemical property analyzer available on TreeSAAP both seem very powerful, and with further improvements they can be used to analyze the serpentine proteins as well.</p>
+			
+			<div style="clear:both; margin-bottom:5em"></div>
+		</div>
+	</div>
+	<div id="footer">
+		<span class="footer-info">&copy; 2009 Duane Johnson</span>
+		<span class="footer-info">
+			<a href="http://blog.inquirylabs.com/about">Contact</a>
+			<span class="sep">|</span>
+			<a href="http://blog.inquirylabs.com/">Blog</a>
+		</span>
+	</div>
+</body>
+</html>

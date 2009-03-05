@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Duane's Bioinformatics Website &mdash; Assignment 2</title>
+	<meta name="author" content="Duane Johnson">
+	<!-- Date:  -->
+	<link rel="stylesheet" href="../default.css" type="text/css" charset="utf-8">
+	<link rel="stylesheet" href="../mac_classic_code.css" type="text/css" charset="utf-8">
+	<style type="text/css" media="screen">
+		p { font-weight: bold; }
+	</style>
+</head>
+<body>
+	<div id="header">
+		<div id="logo"></div>
+		<div id="green-line"></div>
+		<div id="title">&#8220;Duane's Bioinformatics Website&mdash;Assignment 2&#8221;</div>
+		<div id="back-to-home"><a href="../">&lsaquo; Back to Home</a></div>
+	</div>
+	<div id="container">
+		<div class="code">
+			<h1>Assignment 2</h1>
+			<ol>
+				<li>How do yeast and fruit flies compare in terms of the percentage of genes with introns?
+					<p>Fruit flies have many more introns.</p>
+				</li>
+				<li>How is an open reading frame (ORF) defined?
+					<p>It is the sequence of DNA, usually between start and stop codons, that are expressed as genes, i.e. proteins.</p>
+				</li>
+				<li>Define the following terms:
+					<ul>
+						<li>PCR
+							<p>Polymerase Chain Reaction: the heating and cooling of DNA, in the presence of polymerase, to create mass replication.</p>
+						</li>
+						<li>BAC
+							<p>Bacterial Artificial Chromosomes: DNA portions "of interest" are inserted into bacterial chromosomes and then amplified by the bacteria.  The DNA sequence can later be determined. </p>
+						</li>
+						<li>CpG island
+							<p>Cytosine-phosphor-Guanine island: hypomethylated DNA with "C-G" sequence(s).  These regions are often involved in gene expression. </p>
+						</li>
+						<li>TATA Box
+							<p>Gene promoter region in Eukaryotes.</p>
+						</li>
+					</ul>
+				</li>
+				<li>Use whatever application you would like to assemble the raspberry genome. Select a long contig and use it for your answer to this question. 454 reads for the Raspberry genome can be found on psoda64.cs.byu.edu in
+					<pre>
+  /data/raspberry/R_2008_12_04_15_18_28_FLX05080368_adminrig_Raspberry_enitre_Plate/
+      D_2008_12_05_16_16_10_454datarig_signalProcessing/everything.fna
+			</pre>You don't necessarily need to use the whole file; Other .fna files in that same directory contain subsets of <i>everything.fna</i>, or you may make your own subset. Just be sure that you get long contigs in your output.
+				</li>
+				<li>Find an open reading frame in one of the contigs in your assembly. Include it here. You might want to use one of the ORF finding tools at <a href="http://www.ncbi.nlm.nih.gov/projects/gorf/">NCBI</a>.
+					<p>ORF Finder Results</p>
+					<pre><code>
+    131 atgcctctcctaactttatattatttctttctcttgtttcttttc
+        M  P  L  L  T  L  Y  Y  F  F  L  L  F  L  F 
+     86 tatgttttgaattgtttcaattttctttatggattctttttattt
+        Y  V  L  N  C  F  N  F  L  Y  G  F  F  L  F 
+     41 tctaggaattttccactttttgtagcccacaactacaaa 3      
+        S  R  N  F  P  L  F  V  A  H  N  Y  K 
+					</code></pre>
+					<p>(Found in NODE_37730_length_324_cov_1.074074)</p>
+				</li>
+				<li>Use <a href="http://blast.ncbi.nlm.nih.gov/Blast.cgi">BLAST</a> to find a possible function for a raspberry contig. Dont spend a lot of time on this, but go through the process and see what you find.
+					<p>My ORF did not yield any positive results on BLAST.</p>
+				</li>
+				<li>Why was E Coli used for early genetic studies?
+					It is easily grown and genetically easy to manipulate.
+				</li>
+				<li>What is an Okazaki Fragment?
+					<p>During DNA replication, polymerase copies the 5' to 3' strand in place, while the complementary strand (3' to 5') must be base-paired in reverse using small segments of DNA, which are the "Okazaki" fragments.</p>
+				</li>
+				<li>What mechanisms exist to correct errors in your DNA copying mechanism?
+					<p>The polymerase checks for incompatible base-pairs and directs nucleases to slice up and then re-ligate the incorrect sequence.</p>
+				</li>
+			</ol>
+			
+			<h1>Notes from pre-reading</h1>
+			<ul>
+				<li>8 histones + DNA wrapped = nucleosome</li>
+				<li>HAT => histone acetyltransferase => "acetylation" = unwinding + opening of DNA for reading</li>
+				<li>HDAC => histone deacetylase => "deacetylation" = compaction + closing of DNA</li>
+				<li>DNA Polymerase III copies DNA from 5' to 3' direction</li>
+				<li>5' -> 3' is called "downstream", and is the only direction the polymerase can assemble new strands in vivo</li>
+				<li>The 5' end is a phosphate group, the 3' end is a hydroxyl group</li>
+				<li>By convention, nucleotide sequences are recorded "downstream" as "left to right" in written text</li>
+			</ul>
+			
+			<div style="clear:both; margin-bottom:5em"></div>
+		</div>
+	</div>
+	<div id="footer">
+		<span class="footer-info">&copy; 2009 Duane Johnson</span>
+		<span class="footer-info">
+			<a href="http://blog.inquirylabs.com/about">Contact</a>
+			<span class="sep">|</span>
+			<a href="http://blog.inquirylabs.com/">Blog</a>
+		</span>
+	</div>
+</body>
+</html>

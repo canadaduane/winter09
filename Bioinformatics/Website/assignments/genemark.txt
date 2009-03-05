@@ -1,0 +1,6029 @@
+                             GENEMARK PREDICTIONS
+
+Sequence: chrY:22407149-23158651
+Sequence file: gm_sequence
+Sequence length: 751503
+GC Content:  40.15%
+Window length: 96
+Window step: 12
+Threshold value: 0.500
+---
+Matrix: human_38.mat
+Matrix author: Nikolai Ivanov
+Matrix order: 5
+
+List of Regions of interest
+(regions from stop to stop codon w/ a signal in between)
+
+  LEnd      REnd    Strand      Frame
+--------  --------  ----------- -----
+     362       679  complement  fr 1
+     424       789  direct      fr 1
+    1831      2232  complement  fr 3
+    2262      2468  complement  fr 2
+    3531      3746  direct      fr 3
+    3770      4048  complement  fr 1
+    3801      4283  direct      fr 3
+    4161      4817  complement  fr 2
+    5103      5354  complement  fr 2
+    5203      5538  direct      fr 1
+    5444      5668  complement  fr 1
+    5726      6100  direct      fr 2
+    5934      6176  direct      fr 3
+    6661      6822  direct      fr 1
+    7127      7375  direct      fr 2
+    7737      7964  direct      fr 3
+    8159      8305  direct      fr 2
+    8443      8784  complement  fr 3
+    8802      8966  direct      fr 3
+    9249      9554  complement  fr 2
+    9264      9509  direct      fr 3
+    9715      9861  complement  fr 3
+    9833     10081  direct      fr 2
+    9985     10146  complement  fr 3
+   10021     10344  direct      fr 1
+   10191     10472  direct      fr 3
+   10458     10766  complement  fr 2
+   11003     11362  direct      fr 2
+   11242     11397  direct      fr 1
+   11355     11669  complement  fr 2
+   11563     11796  direct      fr 1
+   12086     12343  direct      fr 2
+   12414     12641  direct      fr 3
+   12688     13104  direct      fr 1
+   12906     13226  direct      fr 3
+   13121     13324  direct      fr 2
+   13393     13671  direct      fr 1
+   13599     14048  direct      fr 3
+   14979     15227  complement  fr 2
+   17993     18127  complement  fr 1
+   18070     18249  complement  fr 3
+   19196     19996  direct      fr 2
+   19444     20493  complement  fr 3
+   19705     19977  direct      fr 1
+   19970     20332  complement  fr 1
+   20387     20731  direct      fr 2
+   20729     21304  direct      fr 2
+   20834     21190  complement  fr 1
+   21165     21464  complement  fr 2
+   21687     22124  direct      fr 3
+   21914     22222  direct      fr 2
+   22591     22905  complement  fr 3
+   22853     23005  complement  fr 1
+   23094     23324  complement  fr 2
+   23473     23760  direct      fr 1
+   23600     23920  direct      fr 2
+   23634     24119  direct      fr 3
+   24149     24277  direct      fr 2
+   24849     25052  complement  fr 2
+   25175     25393  complement  fr 1
+   28741     29115  complement  fr 3
+   28791     29087  complement  fr 2
+   29620     29823  complement  fr 3
+   30483     30800  complement  fr 2
+   34060     34314  direct      fr 1
+   40781     40924  complement  fr 1
+   41574     41813  direct      fr 3
+   41741     41959  direct      fr 2
+   42793     42993  direct      fr 1
+   42822     43418  direct      fr 3
+   43202     43411  complement  fr 1
+   43388     43684  direct      fr 2
+   43669     43965  direct      fr 1
+   43704     44375  direct      fr 3
+   43963     44262  direct      fr 1
+   44121     44552  complement  fr 2
+   44360     44680  direct      fr 2
+   44695     45483  direct      fr 1
+   44748     45152  direct      fr 3
+   45376     45528  complement  fr 3
+   45390     45740  complement  fr 2
+   45530     46066  complement  fr 1
+   45865     46152  direct      fr 1
+   46014     46358  direct      fr 3
+   48420     48587  complement  fr 2
+   48594     48782  direct      fr 3
+   52283     52657  complement  fr 1
+   52333     52629  complement  fr 3
+   53161     53364  complement  fr 3
+   54024     54341  complement  fr 2
+   56334     56489  complement  fr 2
+   63732     63917  complement  fr 2
+   64322     64465  complement  fr 1
+   65115     65354  direct      fr 3
+   65282     65500  direct      fr 2
+   66233     66508  complement  fr 1
+   66363     66959  direct      fr 3
+   66460     66627  complement  fr 3
+   66743     66952  complement  fr 1
+   66760     67035  complement  fr 3
+   66929     67225  direct      fr 2
+   67210     67506  direct      fr 1
+   67245     67916  direct      fr 3
+   67504     67803  direct      fr 1
+   67662     68093  complement  fr 2
+   67901     68221  direct      fr 2
+   67940     68128  complement  fr 1
+   68236     69024  direct      fr 1
+   68289     68693  direct      fr 3
+   68917     69069  complement  fr 3
+   68931     69281  complement  fr 2
+   69071     69607  complement  fr 1
+   69406     69693  direct      fr 1
+   69555     69899  direct      fr 3
+   71765     71959  direct      fr 2
+   71961     72128  complement  fr 2
+   72135     72323  direct      fr 3
+   72288     72506  complement  fr 2
+   75871     76110  complement  fr 3
+   77758     77997  complement  fr 3
+   79188     79352  complement  fr 2
+   79438     79680  direct      fr 1
+   79890     80078  direct      fr 3
+   81812     82168  complement  fr 1
+   82962     83162  direct      fr 3
+   86389     86607  direct      fr 1
+   86404     86673  complement  fr 3
+   87218     87733  direct      fr 2
+   87304     87615  direct      fr 1
+   87555     87770  complement  fr 2
+   87802     88035  complement  fr 3
+   87843     88079  direct      fr 3
+   88011     88442  complement  fr 2
+   88207     88389  direct      fr 1
+   88398     88787  direct      fr 3
+   88576     88821  complement  fr 3
+   88819     89031  complement  fr 3
+   89227     89478  complement  fr 3
+   89625     89786  direct      fr 3
+   89689     89967  direct      fr 1
+   90392     90583  complement  fr 1
+   94182     94481  complement  fr 2
+   94232     94387  direct      fr 2
+   94582     94983  direct      fr 1
+   96406     96543  direct      fr 1
+   96486     96671  direct      fr 3
+   96593     96793  direct      fr 2
+   96738     96992  complement  fr 2
+   97125     97412  complement  fr 2
+   98743     99360  complement  fr 3
+   99038     99202  direct      fr 2
+   99168     99527  complement  fr 2
+   99558     99785  direct      fr 3
+   99859    100065  complement  fr 3
+  100374    100544  direct      fr 3
+  100598    101296  complement  fr 1
+  101185    101439  complement  fr 3
+  101437    101742  complement  fr 3
+  101489    101749  complement  fr 1
+  102036    102404  complement  fr 2
+  102431    102826  direct      fr 2
+  103046    103249  direct      fr 2
+  103247    103645  direct      fr 2
+  103351    103998  complement  fr 3
+  104041    104460  direct      fr 1
+  104881    105111  direct      fr 1
+  105185    105457  direct      fr 2
+  115263    115514  complement  fr 2
+  116197    116661  complement  fr 3
+  116318    116647  direct      fr 2
+  116811    117011  complement  fr 2
+  116893    117072  direct      fr 1
+  116963    117229  complement  fr 1
+  117312    117608  direct      fr 3
+  118393    118617  direct      fr 1
+  118533    118811  direct      fr 3
+  118677    118904  complement  fr 2
+  119230    119418  complement  fr 3
+  119532    119762  complement  fr 2
+  121882    122046  complement  fr 3
+  122289    122450  direct      fr 3
+  123790    123984  complement  fr 3
+  124035    124196  complement  fr 2
+  125038    125202  complement  fr 3
+  125689    125859  complement  fr 3
+  126741    126911  direct      fr 3
+  128328    128618  direct      fr 3
+  128549    128890  direct      fr 2
+  133594    134223  complement  fr 3
+  134221    134571  complement  fr 3
+  134744    135445  complement  fr 1
+  135361    135606  complement  fr 3
+  135678    135839  direct      fr 3
+  137158    137343  complement  fr 3
+  137369    137578  complement  fr 1
+  137576    137968  complement  fr 1
+  142798    143184  complement  fr 3
+  143268    143471  complement  fr 2
+  143508    143918  complement  fr 2
+  144197    144586  complement  fr 1
+  145825    146325  direct      fr 1
+  146226    146477  direct      fr 3
+  146323    147309  direct      fr 1
+  147285    147761  direct      fr 3
+  147759    148379  direct      fr 3
+  148753    149034  direct      fr 1
+  151619    151849  direct      fr 2
+  151710    151979  direct      fr 3
+  151847    152152  direct      fr 2
+  152150    152293  direct      fr 2
+  157304    157483  direct      fr 2
+  161126    161389  direct      fr 2
+  161352    161489  direct      fr 3
+  162292    162594  direct      fr 1
+  162636    162962  direct      fr 3
+  163154    163453  direct      fr 2
+  163478    163984  direct      fr 2
+  163794    163946  complement  fr 2
+  164083    164427  direct      fr 1
+  164515    164841  direct      fr 1
+  164872    165321  complement  fr 3
+  165355    165696  direct      fr 1
+  165588    165977  direct      fr 3
+  165790    165999  direct      fr 1
+  166777    166959  direct      fr 1
+  167786    168064  direct      fr 2
+  168442    168606  direct      fr 1
+  168973    169239  complement  fr 3
+  169108    169320  direct      fr 1
+  169833    170132  complement  fr 2
+  171626    171826  direct      fr 2
+  171813    172136  direct      fr 3
+  172281    172547  complement  fr 2
+  172771    172953  direct      fr 1
+  180010    180237  direct      fr 1
+  180453    180725  direct      fr 3
+  180758    180976  direct      fr 2
+  181130    181330  direct      fr 2
+  181236    181451  direct      fr 3
+  182412    182687  direct      fr 3
+  182685    182903  direct      fr 3
+  183404    183754  direct      fr 2
+  183922    184152  complement  fr 3
+  184271    184462  direct      fr 2
+  186176    186370  direct      fr 2
+  186225    186401  direct      fr 3
+  186343    186573  complement  fr 3
+  186877    187047  complement  fr 3
+  188906    189076  complement  fr 1
+  189280    189501  complement  fr 3
+  189404    189775  direct      fr 2
+  190066    190374  complement  fr 3
+  190109    190309  direct      fr 2
+  190236    190667  direct      fr 3
+  190750    190935  direct      fr 1
+  190933    191412  direct      fr 1
+  191402    191713  direct      fr 2
+  192188    192550  direct      fr 2
+  192469    193026  direct      fr 1
+  192858    193154  complement  fr 2
+  193232    194005  direct      fr 2
+  196253    196507  direct      fr 2
+  197474    197689  complement  fr 1
+  197569    197826  direct      fr 1
+  200412    200681  direct      fr 3
+  201147    201467  direct      fr 3
+  208770    209072  complement  fr 2
+  210318    210479  complement  fr 2
+  213067    213222  direct      fr 1
+  214024    214203  complement  fr 3
+  214234    214449  direct      fr 1
+  214428    214562  complement  fr 2
+  220457    220828  complement  fr 1
+  220512    220712  complement  fr 2
+  220710    221033  complement  fr 2
+  222554    222883  direct      fr 2
+  225246    225410  complement  fr 2
+  227655    227873  direct      fr 3
+  227888    228082  direct      fr 2
+  228209    228451  direct      fr 2
+  228365    228568  complement  fr 1
+  228591    228749  complement  fr 2
+  228880    229104  direct      fr 1
+  229808    230050  complement  fr 1
+  230085    230345  direct      fr 3
+  231564    231746  direct      fr 3
+  231659    231865  complement  fr 1
+  231906    232118  direct      fr 3
+  232551    232721  direct      fr 3
+  232871    233062  complement  fr 1
+  233854    234084  complement  fr 3
+  233953    234249  direct      fr 1
+  234358    234603  complement  fr 3
+  234625    234918  complement  fr 3
+  235102    235575  complement  fr 3
+  235892    236155  direct      fr 2
+  236153    236671  direct      fr 2
+  237549    237812  direct      fr 3
+  238098    238286  complement  fr 2
+  238320    238625  direct      fr 3
+  238457    238663  direct      fr 2
+  238819    239208  direct      fr 1
+  239124    239447  direct      fr 3
+  241673    242158  direct      fr 2
+  241987    242244  complement  fr 3
+  242636    242926  direct      fr 2
+  244163    244399  direct      fr 2
+  245208    245414  direct      fr 3
+  245552    245938  direct      fr 2
+  246016    246222  direct      fr 1
+  247775    248221  direct      fr 2
+  248049    248267  direct      fr 3
+  248381    248746  complement  fr 1
+  249213    249515  complement  fr 2
+  249253    249498  complement  fr 3
+  249621    249866  direct      fr 3
+  250535    250801  direct      fr 2
+  250710    251009  direct      fr 3
+  250799    251143  direct      fr 2
+  251002    251181  direct      fr 1
+  252695    253048  direct      fr 2
+  252884    253276  complement  fr 1
+  253669    253947  complement  fr 3
+  253761    254003  direct      fr 3
+  253861    254073  direct      fr 1
+  254920    255078  direct      fr 1
+  255257    255496  direct      fr 2
+  255542    255997  direct      fr 2
+  256628    256999  complement  fr 1
+  257191    257457  direct      fr 1
+  258285    258521  complement  fr 2
+  259318    259485  complement  fr 3
+  259687    259839  complement  fr 3
+  259884    260138  direct      fr 3
+  260240    260467  direct      fr 2
+  260421    260972  direct      fr 3
+  261487    261933  direct      fr 1
+  261816    262355  direct      fr 3
+  262114    262419  direct      fr 1
+  262987    263385  direct      fr 1
+  263282    263470  direct      fr 2
+  263666    264094  complement  fr 1
+  264092    264259  complement  fr 1
+  265100    265549  direct      fr 2
+  265465    265731  direct      fr 1
+  265729    265968  direct      fr 1
+  266210    266527  complement  fr 1
+  266595    266744  direct      fr 3
+  267261    267410  direct      fr 3
+  267467    267766  direct      fr 2
+  267821    268057  direct      fr 2
+  268228    268467  direct      fr 1
+  268546    268920  complement  fr 3
+  269721    269918  complement  fr 2
+  270174    270770  direct      fr 3
+  270798    270992  direct      fr 3
+  271932    272267  complement  fr 2
+  272477    272698  direct      fr 2
+  272602    272769  complement  fr 3
+  272767    272952  complement  fr 3
+  273236    273403  direct      fr 2
+  273409    273645  direct      fr 1
+  274021    274215  direct      fr 1
+  274190    274393  direct      fr 2
+  274588    274854  direct      fr 1
+  274839    275093  direct      fr 3
+  275003    275176  direct      fr 2
+  275086    275274  direct      fr 1
+  275303    275707  direct      fr 2
+  276499    276681  complement  fr 3
+  276564    277061  complement  fr 2
+  276998    277171  direct      fr 2
+  277331    277576  complement  fr 1
+  277374    277688  direct      fr 3
+  277702    277959  complement  fr 3
+  277766    278149  direct      fr 2
+  278112    278258  direct      fr 3
+  278836    279015  direct      fr 1
+  279096    279401  direct      fr 3
+  279422    279601  direct      fr 2
+  279599    279901  direct      fr 2
+  280654    280947  direct      fr 1
+  281266    281445  direct      fr 1
+  281340    281525  direct      fr 3
+  281612    281974  direct      fr 2
+  282325    282666  complement  fr 3
+  282328    282516  direct      fr 1
+  283464    283721  direct      fr 3
+  283793    283957  direct      fr 2
+  284850    285143  direct      fr 3
+  284950    285135  direct      fr 1
+  285407    285640  complement  fr 1
+  285638    285985  complement  fr 1
+  285947    286222  direct      fr 2
+  286176    286406  direct      fr 3
+  286573    286974  direct      fr 1
+  287200    287568  complement  fr 3
+  288681    288947  complement  fr 2
+  289051    289383  direct      fr 1
+  289411    289584  direct      fr 1
+  289681    290013  complement  fr 3
+  289962    290189  direct      fr 3
+  290089    290373  complement  fr 3
+  290837    290989  direct      fr 2
+  291052    291327  complement  fr 3
+  291228    291404  complement  fr 2
+  291438    291785  direct      fr 3
+  291876    292070  direct      fr 3
+  293030    293251  direct      fr 2
+  293474    293866  direct      fr 2
+  293929    294183  direct      fr 1
+  294262    294513  direct      fr 1
+  294580    294786  complement  fr 3
+  295247    295444  direct      fr 2
+  296034    296255  complement  fr 2
+  296384    296614  complement  fr 1
+  296762    297001  direct      fr 2
+  296917    297249  direct      fr 1
+  297791    298180  direct      fr 2
+  297930    298289  direct      fr 3
+  299169    299381  direct      fr 3
+  299229    299585  complement  fr 2
+  299560    299754  direct      fr 1
+  300228    300662  complement  fr 2
+  300587    300805  direct      fr 2
+  300780    300938  complement  fr 2
+  301311    301466  complement  fr 2
+  301470    301640  complement  fr 2
+  301728    302270  direct      fr 3
+  302520    302726  direct      fr 3
+  302755    303174  direct      fr 1
+  303375    303584  direct      fr 3
+  303487    303723  direct      fr 1
+  303752    304054  complement  fr 1
+  304255    304524  direct      fr 1
+  304343    304621  direct      fr 2
+  304522    304881  direct      fr 1
+  305398    305553  complement  fr 3
+  305735    305908  complement  fr 1
+  305910    306098  direct      fr 3
+  306102    306296  direct      fr 3
+  306308    306502  complement  fr 1
+  307335    307748  complement  fr 2
+  308254    308625  complement  fr 3
+  308361    308519  direct      fr 3
+  308393    308815  direct      fr 2
+  309518    309748  complement  fr 1
+  311019    311258  complement  fr 2
+  312563    312802  complement  fr 1
+  313518    313706  direct      fr 3
+  317207    317581  complement  fr 1
+  317257    317553  complement  fr 3
+  318085    318288  complement  fr 3
+  318950    319267  complement  fr 1
+  320712    320945  complement  fr 2
+  321259    321414  complement  fr 3
+  329237    329380  complement  fr 1
+  330030    330269  direct      fr 3
+  331249    331449  direct      fr 1
+  331278    331874  direct      fr 3
+  331658    331867  complement  fr 1
+  331844    332140  direct      fr 2
+  332125    332421  direct      fr 1
+  332160    332831  direct      fr 3
+  332419    332718  direct      fr 1
+  332577    333008  complement  fr 2
+  332816    333136  direct      fr 2
+  333151    333939  direct      fr 1
+  333204    333608  direct      fr 3
+  333832    333984  complement  fr 3
+  333846    334196  complement  fr 2
+  333986    334522  complement  fr 1
+  334470    334814  direct      fr 3
+  339988    340221  direct      fr 1
+  341412    341906  complement  fr 2
+  342073    342264  complement  fr 3
+  345501    345767  direct      fr 3
+  345597    345863  complement  fr 2
+  345940    346107  complement  fr 3
+  348344    348520  complement  fr 1
+  351960    352172  direct      fr 3
+  357680    358045  direct      fr 2
+  360764    361051  complement  fr 1
+  360874    361128  direct      fr 1
+  364826    365023  direct      fr 2
+  365547    365783  complement  fr 2
+  366887    367027  direct      fr 2
+  366918    367109  direct      fr 3
+  367403    367588  direct      fr 2
+  367799    367957  direct      fr 2
+  370275    370652  complement  fr 2
+  372132    372281  direct      fr 3
+  372329    372529  complement  fr 1
+  372424    372723  complement  fr 3
+  372659    372937  direct      fr 2
+  373187    373450  complement  fr 1
+  375963    376487  complement  fr 2
+  376903    377076  complement  fr 3
+  377066    377470  complement  fr 1
+  377317    377823  complement  fr 3
+  377864    378079  complement  fr 1
+  378046    378225  complement  fr 3
+  378182    378619  complement  fr 1
+  379239    379439  direct      fr 3
+  379962    380183  direct      fr 3
+  381709    381984  direct      fr 1
+  383030    383203  complement  fr 1
+  387511    387804  complement  fr 3
+  387902    388108  complement  fr 1
+  391329    391628  complement  fr 2
+  391675    391941  direct      fr 1
+  392692    393036  direct      fr 1
+  396215    396364  complement  fr 1
+  397755    397988  complement  fr 2
+  398084    398305  direct      fr 2
+  398872    399225  complement  fr 3
+  399071    399358  direct      fr 2
+  399412    399651  complement  fr 3
+  399669    399839  complement  fr 2
+  400390    400785  complement  fr 3
+  400712    400990  complement  fr 1
+  401761    402114  complement  fr 3
+  402154    402555  complement  fr 3
+  402800    402979  complement  fr 1
+  403001    403183  complement  fr 1
+  403036    403308  direct      fr 1
+  403181    403399  complement  fr 1
+  404528    404698  complement  fr 1
+  404668    404916  complement  fr 3
+  405322    405573  complement  fr 3
+  405769    405954  complement  fr 3
+  406106    406342  complement  fr 1
+  406668    406988  complement  fr 2
+  407174    407386  direct      fr 2
+  407219    407791  complement  fr 1
+  407800    408201  direct      fr 1
+  407955    408122  complement  fr 2
+  408495    408866  complement  fr 2
+  408851    409168  complement  fr 1
+  409155    409529  complement  fr 2
+  409632    409907  complement  fr 2
+  409863    410135  direct      fr 3
+  410343    410747  complement  fr 2
+  410728    410988  complement  fr 3
+  414099    414335  complement  fr 2
+  414499    414717  complement  fr 3
+  415420    415665  direct      fr 1
+  418552    418776  direct      fr 1
+  420293    420487  direct      fr 2
+  421049    421258  complement  fr 1
+  421583    421729  direct      fr 2
+  429972    430157  complement  fr 2
+  435237    435404  direct      fr 3
+  438797    439042  direct      fr 2
+  439398    439979  complement  fr 2
+  439505    439825  direct      fr 2
+  439586    439804  complement  fr 1
+  440064    440210  direct      fr 3
+  442715    443026  complement  fr 1
+  442825    443187  complement  fr 3
+  443328    443843  direct      fr 3
+  443607    443870  complement  fr 2
+  443822    444250  direct      fr 2
+  444403    444726  complement  fr 3
+  444681    444935  direct      fr 3
+  445339    445650  direct      fr 1
+  446336    446542  direct      fr 2
+  446358    446714  direct      fr 3
+  446712    446897  direct      fr 3
+  450128    450373  direct      fr 2
+  450947    451114  direct      fr 2
+  453446    453643  complement  fr 1
+  453625    453843  complement  fr 3
+  453767    454021  complement  fr 1
+  454068    454361  direct      fr 3
+  454772    454972  direct      fr 2
+  454825    455148  complement  fr 3
+  454876    455154  direct      fr 1
+  455236    455535  direct      fr 1
+  455397    455570  direct      fr 3
+  455546    456055  direct      fr 2
+  455739    456230  complement  fr 2
+  455993    456301  complement  fr 1
+  456145    456399  complement  fr 3
+  456307    456465  direct      fr 1
+  456366    456689  complement  fr 2
+  456705    456890  direct      fr 3
+  456834    457043  complement  fr 2
+  456980    457204  direct      fr 2
+  457130    457330  complement  fr 1
+  458166    458384  complement  fr 2
+  459197    459370  direct      fr 2
+  461843    462109  direct      fr 2
+  462877    463152  direct      fr 1
+  468626    468892  direct      fr 2
+  469233    469382  direct      fr 3
+  469880    470200  direct      fr 2
+  473561    474130  direct      fr 2
+  473593    473883  complement  fr 3
+  474949    475281  direct      fr 1
+  475224    475367  direct      fr 3
+  475279    475539  direct      fr 1
+  475628    475783  direct      fr 2
+  478377    478715  direct      fr 3
+  479328    479846  complement  fr 2
+  479414    479779  complement  fr 1
+  480129    480452  complement  fr 2
+  480384    480536  direct      fr 3
+  480461    480838  direct      fr 2
+  480467    480781  complement  fr 1
+  484315    484722  complement  fr 3
+  484422    484829  direct      fr 3
+  484822    485061  direct      fr 1
+  485118    485345  complement  fr 2
+  488478    489212  complement  fr 2
+  489210    489698  complement  fr 2
+  489424    489780  complement  fr 3
+  489696    491342  complement  fr 2
+  490308    490499  direct      fr 3
+  491269    492036  complement  fr 3
+  492053    492256  complement  fr 1
+  492109    493236  complement  fr 3
+  493342    493626  direct      fr 1
+  493443    493889  direct      fr 3
+  493642    493938  complement  fr 3
+  500277    500432  direct      fr 3
+  501442    501672  complement  fr 3
+  502354    502587  complement  fr 3
+  502694    502933  direct      fr 2
+  508104    508286  complement  fr 2
+  513779    513985  direct      fr 2
+  514250    514498  complement  fr 1
+  514465    514839  direct      fr 1
+  514739    514984  complement  fr 1
+  515449    515952  direct      fr 1
+  515540    516100  complement  fr 1
+  515601    516065  complement  fr 2
+  515938    516135  complement  fr 3
+  520107    520358  direct      fr 3
+  521166    521453  direct      fr 3
+  521330    521605  direct      fr 2
+  521620    521925  direct      fr 1
+  522807    522968  complement  fr 2
+  523911    524081  complement  fr 2
+  531020    531232  complement  fr 1
+  534672    534848  direct      fr 3
+  537329    537595  direct      fr 2
+  538506    538718  direct      fr 3
+  540928    541119  direct      fr 1
+  541286    541780  direct      fr 2
+  542971    543204  complement  fr 3
+  548378    548722  complement  fr 1
+  548542    548871  complement  fr 3
+  548670    549206  direct      fr 3
+  548996    549346  direct      fr 2
+  549208    549360  direct      fr 1
+  549253    550041  complement  fr 3
+  549584    549988  complement  fr 1
+  550056    550376  complement  fr 2
+  550149    550337  direct      fr 3
+  550184    550615  direct      fr 2
+  550361    551032  complement  fr 1
+  550474    550773  complement  fr 3
+  550771    551067  complement  fr 3
+  551052    551348  complement  fr 2
+  551242    551517  direct      fr 1
+  551318    551914  complement  fr 1
+  551325    551534  direct      fr 3
+  551650    551817  direct      fr 1
+  551743    552165  complement  fr 3
+  552685    552924  complement  fr 3
+  552776    552994  complement  fr 1
+  552922    553161  complement  fr 3
+  553811    553954  direct      fr 2
+  556501    556767  direct      fr 1
+  561783    561938  direct      fr 3
+  562848    563096  direct      fr 3
+  563930    564247  direct      fr 2
+  564909    565112  direct      fr 3
+  565644    565940  direct      fr 3
+  569491    569679  complement  fr 3
+  570395    570634  direct      fr 2
+  571939    572178  direct      fr 1
+  573449    573679  direct      fr 2
+  574382    574804  complement  fr 1
+  574572    574943  direct      fr 3
+  575449    575862  direct      fr 1
+  576695    576889  direct      fr 2
+  576736    576939  direct      fr 1
+  576901    577095  complement  fr 3
+  577099    577287  complement  fr 3
+  577289    577462  direct      fr 2
+  577644    577799  direct      fr 3
+  578316    578675  complement  fr 2
+  578576    578854  complement  fr 1
+  578673    578942  complement  fr 2
+  579039    579242  complement  fr 2
+  579474    579710  complement  fr 2
+  579613    579822  complement  fr 3
+  580023    580442  complement  fr 2
+  580471    580677  complement  fr 3
+  580927    581469  complement  fr 3
+  581558    581728  direct      fr 2
+  581732    581887  direct      fr 2
+  582117    582332  complement  fr 2
+  582393    582611  complement  fr 2
+  582536    582970  direct      fr 2
+  583338    583523  direct      fr 3
+  583444    583638  complement  fr 3
+  583613    583969  direct      fr 2
+  583817    584029  complement  fr 1
+  585018    585407  complement  fr 2
+  585949    586281  complement  fr 3
+  586197    586436  complement  fr 2
+  586584    586814  direct      fr 3
+  586943    587164  direct      fr 2
+  587250    587432  direct      fr 3
+  587754    587951  complement  fr 2
+  588412    588618  direct      fr 1
+  588685    588936  complement  fr 3
+  589015    589269  complement  fr 3
+  589273    589707  direct      fr 1
+  589332    589724  complement  fr 2
+  589947    590168  complement  fr 2
+  591126    591320  complement  fr 2
+  591411    591758  complement  fr 2
+  591792    591968  direct      fr 3
+  591869    592144  direct      fr 2
+  592040    592393  complement  fr 1
+  592207    592359  complement  fr 3
+  592823    593107  direct      fr 2
+  593007    593234  complement  fr 2
+  593183    593515  direct      fr 2
+  593612    593785  complement  fr 1
+  593813    594145  complement  fr 1
+  595109    595336  complement  fr 1
+  595628    595996  direct      fr 2
+  596222    596623  complement  fr 1
+  596790    597020  complement  fr 2
+  596974    597249  complement  fr 3
+  597211    597558  direct      fr 1
+  597564    597788  direct      fr 3
+  598052    598345  complement  fr 1
+  598060    598245  complement  fr 3
+  598761    599075  complement  fr 2
+  599238    599402  complement  fr 2
+  599474    599731  complement  fr 1
+  600529    600870  direct      fr 1
+  600679    600867  complement  fr 3
+  601221    601583  complement  fr 2
+  601670    601855  complement  fr 1
+  601750    601929  complement  fr 3
+  602248    602541  complement  fr 3
+  603023    603193  complement  fr 1
+  603289    603591  complement  fr 3
+  603589    603768  complement  fr 3
+  603789    604094  complement  fr 2
+  604175    604354  complement  fr 1
+  604932    605078  complement  fr 2
+  605041    605424  complement  fr 3
+  605502    605816  complement  fr 2
+  605614    605859  direct      fr 1
+  606019    606192  complement  fr 3
+  606129    606626  direct      fr 3
+  606509    606691  direct      fr 2
+  607483    607887  complement  fr 3
+  607916    608104  complement  fr 1
+  608014    608187  complement  fr 3
+  608097    608351  complement  fr 2
+  608336    608602  complement  fr 1
+  608797    609000  complement  fr 3
+  608975    609169  complement  fr 1
+  609545    609781  complement  fr 1
+  610421    610588  direct      fr 2
+  610492    610713  complement  fr 3
+  610923    611258  direct      fr 3
+  612198    612392  complement  fr 2
+  612420    613016  complement  fr 2
+  613272    613469  direct      fr 3
+  614270    614644  direct      fr 2
+  614723    614962  complement  fr 1
+  615133    615369  complement  fr 3
+  615424    615723  complement  fr 3
+  615780    615929  complement  fr 2
+  616447    616596  complement  fr 3
+  616664    616981  direct      fr 2
+  617223    617462  complement  fr 2
+  617460    617726  complement  fr 2
+  617642    618091  complement  fr 1
+  618166    618321  direct      fr 1
+  618319    618516  direct      fr 1
+  618932    619099  direct      fr 2
+  619097    619525  direct      fr 2
+  619721    619909  complement  fr 1
+  619806    620204  complement  fr 2
+  620772    621077  complement  fr 2
+  620836    621375  complement  fr 3
+  621258    621704  complement  fr 2
+  622219    622800  complement  fr 3
+  622674    622853  direct      fr 3
+  622713    622940  complement  fr 2
+  623042    623296  complement  fr 1
+  623695    623862  direct      fr 1
+  623882    624049  complement  fr 1
+  624659    624895  direct      fr 2
+  624951    625232  complement  fr 2
+  625723    625989  complement  fr 3
+  626181    626552  direct      fr 3
+  627183    627638  complement  fr 2
+  627684    627923  complement  fr 2
+  628102    628260  complement  fr 3
+  629107    629319  complement  fr 3
+  629177    629419  complement  fr 1
+  629233    629511  direct      fr 1
+  629904    630296  direct      fr 3
+  630132    630485  complement  fr 2
+  630598    630915  complement  fr 3
+  631999    632178  complement  fr 3
+  632037    632381  complement  fr 2
+  632171    632470  complement  fr 1
+  632379    632645  complement  fr 2
+  633665    633967  direct      fr 2
+  633682    633927  direct      fr 1
+  634434    634799  direct      fr 3
+  634913    635131  complement  fr 1
+  634959    635405  complement  fr 2
+  636176    636460  complement  fr 1
+  636957    637163  complement  fr 2
+  637241    637627  complement  fr 1
+  637631    637861  direct      fr 2
+  637765    637971  complement  fr 3
+  638779    639015  complement  fr 3
+  639049    639225  direct      fr 1
+  640253    640543  complement  fr 1
+  640389    640559  complement  fr 2
+  641021    641506  complement  fr 1
+  643732    644055  complement  fr 3
+  643971    644360  complement  fr 2
+  644516    644722  complement  fr 1
+  644554    644859  complement  fr 3
+  644893    645081  direct      fr 1
+  645367    645567  complement  fr 3
+  646507    647025  complement  fr 3
+  647023    647286  complement  fr 3
+  647603    648076  direct      fr 2
+  648260    648553  direct      fr 2
+  648575    648820  direct      fr 2
+  648929    649225  complement  fr 1
+  649094    649324  direct      fr 2
+  650116    650307  direct      fr 1
+  650457    650627  complement  fr 2
+  651060    651272  complement  fr 2
+  651313    651519  direct      fr 1
+  651432    651614  complement  fr 2
+  652833    653093  complement  fr 2
+  653128    653370  direct      fr 1
+  654610    654813  direct      fr 1
+  654727    654969  complement  fr 3
+  655305    655523  complement  fr 2
+  657768    657932  direct      fr 3
+  658976    659251  direct      fr 2
+  660287    660616  complement  fr 1
+  661210    661503  complement  fr 3
+  661496    661693  complement  fr 1
+  662134    662457  direct      fr 1
+  662339    662710  direct      fr 2
+  662455    662655  direct      fr 1
+  664970    665569  complement  fr 1
+  668718    668933  complement  fr 2
+  668964    669143  direct      fr 3
+  669680    669958  complement  fr 1
+  672688    672849  direct      fr 1
+  672756    672947  direct      fr 3
+  674095    674397  direct      fr 1
+  681701    682021  complement  fr 1
+  682487    682756  complement  fr 1
+  685342    685599  complement  fr 3
+  685479    685694  direct      fr 3
+  686661    686915  complement  fr 2
+  689164    689937  complement  fr 3
+  690015    690311  direct      fr 3
+  690143    690700  complement  fr 1
+  690619    690981  complement  fr 3
+  691456    691767  complement  fr 3
+  691757    692236  complement  fr 1
+  692234    692419  complement  fr 1
+  692502    692933  complement  fr 2
+  692795    693103  direct      fr 2
+  692860    693060  complement  fr 3
+  693394    693765  complement  fr 3
+  693668    693889  direct      fr 2
+  694093    694263  direct      fr 1
+  696122    696292  direct      fr 2
+  696596    696826  direct      fr 2
+  696799    696993  complement  fr 3
+  698707    698898  complement  fr 3
+  699017    699247  direct      fr 2
+  699415    699765  complement  fr 3
+  700266    700484  complement  fr 2
+  700482    700757  complement  fr 2
+  701261    701512  complement  fr 1
+  701587    702015  direct      fr 1
+  701608    701802  complement  fr 3
+  701718    701933  complement  fr 2
+  701839    702039  complement  fr 3
+  702193    702411  complement  fr 3
+  702444    702716  complement  fr 2
+  702932    703159  complement  fr 1
+  710208    710390  complement  fr 2
+  710614    710880  direct      fr 1
+  711025    711348  complement  fr 3
+  711335    711535  complement  fr 1
+  713032    713331  direct      fr 1
+  713844    714056  complement  fr 2
+  714046    714444  complement  fr 3
+  715100    715378  complement  fr 1
+  716205    716387  complement  fr 2
+  717165    717374  complement  fr 2
+  717187    717576  complement  fr 3
+  717468    717809  complement  fr 2
+  717843    718292  direct      fr 3
+  718323    718649  complement  fr 2
+  718737    719081  complement  fr 2
+  718976    719173  complement  fr 1
+  719180    719686  complement  fr 1
+  719218    719370  direct      fr 1
+  719229    719621  direct      fr 3
+  719711    720010  complement  fr 1
+  720178    720363  direct      fr 1
+  720202    720528  complement  fr 3
+  720570    720872  complement  fr 2
+  721775    722038  complement  fr 1
+  725682    725861  complement  fr 2
+  730872    731015  complement  fr 2
+  731013    731318  complement  fr 2
+  731186    731455  complement  fr 1
+  731316    731546  complement  fr 2
+  734135    734416  complement  fr 1
+  734790    735410  complement  fr 2
+  735408    735884  complement  fr 2
+  735860    736846  complement  fr 1
+  736692    736943  complement  fr 2
+  736844    737344  complement  fr 1
+  738583    738972  direct      fr 1
+  739251    739661  direct      fr 3
+  739698    739901  direct      fr 3
+  739985    740371  direct      fr 2
+  744232    744390  direct      fr 1
+  745201    745593  direct      fr 1
+  745591    745800  direct      fr 1
+  747174    747338  direct      fr 3
+  747562    747807  direct      fr 1
+  747723    748424  direct      fr 3
+  748059    748274  complement  fr 2
+  748597    748947  direct      fr 1
+  748945    749574  direct      fr 1
+
+List of Protein-Coding Exons
+(regions between acceptor and donor site w/ coding function >0.500000)
+
+ Left     Right
+ End      End      Strand     Frame   Prob
+-------  -------  ----------- -----  ------
+     32      106  direct       fr 3  0.9084
+
+    134      179  direct       fr 1  0.6444
+
+    431      605  complement   fr 1  0.6079
+    484      595                     0.7379
+
+    519      605  complement   fr 1  0.8517
+    519      595                     0.8436
+
+    647      745  direct       fr 1  0.8124
+    661      721                     0.8514
+
+   1180     1255  complement   fr 2  0.4721
+
+   1456     1532  complement   fr 1  0.5450
+
+   1953     2020  direct       fr 1  0.4847
+
+   2063     2176  complement   fr 3  0.6042
+   2085     2150                     0.5830
+
+   2107     2176  complement   fr 3  0.6350
+
+   2343     2414  complement   fr 2  0.7947
+   2358     2400                     0.8368
+
+   3567     3716  complement   fr 2  0.2874
+   3585     3685                     0.2587
+
+   3576     3664  direct       fr 3  0.6170
+   3603     3655                     0.7753
+
+   3662     3716  complement   fr 2  0.3554
+
+   3889     3996  complement   fr 1  0.7986
+   3895     3996                     0.8573
+
+   3974     4071  direct       fr 3  0.4235
+   4027     4054                     0.7910
+
+   4138     4180  complement   fr 3  0.6538
+   4147     4171                     0.8168
+
+   4296     4532  complement   fr 2  0.6039
+   4307     4521                     0.6201
+
+   4646     4774  complement   fr 2  0.6608
+   4659     4748                     0.7245
+
+   5154     5316  complement   fr 2  0.7106
+   5171     5279                     0.7824
+
+   5242     5455  direct       fr 1  0.3462
+   5261     5434                     0.3880
+
+   5270     5316  complement   fr 2  0.6018
+
+   5299     5455  direct       fr 1  0.3682
+   5337     5434                     0.3473
+
+   5337     5455  direct       fr 1  0.3555
+   5375     5434                     0.3874
+
+   5375     5455  direct       fr 1  0.3876
+   5391     5434                     0.3288
+
+   5517     5597  complement   fr 1  0.6932
+   5525     5575                     0.7636
+
+   5906     5945  complement   fr 2  0.5845
+
+   5938     6056  direct       fr 2  0.7563
+   5968     6045                     0.9077
+
+   6041     6147  direct       fr 3  0.5275
+
+   6385     6463  complement   fr 3  0.5151
+   6408     6432                     0.7131
+
+   6617     6713  direct       fr 2  0.4559
+   6660     6696                     0.6917
+
+   6694     6768  direct       fr 1  0.4357
+
+   6804     6879  complement   fr 1  0.5803
+   6811     6851                     0.7325
+
+   7213     7323  direct       fr 2  0.7340
+   7230     7318                     0.9017
+
+   7552     7594  complement   fr 3  0.4787
+
+   7770     7926  direct       fr 3  0.6949
+   7794     7883                     0.8884
+
+   7928     8002  complement   fr 1  0.3452
+
+   8203     8261  direct       fr 2  0.7928
+
+   8331     8382  direct       fr 3  0.6218
+
+   8494     8584  complement   fr 3  0.4997
+
+   8523     8604  direct       fr 1  0.4920
+   8523     8546                     0.7008
+
+   8627     8689  complement   fr 2  0.4014
+   8665     8689                     0.5471
+
+   8835     8928  direct       fr 3  0.5896
+   8888     8912                     0.9112
+
+   8948     8990  complement   fr 2  0.6509
+
+   9294     9350  complement   fr 2  0.2764
+
+   9380     9467  direct       fr 3  0.7467
+   9397     9442                     0.8604
+
+   9611     9724  direct       fr 1  0.3306
+   9640     9680                     0.4359
+
+   9756     9809  complement   fr 3  0.7245
+
+   9940    10043  direct       fr 2  0.7760
+   9940    10020                     0.7480
+
+  10045    10096  complement   fr 3  0.6425
+
+  10116    10240  direct       fr 1  0.5430
+  10136    10190                     0.6646
+
+  10248    10421  direct       fr 3  0.7965
+  10254    10410                     0.8536
+
+  10507    10600  complement   fr 2  0.5142
+  10535    10596                     0.5241
+
+  10528    10670  direct       fr 3  0.2210
+  10539    10670                     0.1942
+
+  10535    10600  complement   fr 2  0.5241
+  10554    10596                     0.5002
+
+  10588    10670  direct       fr 2  0.3840
+  10588    10644                     0.3491
+
+  10620    10670  direct       fr 3  0.2894
+
+  11055    11162  direct       fr 2  0.9314
+  11059    11143                     0.9308
+
+  11270    11342  direct       fr 1  0.4577
+
+  11387    11490  complement   fr 2  0.5020
+  11448    11475                     0.6533
+
+  11439    11501  direct       fr 1  0.2698
+
+  11665    11742  direct       fr 1  0.6265
+  11680    11705                     0.7132
+
+  12125    12291  direct       fr 2  0.5376
+  12151    12285                     0.6254
+
+  12223    12291  direct       fr 2  0.5595
+  12241    12285                     0.6227
+
+  12470    12591  direct       fr 3  0.8270
+  12510    12587                     0.9139
+
+  12752    12903  complement   fr 2  0.2704
+  12803    12852                     0.3437
+
+  12858    12958  direct       fr 1  0.8998
+  12879    12916                     0.9942
+
+  12963    13200  direct       fr 3  0.6652
+  12985    13159                     0.7314
+
+  13107    13200  direct       fr 3  0.5713
+  13136    13159                     0.8129
+
+  13177    13239  direct       fr 2  0.7154
+  13187    13235                     0.8779
+
+  13376    13482  complement   fr 2  0.4078
+  13416    13451                     0.7634
+
+  13436    13595  direct       fr 1  0.5718
+  13475    13542                     0.7813
+
+  13487    13595  direct       fr 1  0.6731
+  13493    13542                     0.9327
+
+  13726    13805  direct       fr 1  0.4649
+
+  13803    13915  direct       fr 3  0.6593
+  13856    13897                     0.8763
+
+  15077    15171  complement   fr 2  0.5086
+  15098    15156                     0.5981
+
+  18033    18072  complement   fr 1  0.6879
+  18041    18072                     0.9171
+
+  18088    18180  complement   fr 3  0.9728
+  18091    18149                     0.9638
+
+  19705    19828  direct       fr 2  0.5684
+  19709    19799                     0.6557
+
+  19829    19968  direct       fr 1  0.6285
+  19864    19897                     0.9558
+
+  19976    20017  complement   fr 2  0.7110
+
+  20024    20203  complement   fr 1  0.6616
+  20036    20139                     0.7693
+
+  20126    20203  complement   fr 1  0.6004
+
+  20171    20456  complement   fr 3  0.3978
+  20252    20384                     0.5837
+
+  20448    20523  direct       fr 2  0.7879
+  20454    20513                     0.8782
+
+  20572    20688  complement   fr 1  0.3701
+  20585    20688                     0.3738
+
+  20700    20898  direct       fr 1  0.4278
+  20716    20843                     0.4464
+
+  20957    21029  direct       fr 2  0.5904
+  20995    21022                     0.7423
+
+  21059    21144  complement   fr 1  0.6468
+  21066    21123                     0.6499
+
+  21143    21247  direct       fr 2  0.9005
+  21162    21234                     0.9917
+
+  21264    21416  complement   fr 2  0.6615
+  21278    21350                     0.6051
+
+  21746    21980  direct       fr 3  0.4685
+  21750    21948                     0.4872
+
+  21864    21980  direct       fr 3  0.3047
+  21872    21948                     0.2506
+
+  21994    22121  direct       fr 2  0.7479
+  22011    22092                     0.8163
+
+  22183    22245  direct       fr 3  0.7060
+
+  22630    22756  complement   fr 3  0.4911
+  22657    22724                     0.5324
+
+  22904    22957  complement   fr 1  0.7665
+  22922    22948                     0.9754
+
+  23026    23267  complement   fr 3  0.1982
+  23062    23250                     0.2135
+
+  23126    23267  complement   fr 3  0.1708
+  23152    23250                     0.0734
+
+  23152    23235  complement   fr 2  0.8689
+  23152    23182                     0.8024
+
+  23571    23708  direct       fr 1  0.5606
+  23571    23633                     0.8360
+
+  23718    23904  direct       fr 2  0.5782
+  23742    23856                     0.7163
+
+  23884    23991  direct       fr 3  0.5855
+  23888    23928                     0.5165
+
+  24148    24219  direct       fr 2  0.7992
+  24148    24216                     0.7992
+
+  24683    24810  direct       fr 2  0.4854
+  24717    24755                     0.4155
+
+  24715    24855  complement   fr 3  0.2502
+  24755    24851                     0.1386
+
+  24743    24810  direct       fr 2  0.5702
+
+  24854    24988  complement   fr 2  0.4068
+  24906    24984                     0.6966
+
+  25221    25334  complement   fr 1  0.5582
+  25242    25322                     0.5821
+
+  28827    28990  complement   fr 2  0.6683
+  28871    28968                     0.8191
+
+  28959    29068  complement   fr 3  0.4763
+  28988    29026                     0.7183
+
+  29637    29767  complement   fr 3  0.4099
+  29691    29746                     0.6035
+
+  29714    29767  complement   fr 3  0.5508
+  29721    29746                     0.5944
+
+  30669    30757  complement   fr 2  0.6637
+  30680    30744                     0.6544
+
+  31225    31302  complement   fr 1  0.4590
+
+  31766    31854  complement   fr 1  0.3193
+
+  32451    32516  direct       fr 2  0.5746
+
+  32819    32903  complement   fr 2  0.4740
+
+  32907    32942  complement   fr 3  0.3571
+  32917    32942                     0.3571
+
+  34195    34260  direct       fr 1  0.7831
+  34222    34260                     0.8630
+
+  36997    37166  complement   fr 1  0.2503
+  37027    37136                     0.1862
+
+  37040    37116  direct       fr 1  0.3453
+  37075    37116                     0.3480
+
+  38058    38165  complement   fr 1  0.4182
+  38070    38150                     0.4214
+
+  40838    40895  complement   fr 1  0.7783
+
+  41654    41796  direct       fr 3  0.7854
+  41697    41757                     0.9937
+
+  41759    41917  direct       fr 2  0.4012
+  41817    41875                     0.6202
+
+  41889    42000  direct       fr 3  0.4052
+  41901    41989                     0.3781
+
+  41894    41966  complement   fr 1  0.4755
+  41910    41948                     0.7104
+
+  42228    42294  direct       fr 3  0.4097
+
+  42698    42775  direct       fr 3  0.3514
+
+  42806    42862  complement   fr 1  0.5448
+  42812    42850                     0.4916
+
+  42866    42949  direct       fr 1  0.6394
+  42872    42901                     0.7045
+
+  42947    42986  direct       fr 2  0.5412
+  42961    42984                     0.6741
+
+  42993    43039  complement   fr 3  0.6761
+  43002    43027                     0.8530
+
+  43045    43085  complement   fr 1  0.6633
+
+  43089    43170  direct       fr 3  0.7283
+  43107    43158                     0.7913
+
+  43236    43372  complement   fr 1  0.5141
+  43277    43353                     0.7434
+
+  43362    43465  complement   fr 3  0.5044
+  43378    43429                     0.6430
+
+  43486    43659  direct       fr 2  0.5673
+  43519    43610                     0.7284
+
+  43486    43656  direct       fr 1  0.1844
+  43519    43610                     0.1987
+
+  43519    43659  direct       fr 2  0.5974
+  43545    43610                     0.8980
+
+  43716    43802  direct       fr 1  0.5118
+  43736    43765                     0.7170
+
+  43900    44068  direct       fr 3  0.7992
+  43909    44019                     0.8532
+
+  44053    44199  direct       fr 1  0.4657
+  44070    44130                     0.7278
+
+  44187    44426  complement   fr 2  0.5867
+  44229    44401                     0.5910
+
+  44362    44426  complement   fr 2  0.6327
+
+  44414    44511  complement   fr 1  0.4133
+
+  44509    44664  direct       fr 2  0.5873
+  44545    44604                     0.9111
+
+  44687    44739  complement   fr 1  0.6714
+
+  44751    45300  direct       fr 1  0.6985
+  44751    45300                     0.6985
+
+  44861    44951  direct       fr 3  0.7743
+  44861    44901                     0.6315
+
+  44903    45300  direct       fr 1  0.7032
+  44953    45300                     0.7819
+
+  45109    45300  direct       fr 1  0.7978
+  45157    45300                     0.9159
+
+  45433    45495  complement   fr 3  0.6722
+
+  45462    45662  complement   fr 2  0.4583
+  45494    45656                     0.4985
+
+  45666    45942  complement   fr 1  0.6261
+  45703    45928                     0.6783
+
+  45753    45942  complement   fr 1  0.6748
+  45763    45928                     0.7069
+
+  45786    45942  complement   fr 1  0.7104
+  45824    45928                     0.7829
+
+  45999    46080  direct       fr 1  0.7407
+  45999    46080                     0.7407
+
+  46131    46344  direct       fr 3  0.4759
+  46153    46284                     0.5509
+
+  48256    48381  direct       fr 2  0.4556
+  48288    48326                     0.5170
+
+  48434    48536  complement   fr 2  0.5115
+  48476    48522                     0.9144
+
+  48634    48747  direct       fr 3  0.7455
+  48666    48730                     0.9394
+
+  52369    52532  complement   fr 3  0.6182
+  52413    52510                     0.8027
+
+  52501    52610  complement   fr 1  0.4674
+  52530    52568                     0.7500
+
+  53178    53308  complement   fr 3  0.4691
+  53232    53287                     0.7362
+
+  54134    54298  complement   fr 2  0.3944
+  54210    54285                     0.7674
+
+  54766    54830  complement   fr 1  0.3630
+
+  54766    54830  complement   fr 2  0.4887
+
+  55307    55395  complement   fr 1  0.3536
+
+  55982    56057  direct       fr 2  0.4952
+
+  56360    56444  complement   fr 2  0.5036
+
+  58517    58573  complement   fr 2  0.6025
+
+  60538    60707  complement   fr 1  0.2614
+  60568    60677                     0.1662
+
+  60581    60660  direct       fr 1  0.5032
+  60616    60660                     0.5958
+
+  61654    61706  complement   fr 1  0.6279
+  61666    61691                     0.6823
+
+  63783    63846  complement   fr 2  0.8265
+
+  64382    64436  complement   fr 1  0.7676
+
+  65195    65340  direct       fr 3  0.7739
+  65238    65298                     0.9866
+
+  65300    65416  direct       fr 2  0.4105
+
+  65403    65525  direct       fr 3  0.4169
+  65430    65518                     0.4232
+
+  65451    65489  complement   fr 1  0.7119
+
+  66347    66461  complement   fr 1  0.5017
+  66353    66431                     0.5630
+
+  66373    66461  complement   fr 1  0.4972
+  66395    66431                     0.5274
+
+  66407    66490  direct       fr 1  0.4516
+  66413    66442                     0.6510
+
+  66488    66531  direct       fr 2  0.4998
+  66502    66527                     0.7545
+
+  66521    66580  complement   fr 3  0.6594
+  66521    66568                     0.6254
+
+  66543    66580  complement   fr 3  0.8320
+
+  66630    66711  direct       fr 3  0.7557
+  66648    66699                     0.7788
+
+  66824    66913  complement   fr 1  0.7541
+  66848    66894                     0.8900
+
+  66903    67006  complement   fr 3  0.6125
+  66919    66970                     0.7233
+
+  67027    67200  direct       fr 2  0.5739
+  67060    67151                     0.7584
+
+  67060    67200  direct       fr 2  0.6191
+  67086    67151                     0.8828
+
+  67257    67343  direct       fr 1  0.5138
+  67277    67306                     0.7186
+
+  67441    67609  direct       fr 3  0.7564
+  67450    67560                     0.8988
+
+  67594    67671  direct       fr 1  0.7060
+  67611    67666                     0.7868
+
+  67728    67967  complement   fr 2  0.5328
+  67770    67942                     0.5459
+
+  67770    67967  complement   fr 2  0.5686
+  67810    67942                     0.5718
+
+  67903    67967  complement   fr 2  0.6034
+
+  67946    68052  complement   fr 1  0.4180
+
+  68050    68208  direct       fr 2  0.5577
+  68086    68145                     0.9116
+
+  68172    68219  complement   fr 2  0.5129
+
+  68205    68280  complement   fr 1  0.4904
+  68228    68264                     0.6593
+
+  68292    68835  direct       fr 1  0.6765
+  68308    68830                     0.6882
+
+  68402    68492  direct       fr 3  0.7045
+  68407    68442                     0.6437
+
+  68427    68835  direct       fr 1  0.6869
+  68427    68830                     0.6818
+
+  68441    68492  direct       fr 3  0.8692
+
+  68494    68835  direct       fr 1  0.7676
+  68500    68830                     0.7759
+
+  68650    68835  direct       fr 1  0.7949
+  68698    68830                     0.9077
+
+  68974    69036  complement   fr 3  0.6945
+
+  69003    69197  complement   fr 2  0.4460
+  69035    69186                     0.5070
+
+  69207    69483  complement   fr 1  0.6486
+  69244    69469                     0.6865
+
+  69294    69483  complement   fr 1  0.7165
+  69304    69469                     0.7522
+
+  69540    69675  direct       fr 1  0.5395
+  69559    69622                     0.8444
+
+  69672    69888  direct       fr 3  0.4906
+  69694    69825                     0.5655
+
+  69954    70068  direct       fr 1  0.3674
+
+  71797    71922  direct       fr 2  0.5223
+  71829    71867                     0.7214
+
+  71966    72063  complement   fr 2  0.3995
+  72017    72058                     0.8850
+
+  72175    72271  direct       fr 3  0.6933
+  72207    72250                     0.9421
+
+  72334    72447  complement   fr 2  0.5594
+  72355    72435                     0.5847
+
+  75927    76058  complement   fr 3  0.7704
+  75943    76058                     0.7679
+
+  76638    76685  complement   fr 1  0.5745
+  76649    76673                     0.7315
+
+  77808    77879  complement   fr 3  0.5904
+  77829    77858                     0.7696
+
+  78285    78360  complement   fr 2  0.3577
+
+  79230    79287  complement   fr 2  0.7768
+
+  79511    79606  direct       fr 1  0.6291
+  79534    79573                     0.6985
+
+  79534    79606  direct       fr 1  0.6733
+  79548    79573                     0.9027
+
+  79929    80011  complement   fr 1  0.2178
+  79969    79993                     0.0371
+
+  79948    80021  direct       fr 3  0.8061
+  79957    80010                     0.8793
+
+  81949    82139  complement   fr 1  0.4804
+  81970    82109                     0.5225
+
+  82013    82086  direct       fr 1  0.2821
+  82048    82078                     0.2911
+
+  82044    82139  complement   fr 1  0.3785
+  82053    82109                     0.2411
+
+  83000    83115  direct       fr 3  0.6750
+  83056    83113                     0.8746
+
+  85475    85520  complement   fr 1  0.7447
+
+  86424    86558  direct       fr 1  0.5933
+  86465    86551                     0.8447
+
+  86542    86624  complement   fr 3  0.5845
+  86575    86612                     0.8923
+
+  87167    87216  direct       fr 1  0.5348
+  87180    87216                     0.6359
+
+  87444    87524  direct       fr 2  0.6988
+
+  87536    87600  direct       fr 1  0.6939
+
+  87594    87721  complement   fr 2  0.7458
+  87623    87721                     0.9110
+
+  87859    87969  complement   fr 3  0.6061
+
+  87963    88039  direct       fr 3  0.8670
+  87968    87996                     0.7931
+
+  88175    88217  complement   fr 3  0.3528
+
+  88261    88333  direct       fr 1  0.7733
+  88289    88318                     0.9952
+
+  88352    88428  complement   fr 2  0.6087
+  88365    88398                     0.8254
+
+  88421    88504  complement   fr 1  0.3199
+
+  88515    88665  direct       fr 3  0.9318
+  88522    88616                     0.9003
+
+  88721    88785  complement   fr 3  0.8120
+
+  88826    88976  complement   fr 3  0.5639
+  88855    88963                     0.5870
+
+  88924    89094  complement   fr 2  0.3535
+  88924    89055                     0.3208
+
+  88999    89094  complement   fr 2  0.3015
+  89030    89055                     0.0994
+
+  89108    89167  direct       fr 1  0.5935
+
+  89200    89261  direct       fr 2  0.5216
+  89200    89255                     0.6085
+
+  89270    89435  complement   fr 3  0.6956
+  89290    89393                     0.7904
+
+  89675    89744  direct       fr 3  0.6838
+  89694    89728                     0.8767
+
+  89742    89921  direct       fr 1  0.7274
+  89768    89895                     0.7667
+
+  90031    90100  direct       fr 1  0.5263
+  90040    90080                     0.4736
+
+  90358    90468  direct       fr 3  0.3043
+
+  90446    90528  complement   fr 1  0.4697
+  90464    90528                     0.6000
+
+  93650    93702  direct       fr 2  0.4601
+  93669    93695                     0.2215
+
+  94250    94437  complement   fr 2  0.3671
+  94267    94425                     0.3459
+
+  94288    94350  direct       fr 2  0.8340
+  94288    94319                     0.9467
+
+  94346    94437  complement   fr 2  0.4969
+  94350    94425                     0.5052
+
+  94765    94939  direct       fr 1  0.6140
+  94794    94907                     0.7132
+
+  96454    96496  direct       fr 1  0.7388
+  96461    96485                     0.9905
+
+  96548    96617  direct       fr 3  0.8416
+  96567    96609                     0.8965
+
+  96656    96738  direct       fr 2  0.7049
+  96672    96695                     0.7303
+
+  96793    96937  complement   fr 2  0.7556
+  96822    96937                     0.7884
+
+  97178    97357  complement   fr 2  0.5515
+  97194    97357                     0.5900
+
+  97272    97357  complement   fr 2  0.8970
+  97299    97357                     0.9910
+
+  98807    98919  complement   fr 3  0.5926
+  98824    98904                     0.6437
+
+  99096    99153  direct       fr 2  0.7968
+  99107    99136                     0.9941
+
+  99286    99474  complement   fr 2  0.4572
+  99297    99458                     0.4536
+
+  99387    99474  complement   fr 2  0.6909
+  99416    99458                     0.8400
+
+  99592    99665  complement   fr 2  0.6197
+  99592    99641                     0.6635
+
+  99619    99751  direct       fr 3  0.6468
+  99630    99730                     0.6863
+
+  99652    99751  direct       fr 3  0.6915
+  99670    99730                     0.7544
+
+  99773    99934  complement   fr 1  0.2977
+  99806    99895                     0.1697
+
+  99908    99992  complement   fr 3  0.7404
+  99921    99963                     0.8513
+
+ 100425   100489  direct       fr 3  0.7102
+ 100441   100472                     0.8977
+
+ 100656   101256  complement   fr 1  0.5292
+ 100667   101239                     0.5243
+
+ 100843   101256  complement   fr 1  0.5375
+ 100883   101239                     0.5398
+
+ 100977   101031  complement   fr 3  0.4655
+
+ 101031   101256  complement   fr 1  0.5660
+ 101031   101239                     0.5258
+
+ 101263   101392  complement   fr 3  0.7085
+ 101288   101386                     0.8082
+
+ 101403   101437  direct       fr 1  0.6253
+ 101403   101428                     0.7285
+
+ 101450   101551  complement   fr 3  0.4459
+
+ 101563   101734  complement   fr 1  0.5308
+ 101599   101698                     0.5599
+
+ 101641   101734  complement   fr 1  0.6888
+
+ 102140   102341  complement   fr 2  0.6481
+ 102178   102304                     0.7362
+
+ 102285   102341  complement   fr 2  0.8749
+
+ 102483   102782  direct       fr 2  0.6739
+ 102490   102766                     0.6475
+
+ 102543   102782  direct       fr 2  0.7408
+ 102562   102766                     0.7212
+
+ 103105   103206  direct       fr 2  0.7254
+ 103113   103188                     0.8112
+
+ 103130   103206  direct       fr 2  0.7930
+ 103146   103188                     0.9249
+
+ 103361   103540  direct       fr 2  0.7457
+ 103410   103529                     0.7904
+
+ 103684   103762  complement   fr 3  0.6436
+ 103701   103730                     0.6409
+
+ 103882   103960  complement   fr 3  0.3983
+ 103894   103940                     0.3807
+
+ 104099   104401  direct       fr 1  0.8074
+ 104105   104388                     0.8573
+
+ 104499   104630  complement   fr 2  0.4481
+ 104505   104616                     0.4074
+
+ 104495   104604  direct       fr 1  0.4351
+ 104519   104604                     0.5437
+
+ 104505   104630  complement   fr 2  0.4481
+ 104538   104616                     0.4357
+
+ 104567   104604  direct       fr 1  0.6369
+ 104580   104604                     0.6910
+
+ 104738   104793  complement   fr 1  0.6094
+ 104740   104765                     0.7718
+
+ 104939   105065  direct       fr 1  0.7260
+ 104963   105046                     0.8446
+
+ 105255   105369  direct       fr 2  0.7079
+ 105261   105348                     0.6940
+
+ 105369   105441  complement   fr 3  0.6350
+ 105387   105416                     0.6645
+
+ 112213   112265  complement   fr 2  0.3103
+
+ 114373   114422  complement   fr 2  0.5159
+
+ 114414   114491  direct       fr 1  0.5057
+
+ 115302   115475  complement   fr 2  0.2876
+ 115333   115421                     0.2255
+
+ 116073   116172  complement   fr 3  0.4177
+ 116088   116147                     0.4407
+
+ 116260   116328  complement   fr 3  0.8679
+ 116262   116297                     0.8326
+
+ 116386   116610  direct       fr 2  0.5468
+ 116411   116572                     0.5870
+
+ 116868   116940  complement   fr 2  0.7296
+ 116880   116925                     0.8213
+
+ 116929   117011  direct       fr 1  0.5295
+
+ 117010   117186  complement   fr 1  0.9009
+ 117053   117177                     0.9874
+
+ 117497   117560  direct       fr 3  0.7258
+ 117497   117553                     0.7258
+
+ 117679   117845  direct       fr 1  0.4000
+ 117708   117818                     0.3661
+
+ 117786   117845  direct       fr 1  0.7094
+
+ 117953   118060  complement   fr 1  0.1881
+ 118015   118054                     0.2224
+
+ 118190   118262  complement   fr 1  0.5013
+ 118205   118255                     0.6453
+
+ 118450   118556  direct       fr 1  0.7772
+ 118458   118532                     0.9335
+
+ 118585   118755  direct       fr 3  0.5143
+ 118595   118748                     0.5212
+
+ 118719   118872  complement   fr 2  0.4394
+ 118763   118836                     0.5867
+
+ 118763   118872  complement   fr 2  0.5089
+ 118786   118836                     0.6207
+
+ 118791   118852  direct       fr 1  0.3886
+
+ 118961   119021  direct       fr 1  0.5367
+
+ 119222   119268  direct       fr 1  0.2848
+ 119245   119268                     0.4400
+
+ 119278   119355  complement   fr 3  0.5556
+ 119297   119346                     0.6323
+
+ 119406   119464  complement   fr 1  0.4317
+ 119425   119456                     0.4984
+
+ 119598   119702  complement   fr 2  0.4618
+ 119650   119697                     0.6381
+
+ 121231   121274  direct       fr 1  0.5821
+
+ 121836   121948  direct       fr 3  0.4106
+ 121872   121909                     0.3926
+
+ 121934   121999  complement   fr 3  0.6808
+ 121945   121991                     0.7969
+
+ 122296   122428  direct       fr 3  0.5064
+ 122355   122401                     0.9440
+
+ 123824   123928  complement   fr 3  0.4196
+ 123856   123907                     0.5175
+
+ 124080   124145  complement   fr 2  0.6015
+ 124104   124137                     0.8838
+
+ 124299   124350  complement   fr 1  0.7512
+ 124299   124341                     0.7007
+
+ 124326   124396  complement   fr 3  0.4190
+ 124367   124392                     0.7772
+
+ 125080   125156  complement   fr 3  0.7617
+ 125100   125145                     0.9165
+
+ 125746   125811  complement   fr 3  0.7822
+ 125754   125805                     0.9487
+
+ 126793   126881  direct       fr 3  0.6661
+
+ 127653   127696  direct       fr 2  0.6443
+
+ 128376   128434  direct       fr 3  0.7699
+ 128382   128424                     0.9608
+
+ 128629   128837  direct       fr 2  0.6657
+ 128634   128805                     0.7364
+
+ 128945   129036  direct       fr 2  0.3602
+ 128958   128994                     0.5383
+
+ 131344   131424  direct       fr 2  0.5381
+
+ 131579   131624  direct       fr 1  0.5470
+
+ 132748   132805  complement   fr 1  0.3886
+
+ 133641   133708  complement   fr 3  0.7436
+ 133666   133697                     0.9297
+
+ 134104   134176  complement   fr 3  0.5605
+ 134127   134169                     0.6146
+
+ 134262   134512  complement   fr 3  0.3771
+ 134293   134498                     0.4188
+
+ 134615   134703  complement   fr 3  0.3236
+
+ 134937   135019  direct       fr 2  0.5129
+
+ 134978   135432  complement   fr 1  0.5715
+ 135050   135386                     0.6412
+
+ 135441   135549  complement   fr 3  0.6237
+ 135462   135534                     0.7092
+
+ 135712   135792  direct       fr 3  0.6463
+
+ 135889   135933  complement   fr 1  0.7059
+
+ 137151   137240  direct       fr 1  0.4847
+
+ 137249   137296  complement   fr 3  0.7846
+ 137249   137283                     0.7496
+
+ 137378   137509  complement   fr 1  0.4808
+ 137432   137477                     0.8814
+
+ 137626   137836  complement   fr 1  0.5479
+ 137646   137809                     0.5362
+
+ 138841   138889  complement   fr 1  0.7120
+
+ 140242   140318  direct       fr 2  0.2755
+ 140290   140316                     0.2597
+
+ 141630   141719  complement   fr 2  0.3274
+
+ 141804   141852  complement   fr 3  0.6232
+
+ 142386   142483  complement   fr 1  0.3911
+ 142399   142427                     0.6429
+
+ 142550   142646  complement   fr 1  0.4787
+ 142579   142615                     0.8003
+
+ 142640   142744  complement   fr 3  0.4469
+ 142656   142699                     0.5265
+
+ 142839   143149  complement   fr 3  0.6036
+ 142857   143108                     0.6578
+
+ 143163   143241  complement   fr 2  0.6587
+ 143170   143209                     0.4886
+
+ 143320   143415  complement   fr 2  0.9054
+ 143320   143403                     0.8982
+
+ 143728   143786  complement   fr 2  0.8257
+ 143746   143779                     0.9567
+
+ 143786   143858  direct       fr 1  0.4473
+ 143808   143837                     0.4979
+
+ 143823   143858  direct       fr 1  0.7616
+
+ 143907   144041  direct       fr 1  0.2826
+ 143907   143982                     0.2622
+
+ 144247   144318  complement   fr 1  0.7637
+ 144260   144302                     0.9619
+
+ 144551   144617  direct       fr 2  0.6105
+
+ 146151   146225  direct       fr 1  0.8281
+ 146151   146185                     0.7202
+
+ 146283   146429  direct       fr 3  0.6456
+ 146317   146393                     0.5960
+
+ 146431   146599  direct       fr 1  0.4164
+ 146442   146575                     0.3588
+
+ 146695   146940  direct       fr 1  0.6517
+ 146742   146902                     0.8025
+
+ 147079   147130  direct       fr 1  0.3986
+
+ 147341   147579  direct       fr 3  0.6023
+ 147341   147522                     0.6146
+
+ 147652   147715  direct       fr 3  0.5724
+
+ 147982   148162  direct       fr 3  0.6984
+ 147991   148131                     0.7646
+
+ 148497   148557  direct       fr 2  0.4631
+ 148514   148544                     0.4597
+
+ 148816   148960  direct       fr 1  0.6704
+ 148830   148954                     0.7108
+
+ 150952   151043  direct       fr 3  0.5579
+
+ 151683   151803  direct       fr 2  0.8670
+ 151686   151793                     0.8558
+
+ 151805   151918  direct       fr 3  0.7393
+ 151824   151882                     0.9184
+
+ 151904   152077  direct       fr 2  0.6019
+ 151915   152077                     0.6317
+
+ 151954   152077  direct       fr 2  0.7183
+ 151980   152077                     0.7696
+
+ 152211   152246  direct       fr 2  0.9516
+ 152215   152239                     0.9517
+
+ 154610   154669  complement   fr 1  0.4118
+ 154632   154663                     0.4498
+
+ 157350   157407  direct       fr 2  0.6969
+ 157362   157399                     0.8966
+
+ 157587   157633  direct       fr 1  0.4645
+ 157587   157627                     0.5364
+
+ 160894   160965  complement   fr 1  0.3955
+ 160909   160949                     0.4420
+
+ 161235   161358  direct       fr 2  0.8577
+ 161242   161351                     0.8423
+
+ 161400   161438  direct       fr 3  0.8318
+ 161411   161438                     0.9778
+
+ 161622   161706  direct       fr 2  0.5026
+ 161645   161678                     0.4777
+
+ 161693   161760  direct       fr 1  0.4632
+ 161736   161760                     0.5557
+
+ 161894   162031  complement   fr 3  0.3030
+
+ 162341   162572  direct       fr 1  0.6799
+ 162369   162528                     0.7238
+
+ 162681   162866  direct       fr 3  0.5992
+ 162697   162866                     0.6391
+
+ 162815   162943  complement   fr 2  0.3299
+ 162863   162936                     0.5157
+
+ 162890   162943  complement   fr 2  0.5850
+ 162896   162936                     0.6076
+
+ 163209   163355  direct       fr 2  0.6563
+ 163223   163294                     0.9531
+
+ 163320   163388  direct       fr 1  0.4483
+
+ 163486   163527  direct       fr 3  0.5112
+
+ 163540   163693  direct       fr 2  0.6960
+ 163540   163693                     0.6960
+
+ 163663   163747  complement   fr 3  0.4943
+ 163681   163738                     0.5119
+
+ 163690   163747  complement   fr 3  0.5461
+
+ 163840   163942  direct       fr 2  0.1514
+ 163840   163928                     0.1596
+
+ 163846   163906  complement   fr 2  0.7252
+
+ 164040   164123  direct       fr 2  0.5085
+ 164070   164111                     0.6176
+
+ 164126   164175  complement   fr 2  0.6406
+
+ 164165   164387  direct       fr 1  0.3769
+ 164190   164374                     0.3912
+
+ 164594   164786  direct       fr 1  0.5158
+ 164609   164753                     0.6234
+
+ 164717   164786  direct       fr 3  0.5144
+
+ 165080   165232  complement   fr 3  0.3940
+ 165099   165213                     0.2849
+
+ 165347   165412  direct       fr 3  0.5789
+
+ 165388   165667  direct       fr 1  0.5771
+ 165455   165625                     0.7304
+
+ 165653   165772  direct       fr 3  0.9296
+ 165653   165757                     0.9285
+
+ 165827   165936  direct       fr 1  0.4930
+
+ 166373   166420  complement   fr 2  0.6279
+
+ 166496   166554  direct       fr 3  0.6912
+ 166509   166546                     0.7349
+
+ 166796   166910  direct       fr 1  0.5286
+ 166859   166888                     0.8892
+
+ 167848   167968  direct       fr 2  0.8337
+ 167848   167912                     0.9616
+
+ 168240   168278  complement   fr 3  0.4593
+ 168246   168278                     0.5751
+
+ 168460   168554  direct       fr 1  0.4713
+ 168499   168523                     0.6900
+
+ 168855   168916  direct       fr 3  0.5352
+ 168870   168910                     0.5083
+
+ 169011   169108  complement   fr 3  0.4772
+ 169050   169092                     0.7392
+
+ 169207   169271  direct       fr 1  0.7789
+
+ 169874   169950  complement   fr 2  0.6658
+ 169891   169937                     0.9370
+
+ 170207   170258  complement   fr 2  0.4663
+
+ 170361   170466  complement   fr 3  0.4331
+
+ 171698   171780  direct       fr 2  0.9024
+ 171718   171746                     0.9548
+
+ 171866   172086  direct       fr 3  0.4689
+ 171872   172051                     0.4264
+
+ 171891   171965  direct       fr 2  0.5426
+
+ 171999   172086  direct       fr 3  0.7615
+ 172012   172051                     0.7666
+
+ 172399   172533  complement   fr 2  0.5496
+ 172420   172475                     0.9720
+
+ 172778   172906  direct       fr 1  0.3927
+ 172836   172880                     0.6255
+
+ 173388   173448  direct       fr 2  0.5848
+ 173395   173420                     0.7229
+
+ 180060   180186  direct       fr 1  0.7644
+ 180067   180172                     0.8389
+
+ 180484   180674  direct       fr 3  0.5790
+ 180492   180674                     0.5790
+
+ 180610   180674  direct       fr 3  0.6673
+ 180622   180674                     0.7168
+
+ 180819   180907  complement   fr 1  0.3971
+ 180819   180886                     0.3738
+
+ 180837   180919  direct       fr 2  0.6361
+ 180855   180912                     0.7082
+
+ 181191   181274  direct       fr 2  0.8203
+ 181206   181245                     0.9275
+
+ 181292   181410  direct       fr 3  0.7175
+ 181311   181380                     0.7926
+
+ 181418   181475  direct       fr 2  0.7379
+
+ 181490   181525  complement   fr 1  0.7025
+
+ 181754   181809  direct       fr 1  0.5279
+ 181772   181799                     0.4938
+
+ 181955   181994  complement   fr 1  0.6856
+ 181960   181991                     0.8177
+
+ 182434   182639  direct       fr 3  0.6109
+ 182442   182620                     0.6472
+
+ 182458   182639  direct       fr 3  0.6327
+ 182466   182620                     0.6850
+
+ 182740   182823  direct       fr 3  0.9368
+ 182753   182818                     0.9180
+
+ 183474   183601  complement   fr 3  0.4004
+ 183519   183555                     0.3293
+
+ 183615   183728  direct       fr 2  0.6672
+ 183618   183677                     0.7658
+
+ 183959   184102  complement   fr 3  0.5096
+ 183986   184080                     0.5989
+
+ 184037   184102  complement   fr 3  0.5975
+ 184037   184080                     0.5925
+
+ 184301   184413  direct       fr 2  0.6633
+ 184326   184386                     0.8630
+
+ 186230   186302  direct       fr 2  0.6385
+ 186241   186282                     0.8362
+
+ 186304   186363  direct       fr 3  0.7025
+
+ 186427   186507  complement   fr 3  0.6703
+ 186451   186490                     0.8000
+
+ 186925   186988  complement   fr 3  0.6147
+ 186942   186982                     0.9593
+
+ 187676   187747  complement   fr 1  0.6966
+ 187700   187724                     0.5696
+
+ 188949   189034  complement   fr 1  0.5165
+ 188995   189019                     0.8968
+
+ 189346   189453  complement   fr 3  0.7228
+ 189359   189439                     0.7764
+
+ 189584   189728  direct       fr 2  0.7589
+ 189625   189708                     0.8759
+
+ 190100   190181  complement   fr 3  0.6852
+ 190132   190172                     0.9649
+
+ 190185   190240  direct       fr 2  0.6917
+ 190194   190235                     0.7687
+
+ 190338   190600  direct       fr 3  0.7595
+ 190353   190596                     0.7801
+
+ 190404   190600  direct       fr 3  0.7834
+ 190420   190596                     0.8256
+
+ 190803   190903  direct       fr 1  0.9912
+ 190803   190841                     0.9892
+
+ 190998   191300  direct       fr 1  0.3900
+ 191009   191288                     0.3999
+
+ 191427   191670  direct       fr 2  0.3044
+ 191491   191658                     0.3517
+
+ 192233   192497  direct       fr 2  0.4738
+ 192254   192468                     0.4814
+
+ 192526   192935  direct       fr 1  0.5759
+ 192543   192902                     0.5855
+
+ 192877   192935  direct       fr 1  0.4900
+
+ 193059   193115  complement   fr 2  0.9369
+
+ 193467   193572  direct       fr 2  0.6930
+ 193471   193538                     0.7319
+
+ 193711   193916  direct       fr 2  0.4612
+ 193725   193884                     0.4336
+
+ 195146   195307  direct       fr 2  0.3888
+ 195162   195261                     0.4776
+
+ 196310   196458  direct       fr 2  0.7331
+ 196314   196437                     0.8601
+
+ 196979   197031  complement   fr 2  0.4993
+
+ 197583   197653  complement   fr 1  0.7876
+
+ 197632   197708  direct       fr 1  0.6241
+ 197659   197687                     0.7897
+
+ 200575   200650  direct       fr 3  0.7918
+
+ 201216   201290  direct       fr 3  0.7163
+ 201234   201290                     0.9182
+
+ 204329   204404  direct       fr 2  0.4239
+
+ 204411   204451  complement   fr 3  0.9304
+
+ 206298   206376  complement   fr 3  0.5001
+
+ 206358   206403  direct       fr 2  0.5407
+ 206371   206399                     0.7015
+
+ 208824   209034  complement   fr 2  0.5230
+ 208838   209005                     0.4978
+
+ 208845   208921  direct       fr 3  0.2541
+
+ 208944   209034  complement   fr 2  0.8780
+ 208953   209005                     0.9350
+
+ 209074   209140  direct       fr 1  0.4373
+
+ 210314   210374  complement   fr 3  0.6380
+ 210334   210358                     0.8657
+
+ 210372   210422  complement   fr 2  0.7470
+ 210382   210419                     0.9318
+
+ 210897   210957  direct       fr 2  0.5667
+
+ 213117   213171  direct       fr 1  0.6608
+ 213124   213156                     0.9110
+
+ 213265   213338  direct       fr 2  0.5658
+ 213271   213332                     0.6462
+
+ 214075   214162  complement   fr 3  0.6667
+ 214095   214150                     0.7032
+
+ 214307   214398  direct       fr 1  0.5975
+ 214335   214387                     0.7928
+
+ 214432   214517  complement   fr 2  0.6215
+ 214432   214480                     0.6162
+
+ 217048   217120  complement   fr 3  0.6181
+
+ 217103   217168  direct       fr 1  0.6304
+
+ 218033   218128  direct       fr 2  0.5552
+ 218070   218111                     0.4697
+
+ 219108   219146  direct       fr 2  0.5614
+
+ 220428   220476  complement   fr 2  0.4682
+
+ 220514   220805  complement   fr 1  0.5808
+ 220528   220761                     0.6508
+
+ 220563   220609  complement   fr 2  0.8429
+ 220569   220609                     0.8429
+
+ 220608   220805  complement   fr 1  0.6579
+ 220641   220761                     0.8697
+
+ 220849   220957  complement   fr 2  0.6272
+ 220862   220957                     0.6488
+
+ 220875   220957  complement   fr 2  0.7230
+ 220886   220957                     0.7230
+
+ 221543   221612  direct       fr 2  0.3702
+ 221575   221598                     0.6451
+
+ 221726   221786  direct       fr 3  0.4793
+ 221753   221786                     0.5894
+
+ 222584   222678  complement   fr 1  0.3303
+
+ 222629   222782  direct       fr 2  0.6767
+ 222655   222774                     0.6900
+
+ 222674   222782  direct       fr 2  0.7271
+ 222686   222774                     0.7473
+
+ 223796   223858  direct       fr 2  0.4076
+
+ 225298   225374  complement   fr 2  0.7697
+ 225316   225346                     0.9769
+
+ 227648   227698  complement   fr 3  0.6126
+
+ 227701   227833  direct       fr 3  0.5360
+ 227725   227818                     0.6890
+
+ 227929   228014  direct       fr 2  0.4551
+ 227965   228011                     0.7707
+
+ 228249   228406  direct       fr 2  0.6653
+ 228270   228375                     0.8346
+
+ 228275   228406  direct       fr 2  0.7856
+ 228337   228375                     0.8777
+
+ 228422   228504  complement   fr 1  0.7601
+ 228425   228491                     0.9223
+
+ 228615   228701  complement   fr 2  0.4201
+
+ 228737   228795  complement   fr 3  0.6364
+ 228737   228789                     0.6077
+
+ 228823   228884  complement   fr 2  0.5653
+
+ 228986   229046  direct       fr 1  0.5926
+ 228990   229034                     0.6639
+
+ 229352   229403  direct       fr 1  0.5950
+
+ 229555   229650  complement   fr 3  0.4254
+
+ 229861   230006  complement   fr 1  0.6539
+ 229871   229965                     0.5748
+
+ 229901   230006  complement   fr 1  0.7460
+ 229937   229965                     0.9142
+
+ 230135   230288  direct       fr 3  0.7972
+ 230142   230254                     0.9578
+
+ 230256   230345  complement   fr 1  0.4113
+
+ 231650   231702  direct       fr 3  0.7380
+ 231664   231687                     0.8982
+
+ 231734   231821  complement   fr 1  0.6011
+ 231775   231814                     0.8873
+
+ 231734   231821  complement   fr 1  0.6011
+ 231775   231814                     0.8873
+
+ 231799   231923  complement   fr 3  0.3771
+
+ 231900   231951  direct       fr 1  0.6527
+ 231905   231945                     0.7450
+
+ 231967   232066  direct       fr 3  0.6233
+ 231984   232047                     0.6924
+
+ 232063   232137  direct       fr 2  0.3608
+
+ 232585   232665  direct       fr 3  0.4779
+ 232614   232654                     0.8056
+
+ 232910   233052  complement   fr 1  0.3285
+ 232946   232996                     0.5634
+
+ 233336   233406  complement   fr 2  0.5255
+ 233358   233388                     0.8320
+
+ 233475   233554  complement   fr 3  0.6474
+
+ 233905   234038  complement   fr 3  0.5549
+ 233924   234019                     0.6233
+
+ 233942   234038  complement   fr 3  0.6777
+ 233952   234019                     0.7237
+
+ 233997   234157  direct       fr 2  0.3118
+
+ 234110   234202  direct       fr 1  0.6828
+ 234134   234164                     0.9352
+
+ 234425   234558  complement   fr 3  0.8512
+ 234425   234527                     0.8981
+
+ 234721   234835  complement   fr 3  0.6776
+ 234738   234796                     0.6182
+
+ 234929   235011  direct       fr 3  0.5324
+ 234948   235002                     0.5744
+
+ 235157   235245  complement   fr 3  0.6847
+ 235157   235189                     0.8656
+
+ 235369   235419  direct       fr 1  0.3712
+
+ 235519   235600  direct       fr 3  0.5294
+ 235540   235587                     0.5609
+
+ 235946   236092  direct       fr 2  0.5279
+ 235962   236063                     0.6028
+
+ 236205   236610  direct       fr 2  0.5067
+ 236217   236604                     0.5219
+
+ 236555   236610  direct       fr 2  0.6042
+ 236562   236604                     0.6621
+
+ 237712   237773  direct       fr 3  0.9428
+ 237714   237742                     0.8936
+
+ 238119   238237  complement   fr 2  0.6366
+ 238188   238237                     0.9866
+
+ 238368   238563  direct       fr 3  0.3967
+ 238420   238485                     0.4339
+
+ 238503   238563  direct       fr 2  0.6427
+
+ 238849   238956  direct       fr 2  0.2917
+
+ 238871   238982  direct       fr 1  0.5887
+ 238879   238975                     0.6267
+
+ 238900   238982  direct       fr 1  0.6879
+ 238937   238975                     0.7892
+
+ 239268   239389  direct       fr 3  0.4788
+ 239328   239362                     0.5065
+
+ 239494   239541  direct       fr 3  0.6244
+ 239503   239533                     0.8317
+
+ 239808   239885  direct       fr 1  0.3989
+ 239820   239854                     0.4124
+
+ 241419   241498  complement   fr 1  0.5040
+ 241419   241478                     0.4093
+
+ 241728   242102  direct       fr 2  0.6304
+ 241740   242091                     0.6394
+
+ 241787   242102  direct       fr 2  0.6379
+ 241816   242091                     0.6260
+
+ 242042   242172  complement   fr 3  0.3688
+ 242091   242158                     0.4112
+
+ 242044   242102  direct       fr 2  0.8293
+ 242065   242091                     0.9094
+
+ 242111   242172  complement   fr 3  0.6200
+
+ 242212   242306  direct       fr 2  0.6186
+ 242212   242291                     0.6560
+
+ 242675   242729  direct       fr 1  0.7626
+ 242681   242709                     0.9627
+
+ 242731   242825  direct       fr 2  0.7511
+ 242753   242807                     0.9846
+
+ 243024   243120  direct       fr 2  0.3626
+ 243033   243106                     0.3111
+
+ 243304   243399  direct       fr 2  0.4415
+ 243304   243368                     0.4226
+
+ 244022   244109  complement   fr 1  0.4622
+
+ 244215   244272  direct       fr 2  0.8680
+ 244219   244253                     0.8933
+
+ 244455   244490  complement   fr 2  0.6220
+
+ 244979   245072  direct       fr 2  0.3245
+ 244999   245040                     0.1942
+
+ 245247   245380  direct       fr 3  0.7227
+ 245271   245360                     0.8609
+
+ 245387   245489  complement   fr 1  0.4697
+ 245446   245482                     0.1990
+
+ 245535   245572  complement   fr 3  0.7080
+ 245543   245568                     0.7080
+
+ 245603   245877  direct       fr 2  0.5638
+ 245615   245852                     0.6115
+
+ 245873   245929  complement   fr 1  0.5311
+
+ 246072   246172  direct       fr 1  0.7101
+ 246098   246157                     0.7906
+
+ 246439   246515  direct       fr 3  0.3676
+
+ 246479   246522  complement   fr 1  0.4695
+
+ 246909   246961  direct       fr 3  0.5675
+
+ 247429   247533  direct       fr 3  0.2333
+
+ 247832   247881  complement   fr 1  0.4683
+ 247840   247871                     0.6306
+
+ 247858   247999  direct       fr 2  0.7765
+ 247885   247988                     0.8326
+
+ 247885   247999  direct       fr 2  0.8412
+ 247898   247988                     0.8767
+
+ 248010   248070  complement   fr 3  0.5518
+
+ 248148   248211  direct       fr 3  0.7937
+ 248161   248199                     0.8805
+
+ 248435   248546  complement   fr 1  0.5290
+ 248460   248484                     0.5010
+
+ 249063   249127  direct       fr 1  0.4787
+ 249083   249107                     0.4466
+
+ 249268   249333  complement   fr 2  0.7146
+ 249268   249320                     0.6998
+
+ 249351   249444  complement   fr 3  0.5872
+ 249363   249402                     0.6344
+
+ 249722   249802  direct       fr 3  0.5641
+
+ 250341   250424  complement   fr 2  0.4597
+ 250354   250379                     0.5205
+
+ 250364   250424  complement   fr 2  0.4880
+
+ 250413   250474  complement   fr 1  0.4079
+
+ 250591   250788  direct       fr 2  0.7406
+ 250605   250745                     0.8788
+
+ 250687   250788  direct       fr 2  0.6747
+ 250708   250745                     0.9590
+
+ 250769   250908  direct       fr 3  0.4141
+ 250769   250815                     0.6287
+
+ 250845   251048  direct       fr 2  0.6142
+ 250855   251018                     0.6204
+
+ 251041   251126  direct       fr 1  0.6544
+ 251080   251105                     0.9734
+
+ 252092   252147  complement   fr 1  0.6574
+
+ 252249   252320  complement   fr 2  0.3757
+
+ 252326   252374  direct       fr 1  0.6797
+
+ 252743   252866  direct       fr 2  0.8134
+ 252749   252863                     0.9139
+
+ 252938   253036  complement   fr 1  0.5613
+ 252991   253020                     0.9306
+
+ 253726   253851  complement   fr 3  0.7098
+ 253739   253818                     0.8307
+
+ 253869   253951  direct       fr 3  0.5940
+ 253880   253936                     0.6342
+
+ 253956   254006  direct       fr 1  0.7124
+ 253966   254000                     0.8645
+
+ 254170   254224  complement   fr 1  0.6927
+ 254179   254204                     0.8745
+
+ 254378   254429  direct       fr 2  0.3279
+
+ 254799   254885  direct       fr 2  0.2557
+ 254848   254873                     0.2199
+
+ 254964   255031  direct       fr 1  0.6010
+ 254985   255022                     0.8717
+
+ 255132   255252  direct       fr 3  0.4451
+
+ 255202   255252  direct       fr 1  0.4812
+ 255229   255252                     0.5561
+
+ 255340   255410  direct       fr 2  0.8856
+ 255340   255407                     0.8890
+
+ 255603   255844  direct       fr 2  0.7745
+ 255622   255827                     0.7729
+
+ 256096   256219  complement   fr 3  0.3566
+ 256098   256207                     0.3720
+
+ 256634   256820  complement   fr 1  0.5590
+ 256690   256810                     0.8202
+
+ 257003   257109  complement   fr 2  0.5379
+ 257026   257055                     0.4510
+
+ 257221   257418  direct       fr 1  0.4191
+ 257255   257399                     0.4623
+
+ 257309   257357  complement   fr 1  0.5173
+
+ 258050   258125  direct       fr 2  0.5417
+
+ 258380   258504  complement   fr 2  0.6569
+ 258396   258456                     0.9083
+
+ 258674   258720  direct       fr 3  0.5902
+
+ 259180   259252  direct       fr 3  0.4881
+
+ 259365   259437  complement   fr 3  0.8087
+
+ 259442   259529  complement   fr 1  0.4680
+ 259446   259499                     0.4602
+
+ 259722   259813  complement   fr 3  0.4791
+ 259751   259786                     0.8870
+
+ 259909   260041  direct       fr 3  0.4619
+
+ 260297   260420  direct       fr 2  0.7154
+ 260314   260386                     0.9411
+
+ 260357   260447  complement   fr 1  0.5383
+ 260380   260413                     0.6148
+
+ 260513   260901  direct       fr 3  0.7554
+ 260532   260886                     0.7925
+
+ 261304   261402  complement   fr 3  0.2271
+ 261329   261394                     0.1237
+
+ 261352   261449  direct       fr 2  0.3679
+
+ 261557   261602  direct       fr 2  0.5053
+
+ 261734   261815  direct       fr 1  0.7884
+ 261744   261794                     0.8396
+
+ 261977   262035  direct       fr 3  0.7654
+
+ 262226   262395  direct       fr 1  0.6346
+ 262228   262355                     0.7598
+
+ 262821   262882  complement   fr 3  0.7172
+
+ 262948   262986  direct       fr 2  0.5419
+ 262948   262979                     0.5290
+
+ 263043   263357  direct       fr 1  0.8029
+ 263043   263317                     0.8526
+
+ 263062   263357  direct       fr 1  0.8047
+ 263069   263317                     0.8834
+
+ 263343   263417  direct       fr 2  0.5666
+ 263347   263386                     0.5175
+
+ 263498   263572  direct       fr 1  0.6306
+
+ 263566   263620  direct       fr 2  0.4895
+ 263577   263613                     0.6441
+
+ 263895   264050  complement   fr 1  0.6453
+ 263895   264009                     0.7376
+
+ 264145   264214  complement   fr 1  0.7051
+ 264162   264198                     0.8482
+
+ 264776   264827  complement   fr 2  0.6554
+
+ 264896   264986  complement   fr 2  0.4403
+
+ 264998   265034  direct       fr 1  0.6567
+
+ 265192   265283  complement   fr 1  0.5019
+ 265223   265264                     0.5705
+
+ 265219   265382  direct       fr 2  0.5853
+ 265231   265355                     0.5456
+
+ 265238   265283  complement   fr 1  0.6099
+
+ 265287   265382  direct       fr 2  0.8210
+ 265295   265355                     0.8272
+
+ 265521   265687  direct       fr 1  0.7063
+ 265535   265676                     0.7412
+
+ 265586   265687  direct       fr 1  0.8944
+ 265592   265676                     0.9390
+
+ 265785   265915  direct       fr 1  0.6887
+ 265812   265902                     0.7400
+
+ 266222   266462  complement   fr 1  0.3619
+ 266353   266452                     0.6334
+
+ 266653   266692  direct       fr 3  0.8221
+
+ 267301   267368  direct       fr 3  0.5945
+
+ 267542   267716  direct       fr 2  0.8578
+ 267545   267700                     0.9002
+
+ 267900   268021  direct       fr 2  0.7221
+ 267917   268005                     0.7924
+
+ 268308   268428  direct       fr 1  0.8215
+ 268320   268410                     0.8785
+
+ 268550   268841  complement   fr 3  0.4449
+ 268612   268815                     0.5055
+
+ 268685   268841  complement   fr 3  0.6946
+ 268761   268815                     0.9912
+
+ 269007   269083  complement   fr 1  0.4578
+ 269007   269063                     0.5202
+
+ 269075   269134  direct       fr 1  0.6827
+ 269095   269123                     0.9046
+
+ 269108   269189  complement   fr 2  0.4148
+ 269142   269181                     0.8085
+
+ 269774   269859  complement   fr 2  0.5391
+ 269778   269856                     0.6157
+
+ 270109   270240  direct       fr 1  0.3800
+ 270122   270193                     0.4806
+
+ 270446   270733  direct       fr 3  0.8134
+ 270481   270709                     0.8521
+
+ 270856   270927  direct       fr 3  0.9058
+
+ 270944   270988  direct       fr 2  0.5889
+ 270958   270982                     0.7075
+
+ 271067   271138  complement   fr 1  0.4512
+
+ 271144   271192  direct       fr 3  0.8348
+ 271148   271172                     0.9422
+
+ 271201   271305  direct       fr 2  0.1585
+ 271217   271277                     0.0748
+
+ 271237   271278  complement   fr 2  0.6641
+
+ 271398   271470  direct       fr 2  0.4614
+
+ 272008   272211  complement   fr 2  0.5014
+ 272038   272195                     0.5226
+
+ 272265   272334  complement   fr 3  0.5365
+
+ 272551   272654  direct       fr 2  0.6003
+ 272591   272637                     0.7265
+
+ 272644   272737  complement   fr 3  0.6769
+ 272662   272706                     0.9629
+
+ 272807   272866  complement   fr 3  0.5671
+
+ 272870   272931  direct       fr 2  0.5839
+ 272874   272908                     0.7537
+
+ 272894   272995  complement   fr 1  0.3807
+
+ 273288   273372  direct       fr 2  0.5776
+ 273308   273336                     0.8278
+
+ 273507   273603  direct       fr 1  0.6416
+
+ 274096   274183  direct       fr 1  0.7234
+ 274114   274157                     0.8114
+
+ 274202   274335  direct       fr 2  0.4917
+ 274218   274322                     0.4903
+
+ 274352   274423  complement   fr 3  0.4969
+ 274362   274387                     0.7450
+
+ 274658   274810  direct       fr 1  0.8349
+ 274663   274798                     0.8704
+
+ 274898   275046  direct       fr 3  0.6325
+ 274935   275041                     0.6127
+
+ 275053   275160  direct       fr 2  0.6299
+ 275072   275114                     0.9598
+
+ 275125   275208  direct       fr 1  0.6234
+ 275153   275208                     0.8346
+
+ 275287   275346  complement   fr 3  0.5048
+
+ 275354   275596  direct       fr 2  0.6181
+ 275358   275589                     0.6516
+
+ 275512   275596  direct       fr 2  0.6738
+ 275544   275589                     0.8538
+
+ 276566   276627  complement   fr 3  0.7117
+ 276589   276621                     0.9603
+
+ 276670   277002  complement   fr 2  0.3648
+ 276690   276992                     0.3435
+
+ 276784   277002  complement   fr 2  0.4048
+ 276828   276992                     0.4410
+
+ 276846   276900  complement   fr 3  0.6999
+
+ 276918   277002  complement   fr 2  0.5844
+ 276957   276992                     0.7890
+
+ 277028   277114  direct       fr 2  0.4611
+
+ 277303   277364  direct       fr 1  0.7138
+ 277319   277342                     0.7265
+
+ 277367   277526  complement   fr 1  0.4401
+ 277391   277447                     0.5829
+
+ 277496   277636  direct       fr 3  0.8478
+ 277510   277633                     0.9147
+
+ 277750   277818  complement   fr 3  0.5998
+ 277776   277809                     0.7347
+
+ 277827   278052  direct       fr 2  0.4500
+ 277837   278034                     0.4045
+
+ 277975   278052  direct       fr 2  0.7241
+ 278007   278034                     0.6317
+
+ 278127   278220  direct       fr 3  0.6000
+ 278180   278204                     0.9608
+
+ 278463   278506  direct       fr 3  0.7629
+
+ 278885   278994  direct       fr 1  0.6469
+ 278910   278948                     0.8681
+
+ 278973   279031  complement   fr 1  0.3866
+ 278986   279019                     0.4381
+
+ 279216   279361  direct       fr 3  0.5974
+ 279250   279325                     0.7994
+
+ 279467   279556  direct       fr 2  0.6609
+ 279500   279550                     0.8366
+
+ 279652   279732  direct       fr 2  0.7887
+ 279652   279692                     0.9447
+
+ 279778   279864  direct       fr 3  0.5376
+
+ 280057   280095  direct       fr 1  0.6914
+ 280068   280091                     0.8991
+
+ 280799   280884  direct       fr 1  0.7726
+ 280807   280884                     0.8410
+
+ 281316   281394  direct       fr 1  0.7467
+ 281332   281359                     0.7024
+
+ 281389   281487  direct       fr 3  0.6497
+ 281418   281449                     0.6879
+
+ 281693   281940  direct       fr 2  0.7474
+ 281739   281914                     0.8202
+
+ 281939   282068  complement   fr 1  0.3082
+ 281957   282047                     0.3709
+
+ 281957   282047  complement   fr 2  0.4466
+ 281998   282032                     0.4494
+
+ 282179   282249  direct       fr 3  0.5017
+ 282189   282234                     0.5681
+
+ 282383   282437  direct       fr 1  0.7740
+ 282389   282424                     0.9644
+
+ 282377   282615  complement   fr 3  0.6279
+ 282480   282601                     0.8892
+
+ 283233   283297  complement   fr 1  0.6161
+
+ 283505   283675  direct       fr 3  0.6848
+ 283534   283669                     0.7283
+
+ 283600   283675  direct       fr 3  0.7378
+ 283638   283669                     0.8668
+
+ 283845   283910  direct       fr 2  0.6268
+ 283865   283904                     0.7071
+
+ 284247   284384  direct       fr 2  0.4733
+ 284260   284356                     0.4702
+
+ 284899   285003  direct       fr 3  0.6538
+ 284915   284971                     0.6680
+
+ 284979   285085  direct       fr 1  0.5996
+ 285022   285076                     0.8053
+
+ 285208   285284  complement   fr 2  0.4868
+
+ 285273   285363  complement   fr 1  0.3965
+
+ 285427   285555  complement   fr 1  0.4552
+ 285463   285513                     0.6596
+
+ 285736   285803  direct       fr 3  0.4104
+ 285750   285777                     0.3873
+
+ 285788   285949  complement   fr 1  0.5998
+ 285886   285929                     0.9777
+
+ 285987   286166  direct       fr 2  0.5693
+ 286017   286162                     0.6436
+
+ 286252   286368  direct       fr 3  0.7208
+ 286304   286342                     0.5312
+
+ 286633   286886  direct       fr 1  0.8595
+ 286649   286873                     0.9131
+
+ 287298   287478  complement   fr 3  0.6194
+ 287382   287408                     0.9736
+
+ 287940   287990  direct       fr 1  0.6274
+
+ 288726   288796  direct       fr 3  0.5896
+
+ 288787   288861  complement   fr 2  0.7812
+ 288797   288840                     0.8987
+
+ 289114   289268  direct       fr 1  0.8553
+ 289120   289254                     0.8878
+
+ 289465   289532  direct       fr 1  0.7564
+ 289469   289507                     0.9086
+
+ 289698   289917  complement   fr 3  0.4999
+ 289808   289907                     0.7930
+
+ 289990   290170  direct       fr 3  0.5680
+ 290025   290155                     0.7598
+
+ 290166   290335  complement   fr 3  0.5640
+ 290205   290301                     0.5109
+
+ 290260   290335  complement   fr 3  0.5740
+ 290271   290301                     0.3476
+
+ 290877   290947  direct       fr 2  0.6671
+
+ 291031   291076  direct       fr 1  0.5759
+
+ 291196   291276  complement   fr 3  0.8588
+ 291212   291260                     0.9131
+
+ 291264   291389  complement   fr 2  0.4724
+ 291285   291333                     0.6623
+
+ 291315   291389  complement   fr 2  0.5460
+
+ 291422   291511  direct       fr 2  0.3017
+
+ 291513   291681  direct       fr 3  0.7376
+ 291525   291648                     0.8296
+
+ 291808   291843  complement   fr 3  0.6320
+
+ 291913   292029  direct       fr 3  0.7249
+ 291930   291960                     0.9851
+
+ 292361   292419  complement   fr 3  0.5903
+ 292361   292408                     0.6072
+
+ 293115   293199  direct       fr 2  0.7258
+ 293123   293190                     0.7159
+
+ 293533   293598  direct       fr 2  0.4074
+ 293552   293586                     0.3899
+
+ 293681   293748  complement   fr 3  0.5239
+ 293681   293727                     0.5160
+
+ 293986   294155  direct       fr 1  0.7885
+ 293992   294127                     0.8829
+
+ 294252   294304  direct       fr 3  0.4540
+ 294262   294289                     0.3906
+
+ 294360   294480  direct       fr 1  0.7244
+ 294376   294455                     0.9691
+
+ 294629   294694  complement   fr 3  0.6821
+
+ 294980   295033  direct       fr 1  0.5725
+
+ 295310   295428  direct       fr 2  0.5459
+
+ 295542   295713  direct       fr 2  0.3654
+ 295559   295692                     0.3722
+
+ 295588   295713  direct       fr 2  0.3056
+ 295601   295692                     0.3145
+
+ 295581   295683  complement   fr 3  0.3079
+ 295631   295678                     0.3986
+
+ 295761   295847  direct       fr 1  0.3375
+
+ 295820   295895  complement   fr 1  0.5952
+
+ 295970   296035  complement   fr 3  0.5329
+
+ 296106   296201  complement   fr 2  0.5833
+ 296130   296193                     0.6516
+
+ 296347   296456  direct       fr 2  0.2701
+ 296402   296442                     0.2926
+
+ 296412   296546  complement   fr 1  0.5911
+ 296463   296530                     0.7990
+
+ 296463   296546  complement   fr 1  0.8332
+ 296463   296530                     0.7990
+
+ 296667   296844  complement   fr 3  0.2263
+ 296670   296781                     0.1398
+
+ 296821   296979  direct       fr 2  0.6467
+ 296831   296916                     0.9631
+
+ 296914   296979  direct       fr 3  0.5288
+
+ 296979   297240  direct       fr 1  0.4874
+ 296979   297221                     0.4910
+
+ 297254   297324  direct       fr 1  0.4818
+ 297257   297308                     0.4142
+
+ 297674   297752  direct       fr 2  0.3904
+ 297691   297741                     0.4371
+
+ 297879   298066  direct       fr 2  0.6563
+ 297895   298055                     0.6587
+
+ 298002   298066  direct       fr 2  0.7087
+ 298019   298055                     0.7486
+
+ 298159   298246  direct       fr 3  0.5504
+
+ 298271   298362  complement   fr 3  0.5137
+ 298304   298344                     0.5566
+
+ 298994   299095  complement   fr 2  0.2242
+
+ 299237   299336  direct       fr 3  0.6657
+ 299237   299299                     0.5894
+
+ 299346   299562  complement   fr 2  0.5649
+ 299364   299521                     0.6081
+
+ 299416   299562  complement   fr 2  0.4626
+ 299416   299521                     0.4685
+
+ 299630   299700  direct       fr 1  0.5688
+ 299635   299700                     0.6272
+
+ 299720   299797  complement   fr 1  0.5649
+ 299737   299793                     0.7040
+
+ 299830   299897  direct       fr 3  0.6215
+ 299846   299869                     0.9487
+
+ 299877   299942  direct       fr 2  0.6833
+
+ 299997   300042  direct       fr 3  0.5930
+
+ 300118   300161  direct       fr 2  0.6984
+
+ 300359   300579  complement   fr 2  0.3877
+ 300444   300565                     0.3984
+
+ 300409   300480  direct       fr 1  0.4521
+
+ 300510   300579  complement   fr 2  0.6656
+ 300522   300565                     0.7330
+
+ 300607   300751  direct       fr 2  0.6758
+ 300642   300744                     0.9010
+
+ 300821   300924  complement   fr 2  0.5078
+ 300833   300872                     0.8316
+
+ 300925   301058  direct       fr 2  0.3988
+ 300942   301010                     0.6117
+
+ 301222   301281  direct       fr 2  0.5782
+ 301230   301265                     0.7611
+
+ 301366   301439  complement   fr 2  0.7115
+ 301385   301410                     0.9169
+
+ 301483   301586  complement   fr 2  0.4842
+ 301532   301580                     0.8601
+
+ 301781   302069  direct       fr 3  0.6806
+ 301804   302058                     0.6789
+
+ 301929   302069  direct       fr 3  0.7743
+ 301941   302058                     0.8169
+
+ 301989   302069  direct       fr 3  0.8391
+ 302008   302058                     0.9916
+
+ 302178   302224  direct       fr 3  0.5308
+
+ 302565   302658  direct       fr 3  0.6502
+ 302605   302650                     0.6745
+
+ 302810   302932  direct       fr 1  0.4615
+ 302816   302923                     0.4667
+
+ 303429   303531  direct       fr 3  0.6464
+ 303440   303486                     0.8400
+
+ 303541   303628  direct       fr 1  0.8363
+ 303544   303616                     0.9619
+
+ 303874   303981  complement   fr 1  0.5077
+ 303886   303951                     0.5916
+
+ 304010   304108  direct       fr 1  0.3846
+ 304038   304093                     0.3953
+
+ 304303   304374  direct       fr 1  0.6560
+ 304319   304351                     0.8042
+
+ 304384   304501  direct       fr 2  0.6483
+ 304425   304501                     0.7702
+
+ 304652   304824  direct       fr 1  0.6777
+ 304698   304778                     0.9098
+
+ 304972   305046  direct       fr 2  0.4957
+
+ 305182   305265  direct       fr 2  0.5197
+
+ 305445   305520  complement   fr 3  0.6062
+
+ 305776   305904  complement   fr 1  0.5242
+ 305799   305837                     0.9854
+
+ 305959   306023  direct       fr 3  0.7980
+
+ 306158   306244  direct       fr 3  0.7687
+ 306171   306236                     0.9072
+
+ 306294   306398  complement   fr 2  0.4371
+
+ 306374   306431  complement   fr 1  0.7267
+
+ 306699   306804  direct       fr 3  0.4254
+ 306703   306727                     0.8220
+
+ 306828   306890  complement   fr 2  0.5110
+
+ 307381   307426  direct       fr 1  0.4968
+
+ 307583   307693  complement   fr 2  0.7694
+ 307611   307693                     0.8529
+
+ 308403   308465  direct       fr 3  0.6749
+
+ 308466   308714  direct       fr 2  0.5867
+ 308491   308711                     0.5888
+
+ 308525   308616  complement   fr 3  0.4923
+ 308525   308557                     0.7462
+
+ 308560   308714  direct       fr 2  0.6952
+ 308595   308711                     0.8018
+
+ 309485   309578  direct       fr 3  0.3269
+ 309523   309547                     0.4127
+
+ 309589   309705  complement   fr 1  0.7953
+ 309616   309694                     0.9574
+
+ 311054   311174  complement   fr 2  0.6524
+ 311112   311153                     0.8914
+
+ 312614   312757  complement   fr 1  0.6542
+ 312620   312694                     0.8902
+
+ 313182   313240  direct       fr 3  0.5950
+
+ 313401   313441  complement   fr 2  0.5322
+
+ 313594   313671  direct       fr 3  0.7951
+ 313602   313654                     0.8147
+
+ 316538   316622  complement   fr 2  0.3279
+ 316578   316619                     0.4760
+
+ 317293   317456  complement   fr 3  0.6166
+ 317337   317434                     0.7967
+
+ 318102   318232  complement   fr 3  0.4691
+ 318156   318211                     0.7362
+
+ 319136   319224  complement   fr 1  0.7723
+ 319147   319211                     0.8089
+
+ 319692   319756  complement   fr 3  0.4277
+
+ 320232   320286  complement   fr 3  0.6683
+
+ 320766   320863  complement   fr 2  0.6241
+ 320809   320841                     0.8802
+
+ 320917   320982  direct       fr 3  0.4912
+
+ 321285   321369  complement   fr 3  0.4824
+
+ 321373   321408  complement   fr 1  0.3247
+ 321383   321408                     0.3989
+
+ 322728   322778  complement   fr 2  0.5406
+
+ 323442   323498  complement   fr 3  0.6364
+
+ 326536   326648  complement   fr 2  0.4500
+ 326536   326640                     0.4500
+
+ 329294   329351  complement   fr 1  0.7783
+
+ 330110   330252  direct       fr 3  0.7854
+ 330153   330213                     0.9937
+
+ 330215   330295  direct       fr 2  0.3686
+
+ 330345   330456  direct       fr 3  0.4526
+ 330357   330445                     0.4151
+
+ 330350   330422  complement   fr 1  0.4911
+ 330366   330404                     0.7580
+
+ 330684   330750  direct       fr 3  0.4132
+
+ 331154   331231  direct       fr 3  0.3514
+
+ 331301   331405  direct       fr 1  0.7938
+ 331316   331357                     0.9431
+
+ 331403   331442  direct       fr 2  0.5412
+ 331417   331440                     0.6741
+
+ 331449   331495  complement   fr 3  0.7039
+ 331458   331483                     0.8530
+
+ 331545   331626  direct       fr 3  0.6404
+ 331563   331614                     0.7006
+
+ 331563   331626  direct       fr 3  0.7529
+ 331588   331614                     0.9719
+
+ 331683   331828  complement   fr 1  0.5989
+ 331733   331809                     0.8614
+
+ 331818   331921  complement   fr 3  0.5044
+ 331834   331885                     0.6430
+
+ 331942   332115  direct       fr 2  0.5673
+ 331975   332066                     0.7284
+
+ 331942   332112  direct       fr 1  0.1844
+ 331975   332066                     0.1987
+
+ 331975   332115  direct       fr 2  0.5974
+ 332001   332066                     0.8980
+
+ 332172   332258  direct       fr 1  0.5118
+ 332192   332221                     0.7170
+
+ 332356   332524  direct       fr 3  0.8487
+ 332365   332475                     0.9225
+
+ 332509   332655  direct       fr 1  0.4657
+ 332526   332586                     0.7278
+
+ 332643   332882  complement   fr 2  0.6037
+ 332685   332857                     0.6138
+
+ 332870   332967  complement   fr 1  0.4133
+
+ 332965   333120  direct       fr 2  0.5873
+ 333001   333060                     0.9111
+
+ 333143   333195  complement   fr 1  0.6714
+
+ 333207   333756  direct       fr 1  0.6467
+ 333207   333756                     0.6467
+
+ 333317   333407  direct       fr 3  0.8198
+ 333317   333357                     0.7277
+
+ 333359   333756  direct       fr 1  0.6558
+ 333409   333756                     0.7292
+
+ 333565   333756  direct       fr 1  0.7170
+ 333613   333756                     0.8549
+
+ 333889   333951  complement   fr 3  0.6722
+
+ 333918   334118  complement   fr 2  0.4583
+ 333950   334112                     0.4985
+
+ 334122   334421  complement   fr 1  0.6721
+ 334159   334398                     0.7213
+
+ 334209   334421  complement   fr 1  0.7334
+ 334219   334398                     0.7623
+
+ 334242   334421  complement   fr 1  0.7759
+ 334280   334398                     0.8585
+
+ 334460   334536  direct       fr 1  0.5193
+ 334474   334536                     0.5825
+
+ 334542   334800  direct       fr 3  0.4795
+ 334572   334740                     0.5498
+
+ 340045   340093  direct       fr 1  0.7365
+ 340053   340086                     0.9528
+
+ 341459   341598  complement   fr 2  0.8723
+ 341472   341577                     0.9522
+
+ 341954   342097  complement   fr 1  0.3896
+ 341968   342079                     0.3610
+
+ 342141   342211  complement   fr 3  0.8299
+
+ 342491   342569  direct       fr 2  0.3396
+
+ 343332   343378  direct       fr 1  0.6835
+ 343342   343367                     0.8854
+
+ 344309   344359  complement   fr 3  0.7683
+ 344309   344332                     0.8312
+
+ 345546   345628  direct       fr 3  0.6359
+ 345558   345597                     0.6557
+
+ 345602   345731  complement   fr 2  0.4540
+
+ 345698   345850  complement   fr 3  0.3475
+
+ 345950   346065  complement   fr 3  0.5015
+ 345966   346054                     0.5483
+
+ 345992   346065  complement   fr 3  0.5963
+ 346018   346054                     0.5788
+
+ 348399   348478  complement   fr 1  0.7132
+ 348419   348452                     0.8317
+
+ 351517   351595  complement   fr 2  0.4378
+
+ 352035   352119  direct       fr 3  0.6663
+ 352039   352101                     0.7623
+
+ 357749   357799  direct       fr 2  0.7649
+
+ 358417   358465  direct       fr 1  0.5917
+
+ 359382   359461  complement   fr 1  0.4056
+ 359402   359434                     0.4865
+
+ 360820   360914  complement   fr 1  0.4941
+ 360861   360889                     0.8069
+
+ 360938   361024  direct       fr 1  0.5313
+ 360941   361018                     0.5067
+
+ 364034   364090  direct       fr 3  0.3652
+
+ 364174   364242  direct       fr 2  0.2551
+ 364191   364236                     0.1978
+
+ 364886   364958  direct       fr 2  0.6712
+ 364899   364948                     0.7997
+
+ 365591   365669  complement   fr 2  0.6331
+ 365611   365653                     0.8677
+
+ 366831   366887  complement   fr 2  0.4596
+ 366840   366869                     0.4780
+
+ 366928   366977  direct       fr 2  0.7475
+
+ 366989   367066  direct       fr 3  0.7581
+ 366989   367057                     0.7581
+
+ 367468   367537  direct       fr 2  0.9105
+ 367468   367537                     0.9105
+
+ 367849   367914  direct       fr 2  0.5246
+ 367854   367902                     0.6301
+
+ 369902   369956  complement   fr 1  0.6154
+
+ 370419   370482  direct       fr 1  0.5529
+
+ 370513   370618  complement   fr 2  0.6164
+ 370545   370593                     0.8217
+
+ 371328   371410  direct       fr 2  0.4374
+ 371333   371372                     0.4406
+
+ 372136   372252  direct       fr 2  0.3316
+ 372136   372162                     0.7667
+
+ 372182   372252  direct       fr 3  0.5453
+
+ 372376   372412  direct       fr 3  0.7199
+ 372378   372406                     0.7032
+
+ 372415   372486  complement   fr 1  0.7825
+
+ 372496   372583  complement   fr 3  0.7489
+ 372498   372528                     0.9812
+
+ 372700   372746  direct       fr 1  0.6705
+
+ 372751   372891  direct       fr 2  0.3368
+ 372762   372875                     0.2570
+
+ 372793   372841  complement   fr 2  0.5351
+
+ 372924   372964  direct       fr 3  0.7482
+
+ 373209   373411  complement   fr 1  0.3354
+ 373246   373387                     0.3767
+
+ 376307   376431  complement   fr 2  0.7229
+ 376313   376410                     0.7932
+
+ 376614   376686  complement   fr 2  0.6005
+
+ 376778   376904  complement   fr 2  0.4392
+ 376785   376839                     0.3294
+
+ 376955   377043  complement   fr 3  0.6924
+
+ 377233   377413  complement   fr 1  0.5123
+ 377272   377372                     0.4325
+
+ 377427   377764  complement   fr 3  0.3435
+ 377442   377757                     0.3072
+
+ 377678   377741  direct       fr 1  0.4016
+ 377701   377732                     0.6423
+
+ 377716   377764  complement   fr 3  0.5818
+ 377719   377757                     0.4778
+
+ 377918   378031  complement   fr 1  0.8078
+ 377925   378022                     0.8958
+
+ 378090   378180  complement   fr 3  0.8802
+ 378135   378162                     0.9827
+
+ 378363   378569  complement   fr 1  0.5385
+ 378363   378557                     0.5120
+
+ 379300   379412  direct       fr 3  0.5763
+ 379305   379378                     0.6194
+
+ 379810   379899  complement   fr 2  0.4690
+ 379818   379895                     0.5151
+
+ 380020   380128  direct       fr 3  0.7030
+ 380022   380124                     0.7030
+
+ 381806   381957  direct       fr 1  0.5625
+ 381825   381923                     0.7175
+
+ 381862   381957  direct       fr 1  0.6693
+
+ 383069   383155  complement   fr 1  0.5355
+
+ 383123   383200  complement   fr 3  0.3591
+ 383168   383192                     0.6789
+
+ 387122   387181  complement   fr 1  0.6098
+ 387134   387173                     0.5772
+
+ 387648   387724  complement   fr 3  0.6214
+
+ 387952   388028  complement   fr 1  0.7316
+ 387976   388019                     0.8708
+
+ 388181   388228  complement   fr 3  0.8388
+ 388181   388204                     0.8884
+
+ 391480   391559  complement   fr 2  0.7502
+ 391480   391529                     0.7458
+
+ 391687   391847  direct       fr 1  0.5665
+ 391761   391832                     0.9370
+
+ 392793   392910  direct       fr 1  0.5224
+ 392828   392863                     0.8894
+
+ 393745   393807  complement   fr 3  0.6544
+
+ 395436   395503  complement   fr 3  0.3624
+
+ 396260   396320  complement   fr 1  0.7861
+ 396277   396301                     0.9801
+
+ 396708   396757  complement   fr 1  0.4602
+ 396721   396755                     0.6105
+
+ 397530   397603  complement   fr 3  0.3971
+
+ 397800   397914  complement   fr 2  0.6231
+ 397829   397884                     0.8227
+
+ 398165   398267  direct       fr 2  0.6475
+ 398182   398233                     0.6609
+
+ 399027   399171  complement   fr 3  0.8853
+ 399043   399164                     0.8932
+
+ 399159   399283  direct       fr 2  0.6167
+ 399198   399246                     0.7513
+
+ 399463   399523  complement   fr 3  0.6550
+ 399475   399501                     0.7982
+
+ 399723   399794  complement   fr 2  0.9766
+
+ 399984   400079  complement   fr 3  0.5786
+ 400009   400042                     0.7196
+
+ 400231   400344  complement   fr 2  0.3135
+
+ 400479   400620  complement   fr 3  0.8081
+ 400497   400606                     0.8733
+
+ 400790   400844  complement   fr 1  0.7163
+
+ 401368   401406  complement   fr 2  0.3449
+ 401368   401397                     0.4199
+
+ 401486   401616  complement   fr 1  0.4017
+ 401526   401616                     0.4568
+
+ 401847   402006  complement   fr 3  0.5017
+ 401876   401961                     0.6388
+
+ 402194   402513  complement   fr 3  0.8456
+ 402220   402456                     0.9106
+
+ 402852   402922  complement   fr 1  0.6798
+
+ 403057   403129  complement   fr 1  0.7434
+
+ 403132   403229  direct       fr 1  0.4915
+
+ 403237   403333  complement   fr 1  0.6858
+ 403282   403315                     0.8423
+
+ 403447   403505  complement   fr 1  0.5492
+ 403471   403499                     0.8437
+
+ 403901   403982  complement   fr 1  0.4350
+ 403926   403976                     0.4706
+
+ 404590   404669  complement   fr 1  0.6317
+ 404596   404632                     0.7751
+
+ 404724   404881  complement   fr 3  0.5913
+ 404753   404848                     0.5969
+
+ 404807   404881  complement   fr 3  0.7561
+ 404816   404848                     0.9773
+
+ 405380   405492  complement   fr 3  0.6891
+ 405436   405471                     0.7533
+
+ 405769   405826  complement   fr 1  0.3535
+
+ 405833   405912  complement   fr 3  0.8326
+
+ 405853   405953  complement   fr 2  0.1620
+ 405857   405912                     0.1422
+
+ 405867   405912  complement   fr 3  0.9260
+
+ 406177   406288  complement   fr 1  0.8302
+ 406184   406280                     0.9140
+
+ 406385   406538  complement   fr 1  0.3145
+ 406403   406526                     0.3164
+
+ 406687   406730  complement   fr 1  0.7197
+
+ 406747   406938  complement   fr 2  0.8359
+ 406775   406931                     0.8906
+
+ 407235   407342  direct       fr 2  0.6664
+ 407249   407309                     0.6247
+
+ 407241   407582  complement   fr 1  0.5468
+ 407311   407570                     0.6656
+
+ 407339   407582  complement   fr 1  0.6746
+ 407378   407570                     0.6872
+
+ 407510   407582  complement   fr 1  0.4484
+
+ 407966   408005  direct       fr 1  0.7798
+
+ 408008   408077  complement   fr 2  0.7518
+
+ 408124   408212  direct       fr 2  0.3134
+ 408166   408198                     0.3373
+
+ 408700   408833  complement   fr 2  0.8486
+ 408700   408807                     0.8177
+
+ 408866   409032  complement   fr 1  0.5215
+ 408913   409015                     0.7254
+
+ 409074   409156  complement   fr 3  0.5922
+
+ 409312   409442  complement   fr 2  0.6379
+ 409312   409432                     0.6178
+
+ 409582   409687  complement   fr 3  0.4193
+ 409606   409670                     0.3961
+
+ 409718   409791  complement   fr 2  0.6856
+ 409747   409781                     0.9250
+
+ 409930   410013  direct       fr 3  0.6469
+ 409953   409989                     0.6291
+
+ 410521   410573  direct       fr 2  0.3992
+
+ 410568   410642  complement   fr 2  0.4263
+ 410598   410625                     0.6898
+
+ 410780   410944  complement   fr 3  0.7760
+ 410793   410901                     0.8782
+
+ 411013   411052  complement   fr 2  0.5859
+
+ 411059   411103  direct       fr 1  0.5641
+
+ 414141   414240  complement   fr 2  0.5048
+ 414161   414207                     0.7339
+
+ 414561   414663  complement   fr 3  0.5974
+ 414571   414661                     0.6382
+
+ 414591   414663  complement   fr 3  0.7253
+ 414611   414661                     0.7932
+
+ 415530   415608  direct       fr 1  0.6068
+ 415541   415608                     0.6789
+
+ 418641   418726  direct       fr 1  0.7972
+ 418650   418712                     0.8967
+
+ 420155   420254  complement   fr 1  0.3677
+ 420192   420250                     0.4687
+
+ 420212   420254  complement   fr 1  0.5064
+
+ 420349   420440  direct       fr 2  0.6555
+ 420373   420413                     0.8016
+
+ 420867   420955  direct       fr 1  0.4689
+ 420883   420913                     0.6422
+
+ 420916   420997  complement   fr 1  0.4000
+
+ 421118   421219  complement   fr 1  0.7497
+ 421125   421186                     0.8395
+
+ 421568   421613  direct       fr 1  0.4224
+
+ 421625   421683  direct       fr 2  0.7599
+ 421641   421671                     0.9539
+
+ 423584   423683  direct       fr 2  0.3758
+
+ 426445   426526  direct       fr 3  0.3267
+ 426451   426515                     0.3433
+
+ 426467   426515  direct       fr 1  0.6444
+
+ 428630   428666  complement   fr 2  0.6954
+
+ 428879   428937  direct       fr 2  0.5450
+
+ 430022   430100  complement   fr 2  0.7190
+ 430041   430080                     0.8436
+
+ 435202   435255  complement   fr 3  0.4764
+
+ 435290   435351  direct       fr 3  0.7181
+ 435300   435346                     0.8667
+
+ 437048   437120  complement   fr 1  0.6341
+
+ 438846   438920  direct       fr 2  0.7066
+ 438857   438902                     0.9218
+
+ 439564   439679  direct       fr 2  0.5336
+ 439564   439634                     0.5487
+
+ 439669   439800  complement   fr 1  0.6094
+ 439676   439708                     0.8244
+
+ 439763   439821  complement   fr 2  0.7832
+ 439773   439811                     0.9752
+
+ 440116   440165  direct       fr 3  0.8316
+
+ 442730   442897  complement   fr 1  0.6063
+ 442786   442833                     0.8776
+
+ 442865   443141  complement   fr 3  0.3412
+ 442946   443069                     0.3473
+
+ 443132   443173  direct       fr 2  0.7099
+ 443148   443173                     0.8619
+
+ 443194   443238  direct       fr 1  0.5898
+
+ 443265   443331  complement   fr 3  0.5949
+
+ 443450   443739  direct       fr 3  0.4306
+ 443454   443729                     0.4275
+
+ 443474   443570  direct       fr 2  0.4057
+ 443493   443544                     0.4217
+
+ 443507   443739  direct       fr 3  0.4400
+ 443514   443729                     0.4416
+
+ 443626   443739  direct       fr 3  0.5043
+ 443658   443729                     0.5114
+
+ 443748   443824  complement   fr 2  0.7526
+ 443758   443807                     0.8101
+
+ 443882   444062  direct       fr 2  0.6229
+ 443886   443995                     0.7086
+
+ 443957   444062  direct       fr 2  0.6066
+ 443969   443995                     0.7865
+
+ 444451   444605  complement   fr 3  0.3615
+ 444466   444594                     0.3401
+
+ 444484   444561  direct       fr 3  0.3951
+
+ 444556   444605  complement   fr 3  0.6792
+
+ 444735   444870  direct       fr 3  0.8412
+ 444739   444862                     0.8526
+
+ 444934   444991  complement   fr 2  0.5543
+ 444942   444972                     0.8095
+
+ 445032   445105  complement   fr 3  0.6593
+
+ 445360   445496  complement   fr 3  0.3039
+ 445387   445466                     0.2713
+
+ 445389   445467  direct       fr 1  0.5634
+ 445396   445461                     0.6396
+
+ 445405   445496  complement   fr 3  0.2906
+
+ 445597   445635  complement   fr 1  0.6571
+ 445603   445627                     0.8176
+
+ 445664   445732  complement   fr 3  0.5884
+
+ 445894   446039  complement   fr 1  0.2973
+ 445943   446011                     0.4741
+
+ 446081   446281  complement   fr 3  0.3778
+ 446126   446245                     0.3440
+
+ 446129   446200  direct       fr 3  0.2351
+
+ 446163   446281  complement   fr 3  0.3755
+ 446174   446245                     0.3537
+
+ 446179   446281  complement   fr 3  0.3357
+ 446210   446245                     0.3612
+
+ 446265   446335  direct       fr 1  0.4555
+ 446284   446326                     0.4054
+
+ 446376   446480  direct       fr 2  0.4570
+ 446430   446472                     0.6961
+
+ 446497   446649  direct       fr 3  0.6218
+ 446514   446611                     0.8064
+
+ 446726   446766  complement   fr 2  0.3309
+
+ 446766   446853  direct       fr 3  0.8041
+ 446790   446830                     0.9806
+
+ 450146   450208  complement   fr 1  0.5705
+
+ 450150   450208  complement   fr 1  0.5935
+
+ 450194   450293  direct       fr 2  0.7055
+ 450247   450287                     0.8375
+
+ 450194   450293  direct       fr 2  0.7055
+ 450247   450287                     0.8375
+
+ 450978   451059  direct       fr 2  0.6846
+ 451009   451055                     0.9602
+
+ 453448   453532  complement   fr 3  0.4734
+ 453467   453512                     0.7477
+
+ 453473   453577  complement   fr 1  0.4392
+ 453509   453532                     0.8001
+
+ 453717   453803  complement   fr 3  0.7351
+ 453730   453768                     0.7899
+
+ 453830   453995  complement   fr 1  0.5449
+ 453838   453962                     0.5970
+
+ 454109   454338  direct       fr 3  0.4279
+ 454131   454300                     0.4653
+
+ 454214   454287  complement   fr 2  0.5084
+
+ 454335   454383  complement   fr 3  0.6768
+
+ 454814   454875  direct       fr 2  0.7161
+
+ 454887   454979  complement   fr 3  0.9387
+ 454915   454941                     0.9818
+
+ 454955   455073  direct       fr 1  0.7073
+ 454975   455039                     0.8567
+
+ 455154   455271  complement   fr 1  0.3553
+
+ 455287   455401  complement   fr 2  0.5311
+ 455307   455350                     0.5850
+
+ 455324   455401  complement   fr 2  0.5524
+
+ 455376   455440  direct       fr 1  0.6064
+
+ 455437   455519  direct       fr 3  0.5093
+ 455460   455495                     0.8800
+
+ 455507   455630  complement   fr 3  0.4566
+ 455533   455630                     0.5212
+
+ 455605   455728  direct       fr 2  0.5279
+ 455630   455723                     0.5742
+
+ 455643   455687  complement   fr 2  0.3713
+
+ 455646   455728  direct       fr 2  0.6694
+ 455658   455723                     0.6763
+
+ 455665   455728  direct       fr 2  0.7179
+
+ 455795   455861  complement   fr 2  0.4918
+ 455805   455832                     0.6128
+
+ 455851   456011  direct       fr 2  0.5760
+ 455896   455973                     0.7634
+
+ 455987   456195  complement   fr 2  0.8506
+ 456009   456154                     0.8965
+
+ 456194   456256  complement   fr 1  0.8065
+ 456210   456233                     0.9876
+
+ 456260   456351  complement   fr 3  0.7604
+ 456271   456307                     0.8765
+
+ 456351   456447  direct       fr 1  0.5742
+
+ 456422   456509  complement   fr 2  0.7626
+ 456456   456484                     0.9208
+
+ 456422   456509  complement   fr 2  0.7626
+ 456456   456484                     0.9208
+
+ 456503   456652  direct       fr 3  0.3636
+ 456512   456633                     0.3508
+
+ 456565   456652  direct       fr 3  0.3691
+
+ 456748   456854  direct       fr 3  0.5591
+
+ 456881   457003  complement   fr 2  0.4562
+ 456909   456980                     0.3528
+
+ 457068   457154  direct       fr 2  0.8013
+
+ 457180   457300  complement   fr 1  0.7117
+ 457198   457244                     0.8812
+
+ 458116   458248  complement   fr 1  0.3693
+ 458143   458206                     0.5323
+
+ 458175   458234  direct       fr 3  0.6907
+ 458185   458217                     0.6392
+
+ 458240   458366  complement   fr 2  0.4931
+ 458267   458320                     0.5709
+
+ 458267   458366  complement   fr 2  0.5251
+
+ 458426   458473  complement   fr 1  0.3991
+
+ 458570   458703  direct       fr 3  0.3378
+
+ 459264   459318  direct       fr 2  0.7161
+ 459278   459309                     0.8080
+
+ 461915   462020  direct       fr 2  0.5139
+ 461928   462009                     0.6047
+
+ 462962   463021  complement   fr 1  0.5237
+
+ 463028   463093  direct       fr 1  0.7169
+ 463049   463087                     0.8822
+
+ 465021   465132  complement   fr 3  0.3822
+ 465055   465079                     0.8122
+
+ 465472   465508  complement   fr 3  0.7472
+
+ 468712   468803  direct       fr 2  0.7405
+ 468750   468785                     0.9277
+
+ 469267   469324  direct       fr 3  0.6741
+
+ 469941   469995  direct       fr 2  0.6830
+ 469966   469991                     0.9175
+
+ 470107   470149  direct       fr 2  0.6604
+
+ 471377   471484  direct       fr 3  0.4522
+ 471441   471467                     0.7879
+
+ 472619   472699  direct       fr 3  0.5334
+ 472627   472655                     0.6186
+
+ 473247   473328  direct       fr 1  0.6123
+ 473247   473300                     0.6789
+
+ 473632   473716  complement   fr 3  0.5007
+ 473661   473684                     0.7393
+
+ 473788   473865  direct       fr 2  0.6291
+
+ 475166   475234  direct       fr 1  0.6798
+ 475180   475223                     0.8314
+
+ 475273   475313  direct       fr 3  0.6899
+
+ 475331   475505  direct       fr 1  0.6005
+ 475390   475484                     0.8079
+
+ 475504   475540  direct       fr 2  0.9261
+ 475504   475536                     0.9261
+
+ 475707   475776  direct       fr 2  0.6983
+ 475725   475749                     0.9824
+
+ 475799   475861  direct       fr 1  0.4946
+
+ 476173   476236  complement   fr 3  0.3176
+ 476180   476212                     0.3801
+
+ 476668   476781  complement   fr 1  0.3501
+ 476703   476768                     0.3454
+
+ 476685   476730  direct       fr 3  0.6564
+ 476696   476723                     0.8252
+
+ 478485   478628  direct       fr 3  0.6726
+ 478517   478620                     0.7658
+
+ 478693   478778  direct       fr 2  0.3708
+ 478716   478769                     0.4257
+
+ 479225   479306  complement   fr 1  0.4964
+ 479264   479291                     0.4660
+
+ 479459   479538  complement   fr 1  0.5124
+ 479481   479528                     0.7370
+
+ 479573   479816  complement   fr 2  0.4730
+ 479591   479796                     0.4704
+
+ 479677   479744  complement   fr 1  0.5924
+
+ 479727   479800  direct       fr 1  0.4759
+ 479747   479771                     0.5558
+
+ 479759   479816  complement   fr 2  0.4889
+ 479765   479796                     0.4312
+
+ 480214   480400  complement   fr 2  0.5070
+ 480222   480384                     0.5400
+
+ 480437   480483  direct       fr 3  0.9382
+ 480437   480479                     0.9333
+
+ 480489   480567  direct       fr 2  0.6109
+ 480525   480563                     0.9142
+
+ 480576   480739  complement   fr 1  0.5582
+ 480635   480727                     0.8313
+
+ 484107   484153  complement   fr 1  0.4997
+
+ 484399   484476  complement   fr 3  0.5692
+
+ 484476   484587  direct       fr 3  0.8295
+ 484482   484572                     0.9387
+
+ 484870   484948  direct       fr 1  0.5798
+ 484890   484919                     0.8034
+
+ 485231   485313  complement   fr 2  0.7104
+
+ 488978   489114  complement   fr 2  0.7687
+ 488984   489102                     0.8398
+
+ 489285   489582  complement   fr 2  0.5334
+ 489332   489543                     0.5006
+
+ 489490   489697  complement   fr 3  0.4395
+ 489510   489669                     0.3943
+
+ 489510   489582  complement   fr 2  0.5637
+
+ 489588   489697  complement   fr 3  0.6009
+ 489622   489669                     0.6739
+
+ 489888   490260  complement   fr 2  0.5451
+ 489905   490248                     0.5619
+
+ 490100   490260  complement   fr 2  0.6402
+ 490133   490248                     0.6317
+
+ 490351   490414  direct       fr 3  0.6550
+ 490374   490405                     0.7951
+
+ 490544   490838  complement   fr 2  0.7809
+ 490590   490790                     0.9160
+
+ 491041   491270  complement   fr 2  0.5908
+ 491048   491260                     0.5935
+
+ 491504   491825  complement   fr 3  0.3183
+ 491526   491815                     0.3100
+
+ 491572   491825  complement   fr 3  0.3193
+ 491576   491815                     0.3019
+
+ 492110   492163  complement   fr 1  0.6188
+
+ 492340   493137  complement   fr 3  0.8443
+ 492342   493089                     0.8500
+
+ 493446   493535  direct       fr 1  0.7442
+ 493481   493521                     0.8988
+
+ 493546   493630  complement   fr 1  0.3333
+
+ 493622   493706  direct       fr 3  0.8189
+ 493633   493706                     0.8884
+
+ 493756   493815  direct       fr 2  0.5638
+
+ 493791   493881  complement   fr 3  0.5826
+ 493795   493868                     0.5828
+
+ 493814   493881  complement   fr 3  0.5803
+ 493818   493868                     0.6472
+
+ 493993   494034  direct       fr 3  0.4984
+
+ 500177   500223  direct       fr 3  0.3942
+
+ 500332   500392  direct       fr 3  0.9764
+
+ 501461   501602  complement   fr 3  0.6002
+ 501543   501602                     0.8852
+
+ 502458   502539  complement   fr 3  0.6180
+ 502478   502534                     0.7436
+
+ 502754   502816  direct       fr 2  0.7153
+ 502767   502808                     0.8400
+
+ 508119   508254  complement   fr 2  0.5034
+
+ 508959   509006  complement   fr 2  0.5668
+ 508962   508991                     0.5244
+
+ 509978   510024  direct       fr 2  0.7256
+
+ 512672   512730  direct       fr 1  0.2995
+
+ 513812   513972  direct       fr 2  0.5507
+ 513843   513917                     0.8780
+
+ 513946   513994  direct       fr 1  0.4858
+ 513957   513982                     0.5889
+
+ 514342   514465  complement   fr 1  0.8280
+ 514365   514423                     0.9602
+
+ 514526   514642  direct       fr 1  0.8115
+ 514537   514629                     0.8888
+
+ 514790   514933  complement   fr 1  0.4389
+ 514814   514929                     0.4788
+
+ 515534   515602  complement   fr 3  0.5535
+ 515539   515563                     0.8351
+
+ 515582   515909  direct       fr 1  0.5687
+ 515586   515847                     0.6098
+
+ 515630   515909  direct       fr 1  0.6300
+ 515637   515847                     0.6875
+
+ 515655   515745  complement   fr 2  0.6148
+
+ 515725   515909  direct       fr 1  0.7577
+ 515730   515847                     0.9262
+
+ 515905   515949  direct       fr 2  0.4694
+
+ 515965   516061  complement   fr 1  0.4284
+ 515972   515995                     0.6867
+
+ 516024   516092  complement   fr 3  0.8615
+
+ 517018   517098  direct       fr 2  0.1644
+
+ 517120   517212  direct       fr 2  0.4246
+ 517120   517174                     0.2678
+
+ 520184   520321  direct       fr 3  0.6557
+ 520195   520282                     0.6358
+
+ 521225   521406  direct       fr 3  0.5142
+ 521225   521383                     0.4757
+
+ 521343   521406  direct       fr 3  0.8641
+ 521346   521383                     0.9305
+
+ 521511   521557  direct       fr 2  0.9537
+ 521517   521557                     0.9537
+
+ 521669   521870  direct       fr 1  0.8863
+ 521717   521863                     0.9621
+
+ 522243   522329  direct       fr 1  0.5713
+ 522269   522307                     0.4866
+
+ 522323   522377  complement   fr 2  0.4685
+
+ 522867   522941  complement   fr 2  0.6746
+ 522870   522907                     0.8365
+
+ 523965   524046  complement   fr 2  0.5949
+ 523979   524023                     0.6946
+
+ 524285   524375  complement   fr 3  0.4477
+ 524285   524349                     0.4295
+
+ 524510   524567  complement   fr 3  0.4156
+ 524515   524557                     0.5195
+
+ 526028   526079  direct       fr 1  0.5734
+
+ 531026   531171  complement   fr 1  0.3808
+ 531090   531157                     0.6417
+
+ 531596   531645  direct       fr 2  0.6381
+
+ 532805   532864  direct       fr 3  0.2449
+
+ 534717   534798  direct       fr 3  0.5611
+ 534740   534792                     0.7133
+
+ 537110   537199  direct       fr 1  0.3173
+
+ 537352   537405  direct       fr 1  0.3781
+
+ 537399   537548  direct       fr 2  0.4563
+ 537498   537540                     0.6507
+
+ 537573   537627  complement   fr 1  0.6630
+
+ 538514   538625  direct       fr 3  0.4385
+ 538579   538605                     0.9565
+
+ 538836   538888  direct       fr 1  0.5435
+
+ 539818   539860  complement   fr 3  0.6833
+
+ 540983   541093  direct       fr 1  0.5621
+ 540999   541048                     0.8077
+
+ 541120   541285  direct       fr 3  0.3810
+ 541128   541248                     0.3380
+
+ 541228   541285  direct       fr 3  0.4426
+
+ 541382   541422  direct       fr 2  0.4048
+ 541389   541415                     0.5326
+
+ 541582   541756  direct       fr 2  0.7442
+ 541605   541718                     0.9104
+
+ 543031   543175  complement   fr 3  0.4715
+ 543073   543143                     0.4068
+
+ 543109   543175  complement   fr 3  0.6652
+
+ 544642   544682  complement   fr 1  0.4851
+ 544652   544678                     0.7388
+
+ 545773   545867  complement   fr 3  0.2958
+
+ 547043   547108  direct       fr 3  0.4588
+ 547077   547103                     0.7232
+
+ 548439   548653  complement   fr 1  0.5781
+ 548454   548599                     0.6073
+
+ 548570   548734  complement   fr 3  0.3444
+ 548609   548721                     0.3871
+
+ 548570   548653  complement   fr 1  0.6144
+
+ 548678   548734  complement   fr 3  0.6217
+ 548686   548721                     0.6734
+
+ 548737   549063  direct       fr 3  0.6071
+ 548791   549048                     0.7118
+
+ 548896   549063  direct       fr 3  0.6536
+ 548902   549048                     0.6529
+
+ 549083   549266  direct       fr 2  0.5244
+ 549101   549239                     0.3860
+
+ 549246   549321  direct       fr 1  0.6533
+
+ 549445   549987  complement   fr 3  0.6606
+ 549465   549966                     0.6595
+
+ 549484   549987  complement   fr 3  0.6784
+ 549490   549966                     0.6698
+
+ 549637   549987  complement   fr 3  0.5881
+ 549672   549966                     0.5932
+
+ 549787   549887  complement   fr 1  0.6442
+
+ 549854   549987  complement   fr 3  0.6143
+ 549859   549966                     0.6201
+
+ 549886   549987  complement   fr 3  0.7199
+ 549895   549966                     0.7842
+
+ 549986   550069  direct       fr 3  0.4531
+ 550018   550056                     0.7268
+
+ 550053   550109  direct       fr 2  0.4154
+
+ 550119   550245  complement   fr 2  0.7444
+ 550123   550198                     0.8575
+
+ 550220   550298  direct       fr 3  0.6833
+ 550245   550278                     0.8533
+
+ 550261   550593  direct       fr 2  0.4528
+ 550339   550483                     0.6205
+
+ 550602   550715  complement   fr 3  0.6602
+ 550624   550666                     0.6517
+
+ 550705   550846  complement   fr 1  0.8692
+ 550708   550832                     0.9365
+
+ 550949   551013  complement   fr 3  0.6378
+ 550949   550992                     0.5924
+
+ 551112   551272  complement   fr 2  0.6148
+ 551147   551236                     0.7521
+
+ 551289   551381  direct       fr 1  0.5957
+ 551307   551362                     0.6858
+
+ 551378   551502  direct       fr 3  0.6820
+ 551389   551467                     0.8678
+
+ 551494   551616  complement   fr 1  0.4884
+ 551522   551616                     0.5127
+
+ 551697   551767  direct       fr 1  0.6373
+
+ 551745   551785  complement   fr 2  0.4506
+
+ 551793   552039  complement   fr 3  0.5954
+ 551811   551989                     0.6582
+
+ 551942   552039  complement   fr 3  0.4973
+ 551948   551989                     0.5959
+
+ 552461   552515  complement   fr 3  0.3743
+ 552461   552501                     0.3667
+
+ 552726   552858  complement   fr 3  0.3984
+ 552753   552816                     0.5290
+
+ 552795   552859  direct       fr 2  0.5719
+ 552801   552827                     0.7073
+
+ 552850   552976  complement   fr 1  0.4888
+ 552877   552930                     0.6148
+
+ 552877   552976  complement   fr 1  0.5423
+
+ 552926   553083  complement   fr 3  0.6331
+ 552980   553070                     0.9638
+
+ 553862   553905  direct       fr 2  0.7174
+
+ 554448   554504  direct       fr 2  0.7923
+
+ 556573   556717  direct       fr 1  0.4481
+ 556586   556704                     0.4830
+
+ 560390   560471  direct       fr 1  0.4012
+
+ 560469   560558  complement   fr 1  0.2915
+ 560491   560540                     0.2765
+
+ 561843   561890  direct       fr 3  0.8570
+ 561862   561890                     0.8599
+
+ 562056   562133  direct       fr 2  0.4191
+
+ 562334   562409  direct       fr 1  0.5448
+ 562362   562403                     0.7360
+
+ 562913   562972  direct       fr 3  0.7008
+ 562913   562963                     0.7592
+
+ 563436   563514  direct       fr 3  0.5073
+ 563443   563507                     0.5822
+
+ 563466   563514  direct       fr 3  0.5779
+
+ 563992   564068  direct       fr 2  0.7231
+ 563992   564059                     0.7089
+
+ 564955   565065  direct       fr 3  0.5225
+ 564995   565057                     0.6333
+
+ 565692   565880  direct       fr 3  0.5826
+ 565720   565843                     0.6353
+
+ 565765   565880  direct       fr 3  0.7956
+ 565776   565843                     0.8675
+
+ 566581   566629  direct       fr 1  0.5371
+
+ 569542   569599  complement   fr 3  0.7687
+ 569553   569584                     0.9693
+
+ 570484   570582  direct       fr 2  0.7770
+ 570484   570576                     0.7770
+
+ 572023   572117  direct       fr 1  0.8434
+ 572069   572094                     0.9243
+
+ 573505   573602  direct       fr 2  0.8648
+ 573510   573572                     0.9879
+
+ 573723   573821  direct       fr 3  0.3797
+ 573745   573802                     0.4015
+
+ 574449   574727  complement   fr 1  0.5226
+ 574490   574701                     0.5832
+
+ 574625   574687  direct       fr 3  0.7404
+ 574625   574674                     0.7578
+
+ 574710   574786  complement   fr 3  0.4665
+ 574735   574777                     0.6976
+
+ 575504   575616  direct       fr 1  0.7254
+ 575515   575616                     0.8058
+
+ 575711   575794  direct       fr 1  0.3387
+
+ 575925   575994  complement   fr 1  0.4225
+
+ 576011   576074  complement   fr 2  0.4178
+
+ 576458   576512  complement   fr 3  0.6887
+
+ 576630   576712  complement   fr 3  0.4486
+
+ 576779   576836  direct       fr 2  0.7911
+
+ 576840   576891  direct       fr 1  0.5821
+ 576856   576886                     0.7218
+
+ 576955   577046  complement   fr 3  0.7765
+ 576977   577046                     0.9066
+
+ 577057   577121  direct       fr 2  0.2914
+ 577068   577113                     0.3802
+
+ 577193   577243  complement   fr 3  0.8480
+ 577193   577224                     0.7995
+
+ 577311   577423  direct       fr 2  0.5664
+ 577351   577404                     0.8132
+
+ 577369   577423  direct       fr 2  0.8652
+ 577373   577404                     0.9665
+
+ 577696   577756  direct       fr 3  0.8785
+ 577708   577741                     0.9146
+
+ 578008   578068  direct       fr 1  0.3612
+ 578031   578061                     0.2171
+
+ 578186   578228  complement   fr 1  0.4743
+ 578194   578218                     0.7151
+
+ 578375   578499  complement   fr 2  0.7952
+ 578396   578490                     0.8681
+
+ 578675   578821  complement   fr 1  0.5551
+ 578711   578772                     0.8169
+
+ 578840   578897  complement   fr 2  0.6740
+
+ 579082   579209  complement   fr 2  0.4211
+ 579127   579181                     0.4181
+
+ 579251   579338  direct       fr 2  0.4704
+
+ 579574   579663  complement   fr 2  0.8334
+ 579595   579653                     0.9556
+
+ 579683   579780  complement   fr 3  0.6414
+ 579695   579763                     0.7003
+
+ 580260   580394  complement   fr 2  0.4605
+ 580271   580373                     0.4161
+
+ 580514   580630  complement   fr 3  0.5425
+ 580557   580614                     0.7421
+
+ 580982   581025  complement   fr 3  0.4552
+
+ 581138   581416  complement   fr 3  0.6921
+ 581146   581412                     0.7060
+
+ 581212   581416  complement   fr 3  0.6176
+ 581260   581412                     0.5982
+
+ 581278   581416  complement   fr 3  0.5715
+ 581289   581412                     0.5933
+
+ 581368   581416  complement   fr 3  0.7165
+ 581380   581412                     0.7035
+
+ 581588   581680  direct       fr 2  0.5111
+ 581626   581673                     0.6843
+
+ 581633   581680  direct       fr 2  0.6980
+
+ 581784   581856  direct       fr 2  0.5936
+
+ 581930   582034  complement   fr 2  0.4765
+ 581943   581976                     0.7225
+
+ 582177   582256  complement   fr 2  0.5382
+ 582186   582250                     0.5590
+
+ 582196   582256  complement   fr 2  0.5220
+ 582224   582250                     0.6191
+
+ 582326   582362  direct       fr 2  0.7215
+
+ 582429   582555  complement   fr 2  0.7614
+ 582449   582551                     0.9398
+
+ 582588   582813  direct       fr 2  0.4412
+ 582630   582783                     0.4757
+
+ 583048   583082  complement   fr 2  0.8556
+ 583048   583076                     0.8162
+
+ 583164   583210  complement   fr 1  0.7075
+
+ 583275   583327  complement   fr 2  0.7643
+
+ 583387   583489  direct       fr 3  0.5318
+ 583429   583458                     0.4779
+
+ 583492   583563  complement   fr 3  0.6443
+ 583500   583556                     0.6510
+
+ 583683   583872  direct       fr 2  0.6255
+ 583703   583844                     0.6076
+
+ 583728   583872  direct       fr 2  0.6792
+ 583765   583844                     0.7961
+
+ 583875   583931  complement   fr 1  0.8665
+ 583875   583910                     0.8574
+
+ 584133   584203  complement   fr 3  0.6127
+
+ 584355   584432  complement   fr 1  0.5146
+ 584355   584420                     0.4928
+
+ 584846   584922  direct       fr 1  0.4165
+ 584871   584903                     0.4459
+
+ 584965   585010  complement   fr 1  0.6450
+ 584968   584993                     0.8282
+
+ 585134   585321  complement   fr 2  0.6156
+ 585150   585267                     0.6388
+
+ 585243   585321  complement   fr 2  0.7293
+
+ 585448   585621  complement   fr 2  0.2523
+ 585472   585527                     0.4500
+
+ 585962   586102  complement   fr 3  0.6420
+ 585974   586076                     0.6059
+
+ 586008   586102  complement   fr 3  0.7609
+ 586017   586076                     0.8473
+
+ 586238   586383  complement   fr 2  0.6817
+ 586288   586377                     0.9473
+
+ 586394   586538  direct       fr 1  0.2370
+ 586410   586533                     0.2299
+
+ 586419   586538  direct       fr 1  0.2016
+ 586419   586533                     0.2139
+
+ 586659   586766  direct       fr 3  0.7185
+ 586670   586766                     0.7185
+
+ 586761   586830  complement   fr 2  0.2871
+
+ 587002   587082  direct       fr 2  0.6053
+ 587010   587073                     0.6844
+
+ 587306   587382  direct       fr 3  0.5596
+ 587315   587365                     0.6245
+
+ 587377   587430  complement   fr 3  0.2704
+
+ 587494   587741  complement   fr 2  0.2684
+ 587504   587634                     0.3179
+
+ 587507   587648  direct       fr 1  0.3289
+ 587517   587579                     0.5997
+
+ 587579   587741  complement   fr 2  0.3156
+ 587597   587634                     0.5111
+
+ 587809   587898  complement   fr 2  0.7808
+ 587813   587864                     0.8938
+
+ 588188   588244  complement   fr 3  0.5612
+
+ 588504   588571  direct       fr 1  0.5818
+
+ 588746   588840  complement   fr 3  0.8011
+ 588750   588816                     0.8751
+
+ 588911   588961  complement   fr 1  0.3572
+
+ 589068   589218  complement   fr 3  0.8139
+ 589092   589211                     0.8986
+
+ 589412   589677  complement   fr 2  0.3421
+ 589424   589665                     0.3416
+
+ 589459   589668  direct       fr 1  0.3253
+ 589471   589653                     0.3311
+
+ 589541   589677  complement   fr 2  0.2606
+ 589602   589665                     0.3442
+
+ 589798   589861  direct       fr 1  0.2729
+
+ 589996   590111  complement   fr 2  0.6410
+ 590022   590083                     0.7741
+
+ 590472   590519  direct       fr 2  0.6830
+
+ 590788   590882  direct       fr 2  0.4209
+ 590788   590844                     0.5261
+
+ 590976   591015  complement   fr 3  0.4274
+
+ 591189   591269  complement   fr 2  0.7920
+ 591221   591258                     0.9106
+
+ 591352   591391  direct       fr 2  0.6841
+ 591352   591379                     0.6666
+
+ 591422   591711  complement   fr 2  0.4972
+ 591430   591683                     0.4983
+
+ 591528   591711  complement   fr 2  0.6905
+ 591533   591683                     0.7688
+
+ 591844   591918  direct       fr 3  0.5860
+ 591866   591913                     0.6591
+
+ 591922   592022  direct       fr 2  0.7394
+ 591936   592020                     0.8319
+
+ 592088   592180  complement   fr 1  0.6430
+ 592098   592159                     0.7677
+
+ 592252   592321  complement   fr 3  0.7684
+ 592266   592301                     0.9073
+
+ 592834   593020  direct       fr 2  0.4321
+ 592886   592981                     0.4921
+
+ 592940   593020  direct       fr 2  0.5315
+
+ 592983   593020  direct       fr 2  0.8032
+
+ 593066   593188  complement   fr 2  0.6669
+ 593075   593170                     0.7682
+
+ 593294   593427  direct       fr 2  0.7211
+ 593307   593398                     0.9051
+
+ 593644   593753  complement   fr 1  0.7178
+ 593682   593734                     0.9535
+
+ 593937   594070  complement   fr 1  0.8595
+ 593949   594058                     0.9225
+
+ 594356   594418  direct       fr 3  0.8174
+
+ 594385   594452  complement   fr 2  0.4041
+
+ 595162   595266  complement   fr 1  0.5883
+ 595173   595238                     0.5825
+
+ 595416   595455  direct       fr 3  0.5496
+
+ 595717   595872  direct       fr 2  0.6341
+ 595752   595843                     0.9130
+
+ 595879   595933  complement   fr 1  0.6635
+ 595890   595931                     0.7775
+
+ 596244   596307  direct       fr 3  0.4600
+ 596252   596289                     0.2316
+
+ 596298   596570  complement   fr 1  0.8173
+ 596325   596563                     0.8740
+
+ 596843   596961  complement   fr 2  0.6949
+ 596856   596939                     0.7945
+
+ 596896   596961  complement   fr 2  0.7726
+ 596896   596939                     0.8331
+
+ 597019   597163  complement   fr 3  0.6106
+ 597043   597154                     0.7220
+
+ 597263   597361  direct       fr 1  0.8105
+ 597286   597344                     0.9688
+
+ 597395   597481  complement   fr 2  0.4345
+ 597404   597441                     0.4889
+
+ 597625   597780  direct       fr 3  0.3110
+
+ 597926   597989  direct       fr 2  0.4579
+ 597929   597965                     0.5069
+
+ 598103   598190  complement   fr 3  0.6891
+ 598126   598190                     0.9161
+
+ 598177   598301  complement   fr 1  0.5853
+ 598220   598278                     0.6782
+
+ 598860   598964  complement   fr 2  0.5036
+ 598882   598956                     0.6135
+
+ 599270   599361  complement   fr 2  0.4631
+
+ 599525   599693  complement   fr 1  0.6724
+ 599540   599671                     0.6766
+
+ 599623   599693  complement   fr 1  0.7562
+
+ 599912   599966  direct       fr 3  0.5608
+ 599922   599966                     0.6352
+
+ 600579   600615  complement   fr 3  0.4509
+
+ 600591   600773  direct       fr 1  0.8152
+ 600591   600744                     0.8158
+
+ 600625   600773  direct       fr 1  0.8653
+ 600641   600744                     0.9557
+
+ 600767   600819  complement   fr 3  0.8182
+
+ 600948   601034  complement   fr 1  0.4939
+ 600964   600998                     0.6148
+
+ 601165   601226  direct       fr 2  0.5976
+ 601172   601219                     0.5911
+
+ 601267   601502  complement   fr 2  0.7667
+ 601277   601491                     0.8053
+
+ 601714   601834  complement   fr 1  0.5264
+ 601732   601799                     0.7101
+
+ 601810   601892  complement   fr 3  0.7973
+ 601821   601871                     0.9744
+
+ 602313   602507  complement   fr 3  0.4959
+ 602337   602404                     0.9162
+
+ 603085   603159  complement   fr 1  0.6699
+
+ 603368   603418  complement   fr 2  0.6965
+
+ 603480   603543  complement   fr 3  0.7916
+ 603495   603536                     0.8699
+
+ 603653   603717  complement   fr 3  0.8180
+ 603653   603693                     0.8182
+
+ 603854   603961  complement   fr 2  0.6934
+ 603881   603961                     0.8177
+
+ 604179   604214  direct       fr 1  0.5798
+
+ 604239   604315  complement   fr 1  0.8951
+ 604239   604295                     0.8694
+
+ 604334   604391  direct       fr 1  0.7381
+
+ 604695   604736  complement   fr 2  0.6636
+ 604698   604721                     0.5792
+
+ 604957   605042  complement   fr 2  0.6136
+ 604988   605016                     0.9524
+
+ 605151   605378  complement   fr 3  0.4342
+ 605158   605355                     0.4202
+
+ 605187   605378  complement   fr 3  0.4082
+ 605219   605355                     0.2907
+
+ 605253   605378  complement   fr 3  0.3053
+ 605294   605355                     0.1183
+
+ 605358   605438  direct       fr 2  0.5630
+
+ 605551   605694  complement   fr 2  0.8551
+ 605565   605673                     0.9360
+
+ 605664   605808  direct       fr 1  0.4500
+ 605711   605808                     0.6386
+
+ 605846   605905  complement   fr 1  0.5831
+ 605857   605885                     0.8073
+
+ 606072   606138  complement   fr 3  0.6562
+
+ 606194   606531  direct       fr 3  0.3629
+ 606214   606508                     0.3528
+
+ 606300   606346  direct       fr 2  0.6863
+
+ 606348   606531  direct       fr 3  0.3214
+ 606364   606508                     0.2922
+
+ 606483   606531  direct       fr 3  0.4386
+
+ 606533   606623  direct       fr 2  0.5966
+
+ 607141   607277  complement   fr 2  0.2088
+ 607147   607180                     0.3711
+
+ 607578   607840  complement   fr 3  0.6079
+ 607614   607818                     0.6367
+
+ 607716   607840  complement   fr 3  0.6815
+ 607773   607818                     0.7163
+
+ 607844   607902  direct       fr 2  0.6965
+
+ 607960   608074  complement   fr 1  0.7096
+ 607990   608020                     0.9258
+
+ 608069   608142  complement   fr 3  0.8774
+ 608069   608124                     0.8602
+
+ 608151   608312  complement   fr 2  0.6665
+ 608155   608237                     0.5743
+
+ 608176   608312  complement   fr 2  0.6654
+ 608205   608237                     0.6758
+
+ 608377   608591  complement   fr 1  0.6749
+ 608394   608527                     0.9108
+
+ 608778   608833  direct       fr 2  0.3302
+
+ 608852   608988  complement   fr 3  0.4707
+ 608867   608976                     0.5000
+
+ 609027   609093  complement   fr 1  0.8418
+ 609027   609081                     0.8333
+
+ 609623   609689  complement   fr 1  0.7816
+
+ 609835   609886  complement   fr 3  0.6769
+
+ 610144   610193  direct       fr 3  0.4561
+ 610150   610173                     0.5295
+
+ 610211   610277  direct       fr 1  0.5687
+ 610229   610259                     0.8102
+
+ 610274   610323  complement   fr 3  0.5670
+
+ 610316   610382  direct       fr 2  0.6641
+
+ 610479   610544  direct       fr 2  0.8728
+
+ 610524   610610  complement   fr 3  0.4898
+ 610578   610610                     0.7321
+
+ 610878   610922  direct       fr 2  0.5787
+ 610893   610916                     0.9927
+
+ 610975   611168  direct       fr 3  0.5875
+ 610998   611124                     0.5456
+
+ 611319   611378  complement   fr 2  0.5111
+
+ 611726   611765  complement   fr 3  0.5554
+
+ 611850   611994  complement   fr 3  0.1693
+ 611902   611940                     0.2554
+
+ 611918   611957  direct       fr 3  0.6967
+
+ 612016   612061  complement   fr 2  0.8492
+
+ 612041   612098  direct       fr 1  0.5289
+
+ 612188   612306  complement   fr 3  0.4064
+ 612222   612261                     0.6583
+
+ 612261   612341  complement   fr 2  0.7510
+ 612283   612318                     0.7462
+
+ 612283   612341  complement   fr 2  0.8471
+ 612293   612318                     0.9219
+
+ 612455   612771  complement   fr 2  0.7373
+ 612510   612744                     0.8379
+
+ 612968   613093  complement   fr 1  0.3496
+ 613008   613080                     0.3874
+
+ 613097   613162  direct       fr 1  0.2562
+
+ 613333   613450  direct       fr 3  0.4950
+ 613379   613411                     0.5505
+
+ 613385   613450  direct       fr 3  0.5454
+ 613385   613411                     0.6856
+
+ 613905   614058  direct       fr 3  0.3195
+ 613940   614040                     0.2961
+
+ 613999   614058  direct       fr 3  0.5359
+
+ 614061   614104  complement   fr 1  0.6473
+
+ 614091   614197  direct       fr 1  0.3575
+ 614153   614182                     0.1961
+
+ 614339   614604  direct       fr 2  0.4977
+ 614379   614592                     0.5040
+
+ 614433   614604  direct       fr 2  0.3851
+ 614509   614592                     0.1621
+
+ 614706   614760  complement   fr 2  0.6254
+
+ 614773   614873  complement   fr 1  0.8565
+ 614776   614864                     0.9600
+
+ 615193   615279  complement   fr 3  0.8039
+ 615199   615252                     0.8943
+
+ 615459   615662  complement   fr 3  0.8157
+ 615496   615637                     0.9241
+
+ 615831   615891  complement   fr 2  0.7617
+ 615847   615871                     0.7323
+
+ 616454   616538  complement   fr 3  0.3815
+ 616508   616538                     0.9941
+
+ 616718   616777  complement   fr 2  0.2412
+ 616744   616777                     0.2387
+
+ 616729   616907  direct       fr 2  0.5236
+ 616746   616878                     0.5281
+
+ 616787   616907  direct       fr 2  0.6626
+ 616826   616878                     0.8142
+
+ 617284   617422  complement   fr 2  0.7678
+ 617284   617367                     0.7987
+
+ 617284   617422  complement   fr 2  0.7678
+ 617343   617367                     0.8561
+
+ 617501   617663  complement   fr 2  0.7690
+ 617526   617651                     0.8443
+
+ 617799   617931  complement   fr 1  0.7435
+ 617799   617900                     0.7874
+
+ 617904   617992  direct       fr 2  0.5341
+ 617927   617976                     0.6635
+
+ 618153   618240  complement   fr 2  0.4402
+
+ 618218   618278  direct       fr 1  0.6957
+ 618230   618263                     0.7358
+
+ 618369   618411  direct       fr 1  0.7446
+ 618378   618403                     0.9848
+
+ 618984   619052  direct       fr 2  0.7300
+ 618989   619028                     0.8604
+
+ 619164   619315  direct       fr 2  0.6360
+ 619200   619295                     0.7495
+
+ 619203   619315  direct       fr 2  0.7376
+ 619220   619295                     0.8232
+
+ 619573   619668  complement   fr 1  0.3489
+ 619591   619617                     0.4773
+
+ 619629   619704  complement   fr 2  0.5256
+ 619657   619686                     0.6426
+
+ 619778   619872  complement   fr 1  0.5526
+ 619791   619832                     0.7381
+
+ 619876   620157  complement   fr 2  0.8632
+ 619876   620129                     0.8842
+
+ 620172   620246  complement   fr 1  0.2336
+
+ 620331   620380  direct       fr 3  0.9165
+
+ 620798   621072  complement   fr 2  0.3993
+ 620870   620967                     0.7513
+
+ 621169   621241  complement   fr 3  0.5891
+ 621175   621217                     0.8014
+
+ 621385   621477  complement   fr 2  0.7756
+ 621389   621468                     0.8649
+
+ 621561   621630  complement   fr 1  0.3612
+ 621600   621623                     0.4768
+
+ 621782   621830  complement   fr 1  0.5041
+
+ 621762   621889  direct       fr 3  0.2256
+ 621799   621876                     0.1980
+
+ 622050   622106  complement   fr 1  0.5720
+
+ 622292   622680  complement   fr 3  0.7700
+ 622307   622668                     0.7887
+
+ 622717   622802  direct       fr 3  0.5811
+ 622753   622802                     0.7411
+
+ 622774   622899  complement   fr 2  0.6834
+ 622800   622839                     0.7076
+
+ 622800   622899  complement   fr 2  0.7808
+
+ 623148   623245  complement   fr 1  0.5777
+ 623152   623242                     0.5990
+
+ 623391   623437  direct       fr 1  0.6196
+ 623407   623435                     0.7718
+
+ 623691   623741  direct       fr 3  0.4825
+
+ 623758   623813  direct       fr 1  0.8393
+
+ 623937   624016  complement   fr 1  0.5890
+ 623947   623996                     0.6757
+
+ 624690   624794  direct       fr 2  0.7112
+ 624749   624788                     0.9964
+
+ 625068   625192  complement   fr 2  0.4843
+ 625111   625140                     0.5937
+
+ 625780   625939  complement   fr 3  0.5059
+ 625801   625902                     0.3824
+
+ 625862   625939  complement   fr 3  0.4976
+
+ 626030   626112  direct       fr 1  0.4811
+
+ 626066   626179  direct       fr 2  0.3606
+ 626125   626156                     0.4782
+
+ 626356   626515  direct       fr 3  0.7555
+ 626372   626492                     0.7923
+
+ 627044   627090  direct       fr 1  0.6204
+
+ 627286   627590  complement   fr 2  0.6376
+ 627352   627564                     0.7457
+
+ 627538   627590  complement   fr 2  0.8162
+
+ 627572   627649  direct       fr 1  0.4808
+
+ 627767   627872  complement   fr 2  0.7419
+ 627781   627858                     0.8108
+
+ 627923   628003  complement   fr 3  0.5524
+
+ 627997   628052  complement   fr 1  0.5940
+
+ 628122   628219  direct       fr 3  0.2024
+
+ 628143   628204  complement   fr 3  0.7317
+ 628168   628192                     0.9409
+
+ 628755   628791  complement   fr 2  0.6793
+
+ 628972   629019  direct       fr 3  0.8780
+
+ 629171   629227  complement   fr 3  0.7482
+ 629178   629214                     0.8256
+
+ 629228   629305  complement   fr 1  0.5409
+ 629258   629292                     0.5976
+
+ 629258   629305  complement   fr 1  0.5710
+
+ 629270   629470  direct       fr 1  0.6154
+ 629311   629444                     0.7456
+
+ 629311   629470  direct       fr 1  0.7659
+ 629321   629444                     0.8059
+
+ 629387   629470  direct       fr 1  0.8494
+ 629401   629444                     0.9544
+
+ 629878   629965  complement   fr 2  0.3772
+ 629897   629965                     0.4989
+
+ 630144   630207  direct       fr 3  0.7513
+
+ 630293   630435  complement   fr 2  0.7458
+ 630336   630406                     0.7807
+
+ 630818   630867  complement   fr 3  0.7481
+
+ 630851   630927  direct       fr 2  0.3878
+
+ 631023   631082  direct       fr 3  0.5129
+ 631050   631082                     0.8539
+
+ 632079   632130  complement   fr 3  0.9558
+
+ 632104   632363  complement   fr 2  0.5253
+ 632143   632270                     0.7535
+
+ 632341   632433  complement   fr 1  0.5699
+ 632352   632380                     0.6707
+
+ 632437   632600  complement   fr 2  0.8424
+ 632445   632582                     0.9171
+
+ 632613   632686  complement   fr 1  0.3652
+
+ 632689   632754  direct       fr 3  0.3946
+
+ 632730   632841  direct       fr 2  0.3514
+ 632771   632818                     0.6307
+
+ 633398   633544  complement   fr 1  0.3058
+ 633402   633426                     0.5439
+
+ 633695   633819  direct       fr 1  0.3754
+ 633738   633786                     0.5484
+
+ 633833   633924  direct       fr 2  0.7168
+ 633849   633911                     0.7315
+
+ 634605   634694  direct       fr 1  0.3181
+
+ 634652   634744  direct       fr 3  0.5296
+ 634668   634737                     0.5656
+
+ 634966   635046  complement   fr 1  0.8118
+ 634972   635014                     0.9763
+
+ 635056   635339  complement   fr 2  0.5202
+ 635105   635301                     0.5307
+
+ 635183   635339  complement   fr 2  0.7859
+ 635191   635301                     0.9043
+
+ 635326   635522  complement   fr 1  0.2561
+ 635373   635485                     0.3263
+
+ 635455   635594  direct       fr 2  0.2987
+ 635482   635592                     0.3584
+
+ 635509   635594  direct       fr 2  0.3444
+ 635521   635592                     0.3795
+
+ 635667   635740  complement   fr 1  0.2839
+ 635667   635719                     0.3340
+
+ 636227   636269  complement   fr 1  0.5193
+
+ 636657   636749  direct       fr 2  0.4777
+
+ 636992   637115  complement   fr 2  0.5504
+ 637018   637083                     0.6138
+
+ 637249   637285  direct       fr 2  0.6379
+ 637255   637285                     0.8395
+
+ 637301   637573  complement   fr 1  0.5623
+ 637314   637569                     0.5790
+
+ 637613   637646  direct       fr 3  0.6107
+ 637613   637646                     0.6107
+
+ 637696   637794  direct       fr 2  0.5467
+ 637696   637787                     0.5161
+
+ 637784   637923  complement   fr 3  0.5533
+ 637843   637902                     0.8730
+
+ 638913   638987  complement   fr 3  0.7913
+ 638929   638962                     0.9055
+
+ 639101   639170  direct       fr 1  0.5597
+
+ 639806   639948  complement   fr 1  0.2736
+ 639825   639848                     0.6960
+
+ 640068   640201  complement   fr 1  0.3216
+ 640075   640175                     0.3389
+
+ 640150   640201  complement   fr 1  0.4037
+
+ 640366   640445  complement   fr 1  0.7724
+
+ 640452   640522  complement   fr 2  0.8050
+ 640459   640490                     0.7948
+
+ 640874   640925  direct       fr 2  0.4056
+ 640878   640915                     0.4705
+
+ 640854   640983  complement   fr 1  0.4667
+ 640890   640955                     0.4994
+
+ 640890   640983  complement   fr 1  0.6234
+
+ 641021   641070  direct       fr 3  0.7328
+
+ 641062   641437  complement   fr 1  0.6419
+ 641087   641435                     0.6703
+
+ 641396   641437  complement   fr 1  0.7257
+ 641405   641435                     0.7993
+
+ 643189   643249  complement   fr 1  0.3659
+
+ 643293   643394  complement   fr 2  0.3330
+ 643320   643346                     0.4668
+
+ 643648   643690  complement   fr 3  0.8320
+
+ 643787   643900  complement   fr 3  0.5204
+ 643807   643869                     0.6102
+
+ 644167   644318  complement   fr 2  0.6200
+ 644202   644295                     0.7406
+
+ 644607   644692  complement   fr 1  0.5982
+
+ 644680   644824  complement   fr 3  0.5536
+ 644696   644805                     0.5145
+
+ 644950   645026  direct       fr 1  0.8134
+ 644975   645009                     0.9948
+
+ 645411   645481  complement   fr 3  0.7939
+ 645435   645459                     0.9825
+
+ 646572   646978  complement   fr 3  0.5391
+ 646591   646950                     0.5304
+
+ 646679   646978  complement   fr 3  0.5262
+ 646692   646950                     0.5312
+
+ 647099   647241  complement   fr 3  0.5125
+ 647109   647218                     0.4465
+
+ 647577   647694  complement   fr 2  0.4632
+ 647602   647633                     0.5318
+
+ 647762   647809  complement   fr 1  0.5960
+
+ 647915   648033  direct       fr 2  0.5172
+ 647940   647987                     0.4853
+
+ 647974   648033  direct       fr 2  0.6567
+
+ 648165   648251  complement   fr 2  0.5286
+ 648173   648237                     0.5949
+
+ 648364   648461  direct       fr 2  0.7386
+ 648364   648418                     0.7313
+
+ 648640   648765  direct       fr 2  0.8625
+ 648640   648735                     0.8595
+
+ 648965   649100  complement   fr 1  0.5203
+
+ 649082   649148  complement   fr 3  0.5671
+
+ 649153   649301  direct       fr 2  0.5220
+ 649162   649233                     0.7448
+
+ 649646   649713  direct       fr 2  0.7294
+
+ 649780   649851  direct       fr 3  0.6352
+
+ 650173   650249  direct       fr 1  0.5205
+ 650176   650225                     0.6623
+
+ 650519   650571  complement   fr 2  0.6902
+
+ 651023   651100  complement   fr 3  0.3780
+
+ 651124   651211  complement   fr 2  0.7034
+ 651124   651204                     0.7034
+
+ 651215   651284  complement   fr 1  0.5754
+
+ 651242   651355  direct       fr 2  0.3431
+
+ 651366   651469  direct       fr 1  0.5369
+ 651383   651463                     0.6195
+
+ 651484   651543  complement   fr 2  0.8850
+ 651484   651509                     0.9331
+
+ 652912   653081  complement   fr 2  0.7562
+ 652912   653039                     0.8732
+
+ 653179   653314  direct       fr 1  0.6999
+ 653189   653294                     0.7688
+
+ 653546   653615  direct       fr 2  0.5769
+ 653551   653592                     0.6786
+
+ 653787   653823  complement   fr 1  0.7601
+
+ 654125   654169  complement   fr 1  0.6205
+
+ 654294   654338  direct       fr 3  0.6705
+
+ 654383   654464  direct       fr 2  0.6028
+
+ 654477   654543  direct       fr 3  0.6253
+ 654488   654513                     0.9727
+
+ 654673   654767  direct       fr 1  0.6324
+ 654689   654742                     0.6590
+
+ 654775   654924  complement   fr 3  0.7642
+ 654845   654910                     0.8376
+
+ 655169   655227  complement   fr 3  0.6813
+ 655169   655215                     0.6401
+
+ 655358   655479  complement   fr 2  0.5749
+ 655366   655452                     0.5712
+
+ 655484   655526  direct       fr 2  0.6772
+
+ 657815   657882  direct       fr 3  0.7526
+
+ 658889   658975  direct       fr 1  0.3436
+ 658925   658954                     0.6881
+
+ 658986   659071  direct       fr 2  0.4185
+
+ 659292   659368  complement   fr 1  0.2881
+ 659333   659360                     0.5052
+
+ 660208   660247  direct       fr 3  0.8648
+
+ 660316   660571  complement   fr 1  0.5227
+ 660348   660500                     0.6515
+
+ 660399   660571  complement   fr 1  0.6299
+ 660437   660500                     0.8770
+
+ 660506   660560  direct       fr 2  0.5451
+ 660509   660547                     0.5413
+
+ 661372   661466  complement   fr 3  0.6938
+ 661379   661444                     0.6559
+
+ 661537   661625  complement   fr 1  0.4959
+ 661563   661603                     0.7050
+
+ 662209   662298  direct       fr 1  0.5697
+
+ 662402   662671  direct       fr 2  0.6131
+ 662415   662652                     0.6148
+
+ 662415   662671  direct       fr 2  0.6112
+ 662450   662652                     0.6243
+
+ 662530   662609  direct       fr 1  0.5650
+ 662563   662603                     0.8199
+
+ 662615   662671  direct       fr 2  0.5542
+ 662627   662652                     0.7264
+
+ 664013   664066  complement   fr 1  0.6687
+
+ 665034   665128  complement   fr 1  0.5087
+
+ 666001   666064  complement   fr 2  0.5382
+ 666013   666059                     0.6046
+
+ 666072   666134  direct       fr 3  0.5995
+ 666089   666115                     0.7279
+
+ 668647   668736  direct       fr 2  0.3470
+
+ 668647   668724  direct       fr 1  0.4204
+
+ 668739   668890  direct       fr 1  0.3128
+ 668739   668867                     0.2629
+
+ 668771   668876  complement   fr 2  0.7250
+ 668778   668832                     0.9347
+
+ 669012   669087  direct       fr 3  0.7342
+ 669021   669061                     0.9738
+
+ 669801   669909  complement   fr 1  0.5754
+ 669810   669899                     0.5973
+
+ 669986   670049  complement   fr 2  0.4890
+
+ 672175   672280  complement   fr 1  0.4261
+
+ 672741   672807  direct       fr 1  0.7532
+ 672754   672791                     0.8860
+
+ 672805   672845  direct       fr 3  0.7344
+
+ 673767   673826  direct       fr 2  0.3800
+
+ 674068   674138  complement   fr 3  0.3941
+ 674097   674138                     0.4984
+
+ 674135   674345  direct       fr 1  0.4806
+ 674168   674332                     0.4803
+
+ 674285   674352  complement   fr 3  0.2457
+ 674285   674311                     0.3767
+
+ 676767   676833  complement   fr 2  0.6960
+ 676787   676812                     0.6598
+
+ 678706   678759  direct       fr 1  0.5567
+ 678725   678749                     0.6642
+
+ 678698   678818  complement   fr 2  0.2451
+
+ 681661   681705  direct       fr 3  0.4672
+
+ 681862   681960  complement   fr 1  0.7215
+ 681907   681934                     0.9947
+
+ 682527   682613  complement   fr 1  0.5958
+ 682558   682591                     0.8198
+
+ 685471   685530  complement   fr 3  0.7117
+ 685489   685520                     0.8447
+
+ 685535   685597  direct       fr 3  0.6917
+ 685549   685584                     0.8141
+
+ 686707   686865  complement   fr 2  0.7105
+ 686717   686856                     0.7671
+
+ 687891   688009  complement   fr 2  0.4132
+ 687906   688009                     0.4362
+
+ 688860   688912  complement   fr 3  0.4770
+
+ 689263   689728  complement   fr 3  0.4356
+ 689296   689692                     0.4164
+
+ 689736   689794  complement   fr 1  0.6781
+
+ 690050   690140  direct       fr 3  0.5664
+ 690081   690121                     0.9147
+
+ 690220   690655  complement   fr 1  0.5867
+ 690248   690631                     0.5729
+
+ 690250   690655  complement   fr 1  0.5915
+ 690256   690631                     0.5829
+
+ 690308   690655  complement   fr 1  0.6096
+ 690334   690631                     0.5822
+
+ 690666   690918  complement   fr 3  0.4964
+ 690700   690876                     0.5200
+
+ 691506   691705  complement   fr 3  0.3957
+ 691536   691683                     0.3484
+
+ 692052   692160  complement   fr 1  0.6333
+ 692056   692160                     0.6881
+
+ 692285   692372  complement   fr 1  0.8566
+ 692297   692354                     0.9971
+
+ 692559   692843  complement   fr 2  0.7773
+ 692563   692804                     0.7886
+
+ 692924   692982  complement   fr 3  0.7968
+ 692942   692975                     0.9035
+
+ 693004   693054  direct       fr 2  0.9295
+ 693004   693045                     0.9124
+
+ 693444   693584  complement   fr 3  0.7956
+ 693457   693571                     0.8783
+
+ 693661   693708  complement   fr 1  0.3925
+ 693677   693708                     0.4925
+
+ 693700   693828  direct       fr 2  0.6044
+ 693739   693816                     0.8212
+
+ 694120   694189  direct       fr 1  0.6484
+ 694150   694187                     0.7091
+
+ 695422   695508  direct       fr 1  0.4584
+ 695456   695495                     0.7523
+
+ 696179   696246  direct       fr 2  0.7824
+ 696185   696231                     0.9374
+
+ 696673   696724  direct       fr 2  0.7238
+ 696683   696720                     0.8696
+
+ 696816   696865  complement   fr 2  0.7683
+ 696824   696852                     0.9215
+
+ 696877   696943  complement   fr 3  0.6067
+
+ 698768   698834  complement   fr 3  0.7815
+ 698779   698815                     0.8670
+
+ 699071   699187  direct       fr 2  0.5370
+ 699083   699165                     0.6396
+
+ 699356   699402  complement   fr 2  0.7418
+ 699368   699396                     0.9831
+
+ 699460   699554  complement   fr 3  0.7595
+ 699484   699554                     0.8672
+
+ 699598   699707  direct       fr 2  0.4312
+ 699609   699684                     0.4754
+
+ 700358   700451  complement   fr 2  0.8503
+ 700364   700419                     0.8884
+
+ 700536   700752  complement   fr 2  0.5361
+ 700544   700701                     0.6145
+
+ 701171   701213  direct       fr 1  0.6391
+ 701177   701206                     0.8486
+
+ 701207   701262  complement   fr 2  0.4149
+
+ 701337   701419  complement   fr 1  0.5264
+ 701362   701410                     0.6652
+
+ 701635   701721  direct       fr 1  0.6396
+ 701646   701675                     0.9284
+
+ 701690   701751  complement   fr 3  0.5875
+ 701702   701749                     0.6986
+
+ 701705   701751  complement   fr 3  0.7337
+
+ 701775   701872  complement   fr 2  0.7358
+ 701802   701854                     0.7145
+
+ 701881   701991  complement   fr 3  0.7036
+ 701901   701986                     0.8659
+
+ 702149   702349  direct       fr 1  0.2331
+ 702191   702344                     0.2786
+
+ 702224   702349  direct       fr 1  0.3039
+ 702259   702344                     0.2836
+
+ 702255   702340  complement   fr 3  0.6631
+ 702262   702317                     0.6106
+
+ 702259   702349  direct       fr 1  0.2884
+ 702280   702344                     0.2557
+
+ 702291   702340  complement   fr 3  0.7701
+
+ 702484   702671  complement   fr 2  0.5411
+ 702501   702660                     0.5753
+
+ 702985   703108  complement   fr 1  0.7832
+ 703002   703101                     0.8541
+
+ 703121   703155  direct       fr 3  0.8510
+
+ 709780   709817  complement   fr 3  0.7754
+
+ 710283   710349  complement   fr 2  0.7459
+ 710292   710331                     0.8016
+
+ 710676   710786  direct       fr 1  0.6420
+ 710680   710759                     0.7805
+
+ 710700   710786  direct       fr 1  0.6783
+ 710717   710759                     0.9907
+
+ 711086   711159  complement   fr 3  0.6726
+ 711092   711141                     0.7671
+
+ 711227   711300  complement   fr 1  0.4784
+
+ 711387   711473  complement   fr 1  0.9719
+ 711387   711448                     0.9745
+
+ 711602   711649  complement   fr 1  0.6136
+
+ 712696   712821  direct       fr 3  0.3438
+ 712728   712777                     0.5275
+
+ 712919   712961  direct       fr 1  0.4131
+
+ 713206   713284  direct       fr 1  0.6949
+ 713236   713261                     0.8752
+
+ 713873   713981  complement   fr 2  0.6129
+
+ 714051   714111  direct       fr 3  0.5353
+
+ 714226   714321  complement   fr 3  0.7092
+ 714274   714304                     0.9238
+
+ 714602   714664  complement   fr 2  0.4623
+
+ 714885   714938  direct       fr 3  0.5242
+ 714894   714921                     0.7126
+
+ 715211   715348  complement   fr 1  0.7036
+ 715231   715316                     0.8911
+
+ 715527   715585  direct       fr 3  0.5102
+
+ 716256   716333  complement   fr 2  0.7974
+ 716261   716317                     0.9586
+
+ 716630   716680  complement   fr 3  0.6517
+
+ 716749   716793  direct       fr 1  0.7383
+
+ 717249   717344  complement   fr 2  0.5721
+ 717260   717318                     0.6197
+
+ 717390   717537  complement   fr 3  0.8239
+ 717433   717495                     0.9592
+
+ 717531   717709  complement   fr 2  0.7120
+ 717536   717709                     0.7120
+
+ 717780   717823  complement   fr 3  0.6184
+
+ 717953   718086  direct       fr 3  0.3921
+ 717953   718056                     0.3941
+
+ 718384   718613  complement   fr 2  0.5218
+ 718384   718529                     0.3849
+
+ 718406   718488  complement   fr 3  0.4964
+
+ 718487   718613  complement   fr 2  0.7386
+
+ 718929   718998  complement   fr 2  0.6687
+ 718946   718977                     0.6584
+
+ 718988   719040  direct       fr 1  0.7070
+
+ 719030   719122  complement   fr 1  0.5059
+ 719048   719108                     0.6893
+
+ 719225   719344  complement   fr 1  0.1723
+ 719241   719324                     0.1352
+
+ 719269   719317  direct       fr 1  0.6567
+ 719285   719308                     0.8551
+
+ 719392   719489  direct       fr 3  0.5022
+ 719419   719481                     0.6888
+
+ 719465   719635  complement   fr 1  0.6648
+ 719476   719614                     0.7002
+
+ 719490   719635  complement   fr 1  0.7108
+ 719513   719614                     0.7718
+
+ 719805   719868  complement   fr 2  0.4793
+
+ 719853   719975  complement   fr 1  0.8079
+ 719866   719940                     0.8745
+
+ 720228   720317  direct       fr 1  0.5228
+ 720239   720303                     0.6616
+
+ 720288   720490  complement   fr 3  0.5901
+ 720295   720469                     0.5967
+
+ 720313   720490  complement   fr 3  0.6170
+ 720330   720469                     0.6067
+
+ 720618   720845  complement   fr 2  0.6792
+ 720630   720797                     0.7045
+
+ 721155   721219  direct       fr 3  0.6097
+ 721175   721210                     0.5848
+
+ 721389   721484  complement   fr 2  0.5221
+ 721428   721456                     0.5654
+
+ 721475   721544  complement   fr 1  0.4794
+ 721490   721535                     0.5413
+
+ 721467   721567  direct       fr 2  0.2727
+
+ 721679   721766  direct       fr 2  0.2142
+
+ 721793   721970  complement   fr 1  0.6976
+ 721824   721921                     0.9029
+
+ 722186   722272  direct       fr 2  0.2844
+ 722223   722261                     0.4604
+
+ 725531   725582  complement   fr 3  0.4597
+ 725540   725582                     0.4623
+
+ 725730   725814  complement   fr 2  0.4829
+
+ 728485   728569  direct       fr 3  0.3600
+ 728518   728553                     0.4094
+
+ 730922   730958  complement   fr 2  0.7021
+
+ 731092   731281  complement   fr 2  0.6028
+ 731092   731245                     0.6716
+
+ 731265   731360  complement   fr 1  0.7238
+ 731285   731345                     0.7896
+
+ 731367   731474  complement   fr 2  0.8988
+ 731374   731472                     0.8988
+
+ 732176   732221  complement   fr 1  0.6591
+
+ 733551   733590  direct       fr 3  0.3701
+ 733556   733583                     0.4520
+
+ 734183   734377  complement   fr 1  0.5429
+ 734221   734316                     0.8049
+
+ 735023   735201  complement   fr 2  0.6959
+ 735034   735180                     0.7348
+
+ 735445   735857  complement   fr 2  0.4878
+ 735467   735793                     0.4800
+
+ 735588   735857  complement   fr 2  0.5322
+ 735611   735793                     0.5151
+
+ 735904   736085  complement   fr 1  0.4442
+ 735934   736037                     0.3939
+
+ 736224   736472  complement   fr 1  0.7222
+ 736231   736420                     0.8201
+
+ 736553   736836  complement   fr 1  0.3370
+ 736600   736778                     0.3647
+
+ 736758   736892  complement   fr 2  0.5958
+ 736778   736874                     0.6102
+
+ 736823   736892  complement   fr 2  0.6138
+ 736845   736874                     0.7379
+
+ 736936   737047  complement   fr 1  0.6964
+ 736967   737006                     0.8704
+
+ 738557   738651  complement   fr 3  0.4796
+ 738585   738622                     0.6941
+
+ 738865   738914  direct       fr 1  0.7457
+ 738880   738908                     0.8887
+
+ 739264   739330  complement   fr 3  0.7241
+ 739280   739309                     0.9148
+
+ 739296   739370  complement   fr 1  0.2794
+
+ 739381   739450  direct       fr 3  0.7419
+ 739390   739438                     0.8446
+
+ 739756   739857  direct       fr 3  0.9182
+ 739772   739840                     0.9568
+
+ 739857   739905  complement   fr 1  0.6125
+
+ 740068   740320  direct       fr 2  0.6257
+ 740068   740315                     0.6321
+
+ 740533   740616  direct       fr 1  0.4770
+ 740549   740586                     0.4632
+
+ 741324   741373  direct       fr 2  0.6803
+
+ 744278   744336  direct       fr 1  0.5361
+
+ 745324   745537  direct       fr 1  0.5091
+ 745340   745525                     0.5078
+
+ 745670   745761  direct       fr 1  0.7466
+ 745705   745736                     0.9367
+
+ 745884   745956  direct       fr 2  0.5370
+ 745917   745942                     0.8057
+
+ 745955   746002  complement   fr 1  0.4104
+
+ 746526   746590  direct       fr 3  0.6737
+ 746539   746567                     0.7416
+
+ 747229   747324  direct       fr 3  0.5333
+ 747246   747282                     0.9043
+
+ 747378   747458  complement   fr 1  0.5245
+
+ 747593   747780  direct       fr 1  0.4740
+ 747627   747722                     0.6493
+
+ 747775   748001  direct       fr 3  0.7732
+ 747808   747985                     0.8239
+
+ 748120   748168  direct       fr 3  0.3463
+
+ 748167   748235  complement   fr 2  0.7591
+
+ 748824   748898  direct       fr 1  0.6328
+ 748838   748895                     0.6551
+
+ 748854   748898  direct       fr 1  0.6891
+ 748864   748895                     0.7856
+
+ 749001   749147  direct       fr 1  0.3657
+ 749023   749110                     0.3241
+
+ 749462   749552  direct       fr 1  0.6914
+ 749465   749516                     0.8020
+
+ 749724   749803  direct       fr 1  0.5179
+
+ 750347   750410  direct       fr 3  0.4787
+ 750366   750410                     0.5525
+
+
+
+--------------------
+ABOUT THE MATRIX USED:
+
+Date: March 6, 2003

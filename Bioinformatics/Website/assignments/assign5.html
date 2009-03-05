@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>
+			Duane's Bioinformatics Website — Assignment 5
+		</title>
+		<meta name="author" content="Duane Johnson"><!-- Date:  -->
+		<link rel="stylesheet" href="../default.css" type="text/css" charset="utf-8">
+		<link rel="stylesheet" href="../mac_classic_code.css" type="text/css" charset="utf-8">
+		<style type="text/css" media="screen">
+p { font-weight: bold; }
+		</style>
+	</head>
+	<body>
+		<div id="header">
+			<div id="logo"></div>
+			<div id="green-line"></div>
+			<div id="title">
+				“Duane's Bioinformatics Website—Assignment 5”
+			</div>
+			<div id="back-to-home">
+				<a href="../">‹ Back to Home</a>
+			</div>
+		</div>
+		<div id="container">
+			<div class="code">
+				<h1>
+					Assignment 5
+				</h1>
+				<ol>
+					<li>What E-Values returned by BLAST suggest an evolutionary relationship? (10, 0.1, 0.01, 0.001, ...) (page 43)
+						<p>0.01 is the threshold suggested by Dr. Orengo</p>
+					</li>
+					<li>What are the differences between PAM and BLOSUM matrices?
+						<p>PAM matrices use a little more guesswork in that some "mutations" from protein to protein have not necessarily been observed, but the likelihood is exptrapolated from similar protein transformations.  BLOSUM, on the other hand, uses only observed alignments.</p>
+					</li>
+					<li>You observe a region of DNA with the following Amino Acids: WYKHRFX. Using Figure 4.3, what could you observe about the chemical properties of this region?
+						<p>The region is comparatively hydrophobic, aromatic, positively charged, and polar.</p>
+					</li>
+					<li>The CATH database contains classifications of proteins according to their structure. Blast the <a href="http://www.cathdb.info/domain/1oaiA00">1oaiA00 domain</a> against the CATH database to find other structures with similar sequences. How similar are the structures found with this blast to the original 1oaiA00 domain?
+						<p>CATH finds 10 other proteins with an aligned subsequence length = 40; it appears that many of these other proteins use 1oaiA00 as a sub-structure.  For example, 1eq2I01 has a very similar secondary structure.  Overall the "% identity" match is 30% for each of the 10 proteins found.</p>
+					</li>
+					<li>Look up the <a href="http://pfam.sanger.ac.uk/family?acc=PF00870">p53 DNA-binding domain</a> entry in PFAM. Click on the "227 sequences" glyph at the top of the page. Use Jalview to view the alignment of the seed members of the family. How similar are the sequences in this family? What percentage of the columns have identical amino acids for all 7 species in the seed?
+						<p>It looks like about half the columns have identical amino acids; higher if you let just one or two rows have an alternative residue.</p>
+					</li>
+				</ol>
+				<div style="clear:both; margin-bottom:5em"></div>
+			</div>
+		</div>
+		<div id="footer">
+			<span class="footer-info">© 2009 Duane Johnson</span> <span class="footer-info"><a href="http://blog.inquirylabs.com/about">Contact</a> <span class="sep">|</span> <a href="http://blog.inquirylabs.com/">Blog</a></span>
+		</div>
+	</body>
+</html>

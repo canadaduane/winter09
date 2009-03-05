@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Duane's Bioinformatics Website &mdash; Assignment 3</title>
+	<meta name="author" content="Duane Johnson">
+	<!-- Date:  -->
+	<link rel="stylesheet" href="../default.css" type="text/css" charset="utf-8">
+	<link rel="stylesheet" href="../mac_classic_code.css" type="text/css" charset="utf-8">
+	<style type="text/css" media="screen">
+		p { font-weight: bold; }
+	</style>
+</head>
+<body>
+	<div id="header">
+		<div id="logo"></div>
+		<div id="green-line"></div>
+		<div id="title">&#8220;Duane's Bioinformatics Website&mdash;Assignment 3&#8221;</div>
+		<div id="back-to-home"><a href="../">&lsaquo; Back to Home</a></div>
+	</div>
+	<div id="container">
+		<div class="code">
+			<h1>Assignment 3</h1>
+			<ol>
+				<li>What is a Markov Process?
+					<p>A process that can be modeled without any history, i.e. the current state leads directly to the next state without knowledge of past states.</p>
+				</li>
+				<li>Why do CpG islands appear in promoter regions?
+					<p>The sequence of several hundred (mostly) C-G nucleotides is uncommon as far as exon information goes, and it therefore can act as a flag for polymerase binding to occur.  Because cytosine (C) can methylate over evolutionary time into thymine (T), only those "islands" with selective pressure will maintain long sequences of C-Gs.</p>
+				</li>
+				<li>Lets look up some genomic dna.
+					<ol>
+						<li>Go to the genome browser at <a href="http://genome.ucsc.edu">UCSC</a>.
+						</li>
+						<li>Enter the genome browser in the upper left corner (<a href="http://genome.ucsc.edu/cgi-bin/hgGateway">Try this if you cant find it</a>).
+						</li>
+						<li>Look up the dyrk1a gene on chromosome 21. You can enter it in the "position or search term" window (<a href="http://genome.ucsc.edu/cgi-bin/hgTracks?position=chr21:37714471-37809549&amp;hgsid=120437204&amp;knownGene=pack&amp;hgFind.matches=uc002ywm.1,">Try this if you are desperate</a>)
+						</li>
+						<li>Zoom out 10x so you can see other genes.
+						</li>
+						<li>In the regulation section at the bottom, turn on CPG Islands.
+						</li>
+						<li>Which genes near Dyrk1a have CpG islands near the promoter regions?
+							<p>DSCR6, PIGP, TTC3, DSCR3</p>
+						</li>
+						<li>Select one of the CpG islands. <b>How are CpG islands calculated in this application?</b>
+							<p>"GC content of 50% or greater, length greater than 200 bp, ratio greater than 0.6 of observed number of CG dinucleotides"</p>
+						</li>
+						<li>Now grab this region (chr21:37,378,147-38,195,427) by selecting the "DNA" tab at the top of the window. Unselect the repeat mask and "get dna".
+						</li>
+						<li>Copy the dna to your clipboard for use in another CPG island predictor. (if you got lost, you can use <a href="Assignments/A3dna.txt">this data</a>
+						</li>
+						<li>Look for CpG islands using an application you find with google on the web (you can find a few at the bottom of the Lab page if you get desperate). <b>What observations do you have?</b>
+							<p>The UCSC site yielded 6 CpG island results, whereas the <a href="http://www.ebi.ac.uk/Tools/emboss/cpgplot/index.html">EMBOSS CpGPlot</a> site produced 19 using its default parameters.  Strangely, I used nearly the exact same "parameters" in both cases, so it's interesting that the underlying algorithms differ significantly.</p>
+						</li>
+					</ol>
+				</li>
+				<li>Is the DNA in each of your cells identical? Or are there some cells that manipulate their DNA?
+					<p>Life is amazing!  "If it can happen, it will happen".  As it turns out, some cells--cells belonging to the human immune system, for example--rearrange their own DNA to accomplish their goals.  Some bacteria also regulate genes by transposing certain DNA segments.</p>
+				</li>
+				<li>Name 3 ways of performing gene expression regulation.
+					<p>Activator proteins (bind to DNA sites and possibly bend the DNA in such a way that the DNA polymerase is better able to access the nearby promoter region), inhibitor proteins (i.e. that block promoter regions), and DNA rearrangement as mentioned above in the immune system.</p>
+				</li>
+				<li>What is an operon?
+					<p>An operon is a multi-gene mRNA segment that is encoded as a group.  Consequently, promoter regions affect gene expression equally among those genes in the operon.</p>
+				</li>
+				<li>Explain the regulation of beta-galactosidase in E coli.
+					<p>Sure!  It's quite neat.  Basically, beta-gal is necessary for the breakdown and usage of energy from lactose.  A small amount of lactose permease is usually hanging around, and allows a very small amount of lactose into the cell, if lactose is present.  Lactose, it turns out, binds to a protein that normally blocks the promoter site near the gene that encodes beta-gal.  When the lactose binds to that protein, it often breaks loose from the promoter region of the DNA, thus allowing DNA polymerase to begin coding mRNA for the beta-gal (as well as more lactose permease).  Consequently, more lactose is allowed in to the cell, and the cell is able to use the lactose due to the prolification of beta-gal.</p>
+				</li>
+			</ol>
+			
+			</ul>
+			
+			<div style="clear:both; margin-bottom:5em"></div>
+		</div>
+	</div>
+	<div id="footer">
+		<span class="footer-info">&copy; 2009 Duane Johnson</span>
+		<span class="footer-info">
+			<a href="http://blog.inquirylabs.com/about">Contact</a>
+			<span class="sep">|</span>
+			<a href="http://blog.inquirylabs.com/">Blog</a>
+		</span>
+	</div>
+</body>
+</html>

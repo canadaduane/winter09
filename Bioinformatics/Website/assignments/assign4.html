@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>
+			Duane's Bioinformatics Website — Assignment 4
+		</title>
+		<meta name="author" content="Duane Johnson"><!-- Date:  -->
+		<link rel="stylesheet" href="../default.css" type="text/css" charset="utf-8">
+		<link rel="stylesheet" href="../mac_classic_code.css" type="text/css" charset="utf-8">
+		<style type="text/css" media="screen">
+		p { font-weight: bold; }
+		</style>
+	</head>
+	<body>
+		<div id="header">
+			<div id="logo"></div>
+			<div id="green-line"></div>
+			<div id="title">
+				“Duane's Bioinformatics Website—Assignment 4”
+			</div>
+			<div id="back-to-home">
+				<a href="../">‹ Back to Home</a>
+			</div>
+		</div>
+		<div id="container">
+			<div class="code">
+				<h1>
+					Assignment 4
+				</h1>
+				<ol>
+					<li>Describe the backward algorithm. What is the meaning of β<sub>t</sub>(i) (see <a href="http://dna.cs.byu.edu/bio465/slides/hmm.ppt">slides</a>)?
+						<p>The path that was taken to find the product of the highest probabilities during the forward algorithm.</p>
+					</li>
+					<li>Describe the forward algorithm. What is the meaning of α<sub>t</sub>(i)?
+						<p>The probability, at each step along the string of inputs, that one of the states was reached.</p>
+					</li>
+					<li>How does the Baum-Welch algorithm estimate parameters?
+						<p>It estimates parameters by feeding its output back into the input parameters until (hopefully) the parameters converge on some values.</p>
+					</li>
+					<li>Use <a href="http://opal.biology.gatech.edu/GeneMark/">Genemark</a> to predict genes in data you obtain from the <a href="http://genome.ucsc.edu/">UCSC genome browser</a>. Include the results and comment on what you find out.
+						<p>Wow, I sure don't know how to use this.  But here is what I did: I went to UCSC and searched for the Y chromosome.  I narrowed the results to a sequence within the Y chromosome: chrY:22407149-23158651.  Next, I clicked the "DNA" link on the top of the page and copied/pasted this sequence to GeneMark.  I checked several boxes of additional info (e.g. "Translate predicted genes into protein", and "Generate PDF").  Finally, I had the results emailed to me, and <a href="genemark.txt">this (very long) result</a> was given.  I'm not sure what to do with these "regions of interest".</p>
+					</li>
+					<li>What are restriction enzymes? Why do bacteria have restriction enzymes?
+						<p>Restriction enzymes are DNA cutters that recognize certain sequences and cut the DNA at that point.  Bacteria have these enzymes as a defense mechanism against intruding viral DNA.</p>
+					</li>
+					<li>How many copies of "GAATTC" would you expect to find in the human genome?
+						<p>I'll make an educated guess here.  A 6 nucleotide sequence has a 1 in 4<sup>6</sup> = 4096 chance of existing in a random sequence.  Divide 3 GB by 4096 and get approximately 700k occurrences of approximately 4000 in length.</p>
+					</li>
+					<li>How big would the chunks of DNA be that were cut with this enzyme?
+						<p>See above.</p>
+					</li>
+					<li>What about "GATC"?
+						<p>4<sup>4</sup> yields 256, which would potentially produce 3 GB / 256 = 11.7 million sequences of about 250 base pairs each.</p>
+					</li>
+					<li>What are episomes and how are they used to replicate human DNA?
+						<p>Episomes are sequences of circular DNA that are not core to the function of a bacteria.  They can be snipped open so that "sticky" ends are revealed where they will match prepared complementary human DNA strands, and then ligated together.  Once this foreign DNA has been introduced, the episomes will perform their replicative roles and often generate proteins as expected.</p>
+					</li>
+					<li>Is it possible for bacteria to evolve pennicilin resistance during the last 50 years? How do you explain the development of MRSA?
+						<p>Yes, by selecting for bacteria that have developed resistant mutation, we encourage the further growth of these strains.  MRSA is one example of such a strain (or strains).</p>
+					</li>
+				</ol>
+				<div style="clear:both; margin-bottom:5em"></div>
+			</div>
+		</div>
+		<div id="footer">
+			<span class="footer-info">© 2009 Duane Johnson</span> <span class="footer-info"><a href="http://blog.inquirylabs.com/about">Contact</a> <span class="sep">|</span> <a href="http://blog.inquirylabs.com/">Blog</a></span>
+		</div>
+	</body>
+</html>

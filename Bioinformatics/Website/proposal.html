@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Duane's Bioinformatics Website &mdash; Project Proposal</title>
+	<meta name="author" content="Duane Johnson">
+	<!-- Date:  -->
+	<link rel="stylesheet" href="../default.css" type="text/css" charset="utf-8">
+	<link rel="stylesheet" href="../mac_classic_code.css" type="text/css" charset="utf-8">
+	<style type="text/css" media="screen">
+		p { font-weight: bold; }
+	</style>
+</head>
+<body>
+	<div id="header">
+		<div id="logo"></div>
+		<div id="green-line"></div>
+		<div id="title">&#8220;Duane's Bioinformatics Website&mdash;Project Proposal&#8221;</div>
+		<div id="back-to-home"><a href="../">&lsaquo; Back to Home</a></div>
+	</div>
+	<div id="container">
+		<div class="code">
+			<h2>Project Proposal</h2>
+			
+			<h3>Introduction</h3>
+
+			<p>Biologists have best approximated the relationship between species by using the classic tree structure to make sense of the great diversity of life.  Recently, noted biologists such as Tal Dagan and William Martin have questioned certain assumptions about this classification system given that we now understand more about lateral gene transfer and endosymbiosis <a href="#onepercent">[1]</a>.  To the degree that this lateral gene transfer occurs, the classical tree transforms into a web.</p>
+
+			<p>In order to shed more light on this phenomenon, I propose to use a recently published algorithm <a href="#kempt08">[2]</a> by Charles Kemp at Carnegie Mellon University wherein relationship data can be analyzed and a "most likely form (or structure)" produced to fit the data. Kemp calls this "the discovery of structural form".</p>
+
+			<p>For example, suppose we have 10 bacteria with varying but similar genes.  If the similarities are noted in a two-dimensional matrix and the matrix is then fed into Kemp's algorithm, it is possible for this algorithm to make a probabilistic prediction that matches a form such as a tree, cluster, sequence, or grid to the data.  Once a form has been chosen, the 10 bacteria can then be arranged so that they fit into the discovered form.  Using Kemp's terminology, a <em>structure</em> emerges once the form has been chosen and the data can be fit to it.</p>
+
+			<h3>Collaboration</h3>
+
+			<p>For his honors thesis, classmate Daniel Standage has created a <a href="http://psoda4.cs.byu.edu/~byuhobbes/project/">web application</a> that uses phylogenetic profiling to distinguish genetic similarities.  He describes the application as follows:</p>
+
+			<blockquote>
+				PhyloProf uses phylogenetic profile analysis to compare genes. As opposed to sequence-based methods, phylogenetic profile analysis compares genes according to their distribution (presence or absence) across a set of genomes. Genes involved in related structural complexes or biochemical pathways tend to evolve together, and will thus have identical or similar phylogenetic profiles. Pellegrini et al. (1999) demonstrated that genes with similar phylogenetic profiles have a strong tendency to be functionally linked.
+			</blockquote>
+
+			<p>The data produced by PhyloProf is precisely the kind of data that can be used as input to Kemp's algorithm.  Thus, if there is a significant amount of lateral gene transfer occuring in the prokaryotes Daniel has studied, the algorithm will likely classify the "phylogeny" as something other than a tree.  Alternatively, if there is little or no LGT, the algorithm will confirm that a tree is the best form.  Because prediction of gene function is possible through finding phylogenetic similarity, either conclusion will be helpful in making more accurate predictions.</p>
+
+			<p>This addition to Daniel's application will be a separate component that does not directly affect the overall application.  Once complete, users will be able to filter their search results through the algorithm to see if their structural assumptions can be verified.</p>
+
+			<h3>Milestones</h3>
+
+			<ul>
+				<li>Separate Kemp's discovery algorithm from his "generation of forms" content.</li>
+				<li>Map out the basic data structures and mathematical constructs of the algorithm.</li>
+				<li>Gather sample data from Daniel's collection of bacterial genomes, and possibly others.</li>
+				<li>Choose an implementation language (c++, python, haskell?) and implement the algorithm.</li>
+				<li>Integrate the algorithm into Daniel's web application.</li>
+			</ul>
+
+			<h3>Footnotes &amp; Related Work</h3>
+
+			<ol>
+				<li id="onepercent"><a href="http://genomebiology.com/2006/7/10/118">Dagan et al. The Tree of One Percent</a></li>
+				<li id="kempt08"><a href="http://www.psy.cmu.edu/~ckemp/papers/kempt08.pdf">Kemp et al. The Discovery of Structural Form</a>, and <a href="http://www.pnas.org/content/suppl/2008/07/31/0802631105.DCSupplemental/Appendix_PDF.pdf">Appendix</a></li>
+			</ol>
+
+			<p>From <em>The Tree of One Percent</em>:</p>
+
+			<blockquote>
+				Evolutionary biologists like to think in terms of trees. Since Darwin, biologists have envisaged phylogeny as a tree-like process of lineage splittings. But Darwin was not concerned with the evolution of microbes, where lateral gene transfer (LGT; a distinctly non-treelike process) is an important mechanism of natural variation, as prokaryotic genome sequences attest [1-4]. Evolutionary biologists are not debating whether LGT exists. But they are debating - and heatedly so - how much LGT actually goes on in evolution. Recent estimates of the proportion of prokaryotic genes that have been affected by LGT differ 30-fold, ranging from 2% [5] to 60% [6]. 
+			</blockquote>
+			
+			<div style="clear:both; margin-bottom:5em"></div>
+		</div>
+	</div>
+	<div id="footer">
+		<span class="footer-info">&copy; 2008 Duane Johnson</span>
+		<span class="footer-info">
+			<a href="http://blog.inquirylabs.com/about">Contact</a>
+			<span class="sep">|</span>
+			<a href="http://blog.inquirylabs.com/">Blog</a>
+		</span>
+	</div>
+</body>
+</html>
