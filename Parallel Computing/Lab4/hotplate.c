@@ -12,6 +12,7 @@ Hotplate* hp_initialize(int w, int h)
     assert(self != NULL);
     self->width = w;
     self->height = h;
+    self->steady_state = FALSE;
     
     /* Allocate matrix 1 */
     self->matrix_data1 = malloc(sizeof(float) * w * h);
@@ -74,7 +75,7 @@ void hp_slice_heat(Hotplate* self)
     if (end_y   >= self->height - 1)
         end_y = self->height - 1;
     
-    printf("[%d] heat: %d to %d\n", self->iproc, start_y, end_y);
+    // printf("[%d] heat: %d to %d\n", self->iproc, start_y, end_y);
     for (y = start_y; y < end_y; y++)
     {
         for (x = 1; x < self->width - 1; x++)

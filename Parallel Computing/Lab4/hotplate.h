@@ -10,7 +10,7 @@
 
 typedef struct HOT_PLATE_STRUCT
 {
-    int steady_state = FALSE;
+    int steady_state;
     /* Each process needs to know its ID */
     int iproc;
     int nproc;

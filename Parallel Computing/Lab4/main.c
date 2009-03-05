@@ -51,8 +51,9 @@ int main(int argc, char *argv[])
         hp_etch_hotspots(plate);
         hp_copy_to_source(plate);
         
-        int processes_done = 0;
-        while (processes_done < nproc)
+        int done = FALSE;
+        int recv_done;
+        while (!done)
         {
             // fprintf(stderr, "[%d] Node: %d\n", iter, iproc);
             
@@ -73,16 +74,16 @@ int main(int argc, char *argv[])
             hp_slice_heat(plate);
             hp_etch_hotspots(plate);
             
-            if (hp_is_steady_state(plate)) {
-                processes_done++;
-                printf("%d reached steady state (%d)\n", iproc, iter);
-            }
-            // if (iproc == 0)
-                // hp_dump(plate, TRUE, 10, 10);
-
-            hp_swap(plate);
+            done = hp_is_steady_state(plate);
+            MPI_Allreduce (&done, &recv_done, 1, MPI_INT, MPI_LAND, MPI_COMM_WORLD);
+            done = recv_done;
             
-            iter++;
+            if (done)
+                printf("%d reached steady state (%d)\n", iproc, iter);
+            else
+                iter++;
+            
+            hp_swap(plate);
         }
         
         hp_destroy(plate);
