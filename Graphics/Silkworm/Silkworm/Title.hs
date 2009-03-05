@@ -1,5 +1,7 @@
 module Silkworm.Title where
   
+  import System.Directory (getCurrentDirectory)
+  import System.Exit (ExitCode(..), exitWith)
   import Control.Monad (forM, forM_)
   import qualified Data.Map as Map
   import Data.IORef (IORef, newIORef)
@@ -14,6 +16,9 @@ module Silkworm.Title where
     Color3(..), color,
     preservingMatrix)
   import Graphics.Rendering.OpenGL.GL.StateVar (get)
+  import Graphics.Rendering.FTGL (
+    RenderMode(..), Font, createTextureFont, createPolygonFont,
+    setFontFaceSize, renderFont, getFontError)
   import Silkworm.WindowHelper (getPressedKeys, keyIsPressed)
   import Silkworm.ImageHelper (loadTexture, renderTexture)
   
@@ -27,7 +32,8 @@ module Silkworm.Title where
   }
   
   data TitleState = TitleState {
-    tsObjects :: [TitleObject]
+    tsObjects :: [TitleObject],
+    tsFont    :: Font
   }
   
   -- | Return a TitleState object set to reasonable initial values
@@ -36,11 +42,14 @@ module Silkworm.Title where
     -- bgImage <- readImage "background.png"
     -- let objs = [TitleObject (0, 0) [] 0.0 bgImage]
     let objs = []
-    return (TitleState objs)
+    font <- createPolygonFont "scribbled.ttf"
+    -- putStrLn (show $ getFontError font)
+    -- exitWith (ExitFailure (-1))
+    return (TitleState objs font)
   
   showTitleScreen :: IO ()
   showTitleScreen = do
-    loadTextures
+    loadResources
     state <- newTitleState
     titleScreenLoop state
   
@@ -53,8 +62,8 @@ module Silkworm.Title where
       else titleScreenLoop state
   
   -- | Load title screen textures into OpenGL buffers
-  loadTextures :: IO ()
-  loadTextures = do
+  loadResources :: IO ()
+  loadResources = do
     loadTexture "background.png" 0
     return ()
     
@@ -74,11 +83,16 @@ module Silkworm.Title where
     --   
     renderTexture 0 (-400) (-300) 800 600
     
-    scale 3.75 3.75 (1.0 :: GLfloat)
-    let render str = do
-          translate (Vector3 0.0 (-16) (0.0 :: GLfloat))
-          renderString Fixed8x16 str
+    -- let font = (tsFont state)
+    font <- createTextureFont "shrewsbury.ttf"
+    setFontFaceSize font 72 72
+    renderFont font "Silkworm!" All
     
-    color $ Color3 1.0 1.0 (1.0 :: GLfloat)
-    render "Silkworm!"
+    -- scale 3.75 3.75 (1.0 :: GLfloat)
+    -- let render str = do
+    --       translate (Vector3 0.0 (-16) (0.0 :: GLfloat))
+    --       renderString Fixed8x16 str
+    -- 
+    -- color $ Color3 1.0 1.0 (1.0 :: GLfloat)
+    -- render "Silkworm!"
     

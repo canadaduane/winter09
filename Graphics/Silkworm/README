@@ -13,6 +13,9 @@ Copyright (C) 2009 Duane Johnson
 
     - OpenGL
         Standardized 3D graphics library
+    - FTGL 2.1.3
+        Font-loading library for OpenGL
+        (NOTE: As of this writing (Mar 4, 2009) the FTGL library in MacPorts is version 2.1.2 and therefore will not work. Visit http://ftgl.wiki.sourceforge.net/ and download 2.1.3 and compile yourself.)
     
   Install the following Cabal packages for Haskell:
     
@@ -28,6 +31,9 @@ Copyright (C) 2009 Duane Johnson
     - GLFW-0.3
         Cross-platform native window library
         (cabal install glfw)
+    - FTGL-1.1
+        Bindings for external FTGL library
+        (cabal install ftgl)
 
 == Compiling:
 
