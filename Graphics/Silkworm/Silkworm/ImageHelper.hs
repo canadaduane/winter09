@@ -28,6 +28,7 @@ module Silkworm.ImageHelper (loadTexture, renderTexture) where
   renderTexture tId x y w h = do
     texture Texture2D $= Enabled
     textureBinding Texture2D $= Just (TextureObject tId)
+    color $ Color3 1.0 1.0 (1.0 :: GLfloat)
     renderPrimitive Quads $ do texCoord (TexCoord2 0 (0::GLfloat))
                                vertex (Vertex2 x y)
                                texCoord (TexCoord2 1 (0::GLfloat))

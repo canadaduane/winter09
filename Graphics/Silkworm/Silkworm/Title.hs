@@ -5,6 +5,7 @@ module Silkworm.Title where
   import Control.Monad (forM, forM_)
   import qualified Data.Map as Map
   import Data.IORef (IORef, newIORef)
+  import Data.Array.IArray as Array
   import Graphics.UI.GLFW (
     Key(..), SpecialKey(..),
     BitmapFont(..), renderString,
@@ -13,7 +14,9 @@ module Silkworm.Title where
     GLint, GLfloat,
     ClearBuffer(..), clear,
     Vector3(..), scale, translate, rotate,
+    Vertex3(..), vertex,
     Color3(..), color,
+    PrimitiveMode(..), renderPrimitive,
     preservingMatrix)
   import Graphics.Rendering.OpenGL.GL.StateVar (get)
   import Graphics.Rendering.FTGL (
@@ -21,6 +24,7 @@ module Silkworm.Title where
     setFontFaceSize, renderFont, getFontError)
   import Silkworm.WindowHelper (getPressedKeys, keyIsPressed)
   import Silkworm.ImageHelper (loadTexture, renderTexture)
+  import Silkworm.LevelGenerator (rasterizeLines)
   
   type KeyMap = Map.Map Key Bool
   
@@ -36,6 +40,16 @@ module Silkworm.Title where
     tsFont    :: Font
   }
   
+  testTunnel = rasterizeLines [((50,50), (100,130)), ((0,100), (200,100))] ((0, 0), (200, 200)) 20.0
+  
+  drawTunnel :: Array.Array (Int, Int) Float -> (Int, Int) -> IO ()
+  drawTunnel t (px, py) = preservingMatrix $ do
+    translate (Vector3 (-100) (-100) (0.0 :: GLfloat))
+    let point = renderPrimitive Points . vertex in
+      forM_ (Array.assocs t) $ \((x, y), d) -> do
+        color $ Color3 (d / 20) 0.0 (0.0 :: GLfloat)
+        point $ Vertex3 (fromIntegral (x + px)) (fromIntegral (y + py)) (0.0 :: GLfloat)
+    
   -- | Return a TitleState object set to reasonable initial values
   newTitleState :: IO TitleState
   newTitleState = do
@@ -83,10 +97,11 @@ module Silkworm.Title where
     --   
     renderTexture 0 (-400) (-300) 800 600
     
+    drawTunnel testTunnel (40, 40)
     -- let font = (tsFont state)
-    font <- createTextureFont "shrewsbury.ttf"
-    setFontFaceSize font 72 72
-    renderFont font "Silkworm!" All
+    -- font <- createTextureFont "shrewsbury.ttf"
+    -- setFontFaceSize font 72 72
+    -- renderFont font "Silkworm!" All
     
     -- scale 3.75 3.75 (1.0 :: GLfloat)
     -- let render str = do
