@@ -1,5 +1,6 @@
 module Silkworm.Title where
   
+  import System.Random (newStdGen, split)
   import System.Directory (getCurrentDirectory)
   import System.Exit (ExitCode(..), exitWith)
   import Control.Monad (forM, forM_)
@@ -24,7 +25,10 @@ module Silkworm.Title where
     setFontFaceSize, renderFont, getFontError)
   import Silkworm.WindowHelper (getPressedKeys, keyIsPressed)
   import Silkworm.ImageHelper (loadTexture, renderTexture)
-  import Silkworm.LevelGenerator (rasterizeLines)
+  import Silkworm.LevelGenerator (
+    rasterizeLines, randomBumpyRaster,
+    (#+), (#-), (#*),
+    (#+#), (#-#), (#*#))
   
   type KeyMap = Map.Map Key Bool
   
@@ -40,15 +44,16 @@ module Silkworm.Title where
     tsFont    :: Font
   }
   
-  testTunnel = rasterizeLines [((50,50), (100,130)), ((0,100), (200,100))] ((0, 0), (200, 200)) 20.0
+  rasterRect = ((0, 0), (200, 200))
+  testTunnel = rasterizeLines [((50,50), (100,130)), ((0,100), (200,100))] rasterRect 20.0
   
-  drawTunnel :: Array.Array (Int, Int) Float -> (Int, Int) -> IO ()
-  drawTunnel t (px, py) = preservingMatrix $ do
+  drawTunnel :: Array.Array (Int, Int) Float -> IO ()
+  drawTunnel t = preservingMatrix $ do
     translate (Vector3 (-100) (-100) (0.0 :: GLfloat))
     let point = renderPrimitive Points . vertex in
       forM_ (Array.assocs t) $ \((x, y), d) -> do
         color $ Color3 (d / 20) 0.0 (0.0 :: GLfloat)
-        point $ Vertex3 (fromIntegral (x + px)) (fromIntegral (y + py)) (0.0 :: GLfloat)
+        point $ Vertex3 (fromIntegral x) (fromIntegral y) (0.0 :: GLfloat)
     
   -- | Return a TitleState object set to reasonable initial values
   newTitleState :: IO TitleState
@@ -97,7 +102,12 @@ module Silkworm.Title where
     --   
     renderTexture 0 (-400) (-300) 800 600
     
-    drawTunnel testTunnel (40, 40)
+    seed <- newStdGen
+    let (s1, s2) = split seed
+        bump1 = (randomBumpyRaster rasterRect 40 10.0 s1)
+        bump2 = (randomBumpyRaster rasterRect 20 20.0 s2)
+        composite = ((testTunnel #+ 1) #*# (bump1 #* 0.5) #*# (bump2 #* 0.5))
+      in drawTunnel testTunnel
     -- let font = (tsFont state)
     -- font <- createTextureFont "shrewsbury.ttf"
     -- setFontFaceSize font 72 72

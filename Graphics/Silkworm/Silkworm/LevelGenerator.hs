@@ -1,12 +1,21 @@
-module Silkworm.LevelGenerator (rasterizeLines) where
-  import Data.Array.IArray
+module Silkworm.LevelGenerator (
+    rasterizeLines, randomBumpyRaster,
+    (#+), (#-), (#*),
+    (#+#), (#-#), (#*#)
+  ) where
   
+  import Data.List (unfoldr)
+  import Data.Array.IArray
+  import System.Random (StdGen(..), newStdGen, random, split)
+
   type Point = (Float, Float)
   type Line = (Point, Point)
   type Rect = (Point, Point)
   
   type Point3D = (Float, Float, Float)
   type Plane = (Point3D, Point3D, Point3D)
+  
+  type Raster = Array (Int, Int) Float
   
   data Failure = Failure
   
@@ -73,7 +82,7 @@ module Silkworm.LevelGenerator (rasterizeLines) where
   rootSum :: (Floating a) => [a] -> a
   rootSum ns = sqrt $ foldl (+) 0 $ map (** 2) ns
   
-  rasterizeLines :: [Line] -> Rect -> Float -> Array (Int, Int) Float
+  rasterizeLines :: [Line] -> Rect -> Float -> Raster
   rasterizeLines lines ((x_min, y_min), (x_max, y_max)) size =
     let x_delta      = ceiling (x_max - x_min)
         y_delta      = ceiling (y_max - y_min)
@@ -96,17 +105,36 @@ module Silkworm.LevelGenerator (rasterizeLines) where
       distancesToLines :: Point -> [Line] -> [Float]
       distancesToLines p ls = map (distanceToLine p) ls
     
+  -- | Combine two rasters by adding elements
+  rasterOp :: (Float -> Float -> Float) -> Raster -> Raster -> Raster
+  rasterOp op r1 r2 = array (bounds r1) $ map wrapOp $ zip (assocs r1) (assocs r2)
+    where wrapOp (((x,y), a), ((_,_), b)) = ((x, y), a `op` b)
+  -- rasterOp op r1 r2 = accumArray op 0 (bounds r1) ((assocs r1) ++ (assocs r2))
   
-  -- generateTunnels :: [Point] -> [Line]
-  -- generateTunnels pts = []
-  --   where
-  -- Sorts two pairs of points using a function such as xwDistance or ywDistance
-  -- lowest :: (Point -> Point -> Float) -> (Point, Point) -> (Point, Point) -> Ordering
-  -- lowest distFn (p1, p2) (p3, p4) = compare (distFn p1 p2) (distFn p3 p4)
-  -- 
-  -- nextClosest :: (Point -> Point -> Float) -> Point -> [Point] -> (Point, [Point])
-  -- nextClosest distFn pt pts =
-  --   let ptPairs = zip (repeat pt) pts
-  --       (first:others) = sortBy (lowest distFn) ptPairs in
-  --   (snd first, map snd others)
+  (#-#) = rasterOp (-)
+  a #- b  = amap (- b) a
+  (#+#) = rasterOp (+)
+  a #+ b  = amap (+ b) a
+  (#*#) = rasterOp (*)
+  a #* b  = amap (* b) a
   
+  randomlist :: Int -> StdGen -> [Int]
+  randomlist n = take n . unfoldr (Just . random)
+  
+  randomBumpyRaster :: Rect -> Int -> Float -> StdGen -> Raster
+  randomBumpyRaster rect@((x_min, y_min), (x_max, y_max)) count size gen =
+    let x_delta         = ceiling (x_max - x_min)
+        y_delta         = ceiling (y_max - y_min)
+        lineFromPoint p = (p, p)
+        (gen1, gen2)    = split gen
+        lines           = map lineFromPoint $
+                            zip (map (\x -> fromIntegral $ x `mod` x_delta) (randomlist count gen1))
+                                (map (\y -> fromIntegral $ y `mod` y_delta) (randomlist count gen2))
+    in rasterizeLines lines rect size
+  
+  
+  
+  
+  -- Test stuff
+  tA = array ((0, 0), (1, 1)) [((0, 0), 0.0), ((0, 1), 5.0), ((1, 0), 10.0), ((1, 1), 20.0)] :: Array (Int, Int) Float
+  tB = array ((0, 0), (1, 1)) [((0, 0), 0.0), ((0, 1), 1.0), ((1, 0), 0.0), ((1, 1), 1.0)] :: Array (Int, Int) Float
