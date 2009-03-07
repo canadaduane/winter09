@@ -48,45 +48,6 @@ module Silkworm.Title where
     tsFont    :: Font
   }
   
-  rasterRect = ((0, 0), (200, 200))
-  testTunnel = rasterizeLines [((50,50), (100,130)), ((50,100), (150,100))] rasterRect 20.0
-  
-  cross :: (Float, Float, Float) -> (Float, Float, Float) -> (Float, Float, Float)
-  -- cross (x0, y0, z0) (x1, y1, z1) = ((y0*z1 - z0*y1), (z0*x1 - x0*z1), (x0*y1 - x1*y0))
-  cross (a1, a2, a3) (b1, b2, b3) = ((a2*b3 - a3*b2), (a3*b1 - a1*b3), (a1*b2 - a2*b1))
-  
-  drawTunnel :: Array.Array (Int, Int) Float -> Float -> IO ()
-  drawTunnel t angle = preservingMatrix $ do
-    rotate angle $ Vector3 1 0.5 (0 :: GLfloat)
-    scale 2.0 2.0 (2.0 :: Float)
-    translate (Vector3 (-0.5) (-0.5) (0.0 :: GLfloat))
-    color $ Color3 0.5 0.5 (1.0 :: GLfloat) 
-    let ((x1, y1), (x2, y2)) = bounds t
-        rng = range ((x1, y1), (x2 - 1, y2 - 1))
-        shrink n = (fromIntegral n) / 200
-        -- v x y z = vertex (Vertex3 (shrink x) (shrink y) z / 200.0)
-        xyz x y = (shrink x, shrink y, (t ! (x, y)) / 200.0)
-      in
-      forM_ rng $ \(x, y) -> renderPrimitive Quads $ do
-        let (x0, y0, z0) = xyz x y
-            (x1, y1, z1) = xyz (x + 1) y
-            (x2, y2, z2) = xyz x (y + 1)
-            (x3, y3, z3) = xyz (x + 1) (y + 1)
-            (nx, ny, nz) = cross (x1 - x0, y1 - y0, z1 - z0) (x2 - x0, y2 - y0, z2 - z0)
-        normal $ Normal3 nx ny nz
-        vertex $ Vertex3 x0 y0 z0
-        vertex $ Vertex3 x1 y1 z1
-        vertex $ Vertex3 x3 y3 z3
-        vertex $ Vertex3 x2 y2 z2
-        
-        -- vertex $ Vertex3 1.0 1.0 (1.0 :: Float)
-        -- let xf = fromIntegral x
-        --     yf = fromIntegral y
-        --   in vertex $ Vertex3 (xf :: GLfloat) yf (t ! (x, y))
-        --      vertex $ Vertex3 (xf + 1) yf (t ! (x + 1, y))
-        --      vertex $ Vertex3 (xf + 1) (yf + 1) (t ! (x + 1, y + 1))
-        --      vertex $ Vertex3 xf (yf + 1) (t ! (x, y + 1))
-  
   -- | Return a TitleState object set to reasonable initial values
   newTitleState :: IO TitleState
   newTitleState = do
@@ -134,10 +95,11 @@ module Silkworm.Title where
     -- loadIdentity
     -- forM_ (tsObjects state) $ \(TitleObject {tImage = image}) -> do
     --   
-    -- renderTexture 0 (-400) (-300) 800 600
+    renderTexture 0 (-1) (-1) 2 2
+    
     state <- get stateVar
     stateVar $= state { tsAngle = ((tsAngle state) + 5.0) }
-    drawTunnel testTunnel (tsAngle state)
+    -- drawTunnel testTunnel (tsAngle state)
     
     -- seed <- newStdGen
     -- let (s1, s2) = split seed
@@ -151,11 +113,12 @@ module Silkworm.Title where
     -- setFontFaceSize font 72 72
     -- renderFont font "Silkworm!" All
     
-    -- scale 3.75 3.75 (1.0 :: GLfloat)
+    scale (1.0/800*3) (1.0/600*3) (1.0 :: GLfloat)
     let render str = do
-          translate (Vector3 0.0 0.0 (0.0 :: GLfloat))
+          translate (Vector3 0.0 0.0 (0.1 :: GLfloat))
           renderString Fixed8x16 str
     
-    color $ Color3 1.0 1.0 (1.0 :: GLfloat)
+    color $ Color3 1.0 0.0 (0.0 :: GLfloat)
+    -- normal $ Normal3 0 0 (-1.0 :: GLfloat)
     render "Silkworm!"
     

@@ -38,6 +38,11 @@ module Silkworm.Game (State(..), initializeGame) where
   import Silkworm.OpenGLHelper (initOpenGL)
   import Silkworm.HipmunkHelper (newSpaceWithGravity)
   
+  import Silkworm.Math (cross)
+  
+  rasterRect = ((0, 0), (200, 200))
+  testTunnel = rasterizeLines [((50,50), (100,130)), ((50,100), (150,100))] rasterRect 20.0
+  
   -------------------------------------------------------
   -- Game Data and Type Declarations
   -------------------------------------------------------
@@ -135,6 +140,29 @@ module Silkworm.Game (State(..), initializeGame) where
     -- when (slowKey == Press) drawSlowMotion
     forM_ (M.assocs $ stShapes state) (fst . snd) -- Draw each one
     swapBuffers
+
+  drawTunnel :: Array.Array (Int, Int) Float -> Float -> IO ()
+  drawTunnel t angle = preservingMatrix $ do
+    rotate angle $ Vector3 1 0.5 (0 :: GLfloat)
+    scale 2.0 2.0 (2.0 :: Float)
+    translate (Vector3 (-0.5) (-0.5) (0.0 :: GLfloat))
+    color $ Color3 0.5 0.5 (1.0 :: GLfloat) 
+    let ((x1, y1), (x2, y2)) = bounds t
+        rng = range ((x1, y1), (x2 - 1, y2 - 1))
+        shrink n = (fromIntegral n) / 200
+        xyz x y = (shrink x, shrink y, (t ! (x, y)) / 200.0)
+      in
+      forM_ rng $ \(x, y) -> renderPrimitive Quads $ do
+        let (x0, y0, z0) = xyz x y
+            (x1, y1, z1) = xyz (x + 1) y
+            (x2, y2, z2) = xyz x (y + 1)
+            (x3, y3, z3) = xyz (x + 1) (y + 1)
+            (nx, ny, nz) = cross (x1 - x0, y1 - y0, z1 - z0) (x2 - x0, y2 - y0, z2 - z0)
+        normal $ Normal3 nx ny nz
+        vertex $ Vertex3 x0 y0 z0
+        vertex $ Vertex3 x1 y1 z1
+        vertex $ Vertex3 x3 y3 z3
+        vertex $ Vertex3 x2 y2 z2
 
   ------------------------------------------------------------
   -- Simulation bookkeeping

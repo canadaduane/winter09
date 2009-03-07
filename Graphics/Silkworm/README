@@ -56,3 +56,10 @@ Copyright (C) 2009 Duane Johnson
   $ make RunPlayground
   
   
+== Links to Documentation I found Useful
+
+  - Yampa
+    - http://www.cse.unsw.edu.au/~pls/thesis/munc-thesis.pdf
+  - Intro to Light Sources and Shading in OpenGL
+    - http://www.sjbaker.org/steve/omniv/opengl_lighting.html
+  
