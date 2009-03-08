@@ -1,47 +1,46 @@
-module Silkworm.Game (State(..), initializeGame) where
-
-  -- General-purpose Modules
-  import Data.IORef (IORef, newIORef)
-
-  import qualified Data.Map (
-    Map,
-    assocs,
-    fromList
-  ) as Map
-  import qualified System.Exit (
-    ExitCode(..),
-    exitWith
-  ) as Exit
-  -- import Control.Monad
+module Silkworm.Game (startGame) where
   
-  import qualified Graphics.Rendering.OpenGL as GL
+  -- General-purpose Modules
+  import Data.Array as A
+  import Data.Map as M
+  import Data.IORef (IORef, newIORef)
+  import Control.Monad (forM, forM_, replicateM, replicateM_, foldM, foldM_, when)
+  
   
   -- Physics Modules
-  import Physics.Hipmunk (
-    -- Global Functions
-    initChipmunk,
-    
-    -- Shape Functions
-    Shape,
+  import qualified Physics.Hipmunk as H
   
-    -- Space Functions
-    Space,
-    newSpace,
-    setGravity
-  ) as Hipmunk
-
+  import Graphics.UI.GLFW (
+    Key(..), KeyButtonState(..), SpecialKey(..), getKey,
+    BitmapFont(..), renderString,
+    time, sleep, swapBuffers)
+  
+  import Graphics.Rendering.OpenGL (
+    GLint, GLfloat,
+    ClearBuffer(..), clear,
+    Vector3(..), scale, translate, rotate,
+    Vertex3(..), vertex,
+    Color3(..), color,
+    Normal3(..), normal,
+    PrimitiveMode(..), renderPrimitive,
+    MatrixMode(..), matrixMode, loadIdentity,
+    preservingMatrix,
+    ($=))
+  
+  import Graphics.Rendering.OpenGL.GL.StateVar (get)
+  
   -- Silkworm-specific Modules
-  -- import Silkworm.Constants
+  import Silkworm.Constants (slowdown, frameDelta, frameSteps, framePeriod, maxSteps)
   -- import Silkworm.Drawing
   -- import Silkworm.Misc
-  import Silkworm.WindowHelper (initWindow)
-  import Silkworm.OpenGLHelper (initOpenGL)
+  -- import Silkworm.WindowHelper (initWindow)
+  -- import Silkworm.OpenGLHelper (initOpenGL)
   import Silkworm.HipmunkHelper (newSpaceWithGravity)
   
   import Silkworm.Math (cross)
   
-  rasterRect = ((0, 0), (200, 200))
-  testTunnel = rasterizeLines [((50,50), (100,130)), ((50,100), (150,100))] rasterRect 20.0
+  -- rasterRect = ((0, 0), (200, 200))
+  -- testTunnel = rasterizeLines [((50,50), (100,130)), ((50,100), (150,100))] rasterRect 20.0
   
   -------------------------------------------------------
   -- Game Data and Type Declarations
@@ -70,9 +69,14 @@ module Silkworm.Game (State(..), initializeGame) where
   inaction = Action "Inaction" nothing
     where nothing = do return ()
   
+  instance Show H.Shape where
+    show s = "Shape"
+  instance Show H.Space where
+    show s = "Space"
+  
   -- The Game Object : Here is where we define everything to do with each moving thing
   data GameObject = GameObject {
-    gShape    :: Shape,
+    gShape    :: H.Shape,
     gBehavior :: Behavior,
     gDraw     :: Action,
     gRemove   :: Action
@@ -81,7 +85,7 @@ module Silkworm.Game (State(..), initializeGame) where
   -- The Game State : Keep track of the Chipmunk engine state as well as our game
   -- objects, both active (on-screen) and inactive (off-screen)
   data GameState = GameState {
-    gsSpace     :: Space,
+    gsSpace     :: H.Space,
     gsActives   :: [GameObject],
     gsInactives :: [GameObject]
   } deriving Show
@@ -92,23 +96,22 @@ module Silkworm.Game (State(..), initializeGame) where
   
   -- | Return a GameState object set to reasonable initial values
   newGameState :: IO GameState
-  newGameState =
-    let objs = []
-    do space <- initialSpaceWithGravity
-       return (GameState space objs)
+  newGameState = do
+    space <- newSpaceWithGravity
+    return (GameState space [] [])
   
-  generateRandomGround :: Space -> IO ()
+  generateRandomGround :: H.Space -> IO ()
   generateRandomGround space =
     return ()
   
-  startGameLoop :: IORef State -> IO ()
-  startGameLoop stateRef = do
-    -- Let's go!
-    now <- get time
+  startGame :: IO ()
+  startGame = do
+    stateRef <- newGameState >>= newIORef
+    now      <- get time
     gameLoop stateRef now
-
-  -- | The simulation loop.
-  gameLoop :: IORef State -> Double -> IO ()
+  
+  -- | The main loop
+  gameLoop :: IORef GameState -> Double -> IO ()
   gameLoop stateRef oldTime = do
     -- Some key states
     slowKey  <- getKey (SpecialKey ENTER)
@@ -128,20 +131,20 @@ module Silkworm.Game (State(..), initializeGame) where
     newTime <- advanceTime stateRef oldTime slowKey
   
     -- Continue the game as long as quit signal has not been given
-    when (quitKey != Press)
+    when (quitKey /= Press)
       (gameLoop stateRef newTime)
 
   -- | Renders the current state.
-  updateDisplay :: IORef State -> KeyButtonState -> IO ()
+  updateDisplay :: IORef GameState -> KeyButtonState -> IO ()
   updateDisplay stateRef slowKey  = do
     state <- get stateRef
     clear [ColorBuffer]
     -- drawInstructions
     -- when (slowKey == Press) drawSlowMotion
-    forM_ (M.assocs $ stShapes state) (fst . snd) -- Draw each one
+    -- forM_ (M.assocs $ stShapes state) (fst . snd) -- Draw each one
     swapBuffers
 
-  drawTunnel :: Array.Array (Int, Int) Float -> Float -> IO ()
+  drawTunnel :: A.Array (Int, Int) Float -> Float -> IO ()
   drawTunnel t angle = preservingMatrix $ do
     rotate angle $ Vector3 1 0.5 (0 :: GLfloat)
     scale 2.0 2.0 (2.0 :: Float)
@@ -150,7 +153,7 @@ module Silkworm.Game (State(..), initializeGame) where
     let ((x1, y1), (x2, y2)) = bounds t
         rng = range ((x1, y1), (x2 - 1, y2 - 1))
         shrink n = (fromIntegral n) / 200
-        xyz x y = (shrink x, shrink y, (t ! (x, y)) / 200.0)
+        xyz x y = (shrink x, shrink y, (t A.! (x, y)) / 200.0)
       in
       forM_ rng $ \(x, y) -> renderPrimitive Quads $ do
         let (x0, y0, z0) = xyz x y
@@ -164,33 +167,41 @@ module Silkworm.Game (State(..), initializeGame) where
         vertex $ Vertex3 x3 y3 z3
         vertex $ Vertex3 x2 y2 z2
 
+  -- seed <- newStdGen
+  -- let (s1, s2) = split seed
+  --     bump1 = (randomBumpyRaster rasterRect 40 10.0 s1)
+  --     bump2 = (randomBumpyRaster rasterRect 20 20.0 s2)
+  --     composite = ((testTunnel #+ 1) #*# (bump1 #* 0.5) #*# (bump2 #* 0.5))
+  --   in drawTunnel testTunnel
+
   ------------------------------------------------------------
   -- Simulation bookkeeping
   ------------------------------------------------------------
 
   -- | Advances the time in a certain number of steps.
-  advanceSimulTime :: IORef State -> Int -> IO ()
+  advanceSimulTime :: IORef GameState -> Int -> IO ()
   advanceSimulTime _        0     = return ()
   advanceSimulTime stateRef steps = do
     removeOutOfSight stateRef
     state <- get stateRef
-    replicateM_ steps $ H.step (stSpace state) frameDelta
+    replicateM_ steps $ H.step (gsSpace state) frameDelta
 
   -- | Removes all shapes that may be out of sight forever.
-  removeOutOfSight :: IORef State -> IO ()
+  removeOutOfSight :: IORef GameState -> IO ()
   removeOutOfSight stateRef = do
-    state   <- get stateRef
-    shapes' <- foldM f (stShapes state) $ M.assocs (stShapes state)
-    stateRef $= state {stShapes = shapes'}
-      where
-        f shapes (shape, (_,remove)) = do
-          H.Vector x y <- H.getPosition $ H.getBody shape
-          if y < (-350) || abs x > 800
-            then remove >> return (M.delete shape shapes)
-            else return shapes
+    return ()
+    -- state   <- get stateRef
+    -- shapes' <- foldM f (gsShapes state) $ M.assocs (stShapes state)
+    -- stateRef $= state {gsShapes = shapes'}
+    --   where
+    --     f shapes (shape, (_,remove)) = do
+    --       H.Vector x y <- H.getPosition $ H.getBody shape
+    --       if y < (-350) || abs x > 800
+    --         then remove >> return (M.delete shape shapes)
+    --         else return shapes
 
   -- | Advances the time.
-  advanceTime :: IORef State -> Double -> KeyButtonState -> IO Double
+  advanceTime :: IORef GameState -> Double -> KeyButtonState -> IO Double
   advanceTime stateRef oldTime slowKey = do
     newTime <- get time
   

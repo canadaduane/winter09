@@ -22,7 +22,7 @@ module Silkworm.HipmunkHelper where
       line = LineSegment p1 p2 1.0
   
   newSpaceWithGravity :: IO Space
-  newSpace = do
+  newSpaceWithGravity = do
     space  <- newSpace
     setGravity space gravity
     return space

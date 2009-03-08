@@ -3,14 +3,14 @@ module Silkworm.Title where
   import System.Random (newStdGen, split)
   import System.Directory (getCurrentDirectory)
   import System.Exit (ExitCode(..), exitWith)
-  import Control.Monad (forM, forM_)
+  import Control.Monad (forM, forM_, when)
   import qualified Data.Map as Map
   import Data.IORef (IORef, newIORef)
   import Data.Array.IArray as Array
   import Graphics.UI.GLFW (
     Key(..), SpecialKey(..),
     BitmapFont(..), renderString,
-    swapBuffers)
+    sleep, swapBuffers)
   import Graphics.Rendering.OpenGL (
     GLint, GLfloat,
     ClearBuffer(..), clear,
@@ -32,6 +32,7 @@ module Silkworm.Title where
     rasterizeLines, randomBumpyRaster,
     (#+), (#-), (#*),
     (#+#), (#-#), (#*#))
+  import Silkworm.Game (startGame)
   
   type KeyMap = Map.Map Key Bool
   
@@ -42,10 +43,13 @@ module Silkworm.Title where
     tTextureId  :: Integer
   }
   
+  data MenuSelection = NoSelection | StartGame | QuitGame
+    deriving Eq
+  
   data TitleState = TitleState {
     tsObjects :: [TitleObject],
-    tsAngle   :: Float,
-    tsFont    :: Font
+    tsHover   :: MenuSelection,
+    tsSelect  :: MenuSelection
   }
   
   -- | Return a TitleState object set to reasonable initial values
@@ -54,10 +58,9 @@ module Silkworm.Title where
     -- bgImage <- readImage "background.png"
     -- let objs = [TitleObject (0, 0) [] 0.0 bgImage]
     let objs = []
-    font <- createPolygonFont "scribbled.ttf"
     -- putStrLn (show $ getFontError font)
     -- exitWith (ExitFailure (-1))
-    return (TitleState objs 0.0 font)
+    return (TitleState objs StartGame NoSelection)
   
   showTitleScreen :: IO ()
   showTitleScreen = do
@@ -67,11 +70,21 @@ module Silkworm.Title where
   
   titleScreenLoop :: IORef TitleState -> IO ()
   titleScreenLoop stateVar = do
-    keySet <- getPressedKeys [SpecialKey ESC]
+    state <- get stateVar
+    keySet <- getPressedKeys [SpecialKey ENTER, SpecialKey UP, SpecialKey DOWN]
     updateDisplay stateVar
-    if keyIsPressed (SpecialKey ESC) keySet
-      then return ()
-      else titleScreenLoop stateVar
+    
+    when (keyIsPressed (SpecialKey UP) keySet) $ do
+      stateVar $= state { tsHover = StartGame }
+    when (keyIsPressed (SpecialKey DOWN) keySet) $ do
+      stateVar $= state { tsHover = QuitGame }
+    when (keyIsPressed (SpecialKey ENTER) keySet) $ do
+      stateVar $= state { tsSelect = (tsHover state) }
+    
+    case tsSelect state of
+      NoSelection -> titleScreenLoop stateVar
+      StartGame   -> startGame
+      QuitGame    -> exitWith ExitSuccess
   
   -- | Load title screen textures into OpenGL buffers
   loadResources :: IO ()
@@ -87,38 +100,38 @@ module Silkworm.Title where
     -- when (slowKey == Press) drawSlowMotion
     -- forM_ (M.assocs $ stShapes state) (fst . snd) -- Draw each one
     swapBuffers
+    sleep 0.050
+  
+  drawText :: Float -> Float -> Float -> String -> IO ()
+  drawText x y s str = preservingMatrix $ do
+    translate (Vector3 x y 0.1)
+    scale (1.0/800*s) (1.0/600*s) 1.0
+    renderString Fixed8x16 str
   
   -- | Draw the Silkworm title screen
   drawTitle :: IORef TitleState -> IO ()
-  drawTitle stateVar = preservingMatrix $ do
-    -- matrixMode $= Modelview 0
-    -- loadIdentity
-    -- forM_ (tsObjects state) $ \(TitleObject {tImage = image}) -> do
-    --   
-    renderTexture 0 (-1) (-1) 2 2
-    
+  drawTitle stateVar = do
     state <- get stateVar
-    stateVar $= state { tsAngle = ((tsAngle state) + 5.0) }
-    -- drawTunnel testTunnel (tsAngle state)
-    
-    -- seed <- newStdGen
-    -- let (s1, s2) = split seed
-    --     bump1 = (randomBumpyRaster rasterRect 40 10.0 s1)
-    --     bump2 = (randomBumpyRaster rasterRect 20 20.0 s2)
-    --     composite = ((testTunnel #+ 1) #*# (bump1 #* 0.5) #*# (bump2 #* 0.5))
-    --   in drawTunnel testTunnel
+    -- stateVar $= state { tsAngle = ((tsAngle state) + 5.0) }
+
+    preservingMatrix $ do
+      renderTexture 0 (-1) (-1) 2 2
       
-    -- let font = (tsFont state)
-    -- font <- createTextureFont "shrewsbury.ttf"
-    -- setFontFaceSize font 72 72
-    -- renderFont font "Silkworm!" All
+      -- let font = (tsFont state)
+      -- font <- createTextureFont "shrewsbury.ttf"
+      -- setFontFaceSize font 72 72
+      -- renderFont font "Silkworm!" All
     
-    scale (1.0/800*3) (1.0/600*3) (1.0 :: GLfloat)
-    let render str = do
-          translate (Vector3 0.0 0.0 (0.1 :: GLfloat))
-          renderString Fixed8x16 str
+    color $ Color3 0.0 0.0 (0.0 :: GLfloat)
+    drawText (-0.2) (0.5) 6 "Silkworm!"
+
+    color $ Color3 1.0 0.2 (0.2 :: GLfloat)
+    drawText (-0.5) (-0.0) (selectionSize state StartGame) "Start Game"
+    drawText (-0.5) (-0.1) (selectionSize state QuitGame) "Quit"
     
-    color $ Color3 1.0 0.0 (0.0 :: GLfloat)
-    -- normal $ Normal3 0 0 (-1.0 :: GLfloat)
-    render "Silkworm!"
+    where
+      selectionSize state s =
+        if s == (tsHover state)
+          then 6
+          else 5
     
