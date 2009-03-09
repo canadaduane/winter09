@@ -10,6 +10,7 @@ module Silkworm.Game (startGame) where
   -- Physics Modules
   import qualified Physics.Hipmunk as H
   
+  -- Graphics Modules
   import Graphics.UI.GLFW (
     Key(..), KeyButtonState(..), SpecialKey(..), getKey,
     BitmapFont(..), renderString,
