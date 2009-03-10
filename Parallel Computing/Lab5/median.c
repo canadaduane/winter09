@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "median.h"
+
 /*
  * The following code is public domain.
  * Algorithm by Torben Mogensen, implementation by N. Devillard.
@@ -53,37 +55,37 @@ int median_of_first( int* numbers, int size )
         return 0;
 }
 
-int median_of_three( int* numbers, int size )
+int median_of_three( Array numbers )
 {
-    if (size > 0)
+    if (numbers.size > 0)
     {
-        if (size > 2)
+        if (numbers.size > 2)
         {
             int a = 0;
-            int m = size/2;
-            int z = size-1;
-            if (numbers[a] < numbers[m])
+            int m = numbers.size/2;
+            int z = numbers.size-1;
+            if (numbers.ptr[a] < numbers.ptr[m])
             {
-                if (numbers[m] < numbers[z]) return numbers[m];
+                if (numbers.ptr[m] < numbers.ptr[z])      return numbers.ptr[m];
                 else
                 {
-                    if (numbers[a] < numbers[z])  return numbers[z];
-                    else                          return numbers[a];
+                    if (numbers.ptr[a] < numbers.ptr[z])  return numbers.ptr[z];
+                    else                                  return numbers.ptr[a];
                 }
             }
             else
             {
-                if (numbers[m] > numbers[z]) return numbers[m];
+                if (numbers.ptr[m] > numbers.ptr[z])      return numbers.ptr[m];
                 else
                 {
-                    if (numbers[a] > numbers[z])  return numbers[z];
-                    else                          return numbers[a];
+                    if (numbers.ptr[a] > numbers.ptr[z])  return numbers.ptr[z];
+                    else                                  return numbers.ptr[a];
                 }
             }
         }
         else
         {
-            return numbers[0];
+            return numbers.ptr[0];
         }
     }
     else
@@ -92,10 +94,10 @@ int median_of_three( int* numbers, int size )
     }
 }
 
-int median_random( int* numbers, int size)
+int median_random( Array numbers )
 {
-    if (size > 0)
-        return numbers[random() % size];
+    if (numbers.size > 0)
+        return numbers.ptr[random() % numbers.size];
     else
         return 0;
 }

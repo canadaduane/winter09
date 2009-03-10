@@ -14,4 +14,4 @@ median.o: median.h median.c
 	$(CC) $(CFLAGS) median.c
 
 clean:
-	\rm -f *.o *~ hotplate
+	\rm -f *.o *~ pquicksort

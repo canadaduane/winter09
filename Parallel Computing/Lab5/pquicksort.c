@@ -10,11 +10,6 @@
 #define MSG_SIZE    0
 #define MSG_NUMBERS 1
 
-typdef struct ARRAY {
-    int* ptr;
-    int size;
-} Array;
-
 typedef struct DIV {
     int median;
     Array lesser;
@@ -32,30 +27,30 @@ int int_cmp(const void *a, const void *b)
 }
 
 // Divides an array of ints into those that are less-than (or equal) and those that are greater-than
-Div divide(int* numbers, int size, int median)
+Div divide(Array numbers, int median)
 {
     Div d;
     d.median = median;
-    int i = 0, j = size-1;
+    int i = 0, j = numbers.size-1;
     int a;
     while( i < j ) {
-        while( i < size && numbers[i] <= median ) i++;
-        while( j > 0    && numbers[j] >  median ) j--;
+        while( i < numbers.size && numbers.ptr[i] <= median ) i++;
+        while( j > 0            && numbers.ptr[j] >  median ) j--;
         if ( i < j )
         {
-            a = numbers[i];
-            numbers[i++] = numbers[j];
-            numbers[j--] = a;
+            a = numbers.ptr[i];
+            numbers.ptr[i++] = numbers.ptr[j];
+            numbers.ptr[j--] = a;
         }
         else
         {
             break;
         }
     }
-    d.lesser.ptr = numbers;
+    d.lesser.ptr = numbers.ptr;
     d.lesser.size = i;
-    d.greater.ptr = numbers + i;
-    d.greater.size = size - i;
+    d.greater.ptr = numbers.ptr + i;
+    d.greater.size = numbers.size - i;
     return d;
 }
 
@@ -64,33 +59,29 @@ void show_div(int iproc, Div d)
     int i;
     fprintf(stderr, "Division for iproc %d:", iproc);
     fprintf(stderr, "\n\tLess than %d (%d): ", d.median, d.lesser.size);
-    for( i = 0; i < d.lesser_size; i++) fprintf(stderr, "%d, ", d.lesser.ptr[i]);
+    for( i = 0; i < d.lesser.size; i++) fprintf(stderr, "%d, ", d.lesser.ptr[i]);
     fprintf(stderr, "\n\tGreater than %d (%d): ", d.median, d.greater.size);
-    for( i = 0; i < d.greater_size; i++) fprintf(stderr, "%d, ", d.greater.ptr[i]);
+    for( i = 0; i < d.greater.size; i++) fprintf(stderr, "%d, ", d.greater.ptr[i]);
     fprintf (stderr, "\n");
 }
 
 Array hypercube( int nproc, int iproc, Array numbers )
 {
-    Array return_value;
     MPI_Request request;
     MPI_Status status;
     MPI_Comm comm = MPI_COMM_WORLD;
     int vproc = iproc;
+    int median;
+    int i;
+
     // Number of dimensions e.g. 
     int dim = floor_log2( nproc );
     // A temporary location to receive the "incoming message length"
     int tmp_size = 0;
-    // The "current size" of our "useful data"
-    int size = original_size;
-    // Memory space allocate to the original_numbers array
-    int allocated_size = original_size * 10;
-    // A pointer to the "useful data"
-    int* numbers = original_numbers;
-    int median;
-    int i;
     
-    numbers = realloc(numbers, allocated_size * sizeof(int));
+    // Give ourselves a big buffer to work with
+    int allocated_size = numbers.size * 10;
+    numbers.ptr = realloc(numbers.ptr, allocated_size * sizeof(int));
     
     // fprintf(stderr, "Node %d has %d random numbers.\n", iproc, original_size);
     
@@ -99,11 +90,11 @@ Array hypercube( int nproc, int iproc, Array numbers )
         int dest = vproc ^ 1;
         Div divided;
         
-        median = median_of_three( numbers, size );
+        median = median_of_three( numbers );
         MPI_Bcast (&median, 1, MPI_INT, 0, comm);
         
         // fprintf(stderr, "Node %d dividing %d numbers using median %d...\n", vproc, size, median);
-        divided = divide( numbers, size, median );
+        divided = divide( numbers, median );
         // show_div(vproc, divided);
         
         if (vproc % 2 == 0)
@@ -114,7 +105,7 @@ Array hypercube( int nproc, int iproc, Array numbers )
             MPI_Isend(  divided.greater.ptr,  divided.greater.size, MPI_INT,
                       dest, MSG_NUMBERS, comm, &request);
             // New size is just the size of our "lesser" half
-            size = divided.lesser.size;
+            numbers.size = divided.lesser.size;
         }
         else
         {
@@ -124,15 +115,15 @@ Array hypercube( int nproc, int iproc, Array numbers )
             MPI_Isend(  divided.lesser.ptr,  divided.lesser.size, MPI_INT,
                       dest, MSG_NUMBERS, comm, &request);
             // New size is just the size of our "greater" half
-            size    = divided.greater.size;
+            numbers.size = divided.greater.size;
             // Move the array of greater numbers back to the memory location origin
-            memmove( numbers, divided.greater.ptr, divided.greater.size );
+            memmove( numbers.ptr, divided.greater.ptr, divided.greater.size );
         }
         
         // fprintf(stderr, "Node %d receiving from %d\n", vproc, dest);
         MPI_Recv(&tmp_size,      1, MPI_INT,
                  dest, MSG_SIZE,    comm, &status);
-        if (size + tmp_size > allocated_size)
+        if (numbers.size + tmp_size > allocated_size)
         {
             // int new_size = size + tmp_size + 1;
             // fprintf(stderr, "Node %d reallocating from %d to %d\n", iproc, allocated_size, new_size);
@@ -147,10 +138,10 @@ Array hypercube( int nproc, int iproc, Array numbers )
             //     allocated_size = new_size;
             // }
         }
-        fprintf(stderr, "Node %d about to receive %d ints starting at %d...\n", iproc, tmp_size, size);
-        MPI_Recv(numbers + size, tmp_size, MPI_INT,
+        // fprintf(stderr, "Node %d about to receive %d ints starting at %d...\n", iproc, tmp_size, numbers.size);
+        MPI_Recv(numbers.ptr + numbers.size, tmp_size, MPI_INT,
                  dest, MSG_NUMBERS, comm, &status);
-        size += tmp_size;
+        numbers.size += tmp_size;
         
         // Inherit half of the communicator
         MPI_Comm_split(comm, vproc % 2, vproc >> 1, &comm);
@@ -159,10 +150,8 @@ Array hypercube( int nproc, int iproc, Array numbers )
     
     // fprintf(stderr, "Final numbers for node %d: (%d)\n\t", iproc, size);
     // for( i = 0; i < size; i++) fprintf(stderr, "%d, ", numbers[i]);
-    return_value.ptr = numbers;
-    return_value.size = size;
-    
-    return return_value;
+
+    return numbers;
 }
 
 int main(int argc, char *argv[])
@@ -178,12 +167,14 @@ int main(int argc, char *argv[])
     {
         // int i;
         double start = 0.0, finish = 0.0;
-        int all_size = shell_arg_int(argc, argv, "--size", 16);
-        int *all_numbers = alloc_n_random( all_size );
+        Array numbers, semisorted;
+        
+        numbers.size = shell_arg_int(argc, argv, "--size", 16);
+        numbers.ptr = alloc_n_random( numbers.size );
         
         if (iproc == 0)
         {
-            fprintf( stderr, "Sorting %d numbers total...\n", nproc * all_size);
+            fprintf( stderr, "Sorting %d numbers total...\n", nproc * numbers.size);
 
             fprintf(stderr, "Node %d started...\n", iproc);
             // for (i = 0; i < all_size; i++) fprintf(stderr, "%d, ", all_numbers[i]);
@@ -191,8 +182,8 @@ int main(int argc, char *argv[])
         }
         
         start = when();
-        hypercube( nproc, iproc, all_numbers, all_size );
-        // qsort(numbers, numbers_len, sizeof(int), int_cmp);
+        semisorted = hypercube( nproc, iproc, numbers );
+        qsort(semisorted.ptr, semisorted.size, sizeof(int), int_cmp);
         
         finish = when();
         
