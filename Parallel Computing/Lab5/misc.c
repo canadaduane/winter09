@@ -21,7 +21,7 @@ int shell_arg_int( int argc, char* argv[], char* arg_switch, int default_value)
 int* alloc_n_random( int size ) 
 {
     int i;
-    int* numbers = calloc( size, sizeof(int) );
+    int* numbers = malloc( size * sizeof(int) );
     for( i = 0; i < size; i++ )
     {
         numbers[ i ] = random() / 2;

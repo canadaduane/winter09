@@ -67,14 +67,12 @@ void hypercube( int nproc, int original_iproc, int* original_numbers, int origin
     int iproc = original_iproc;
     // Number of dimensions e.g. 
     int dim = floor_log2( nproc );
-    // The allocated space of our original_numbers array (grows as needed)
-    int max_size = original_size;
     // A temporary location to receive the "incoming message length"
     int tmp_size = 0;
-    // The offset between the start of the original_numbers pointer and our "useful data"
-    int offset = 0;
     // The "current size" of our "useful data"
     int size = original_size;
+    // Memory space allocate to the original_numbers array
+    int allocated_size = original_size;
     // A pointer to the "useful data"
     int* numbers = original_numbers;
     int median;
@@ -96,41 +94,43 @@ void hypercube( int nproc, int original_iproc, int* original_numbers, int origin
         
         if (iproc % 2 == 0)
         {
-            offset  = (int)(divided.lesser - original_numbers);
-            size    = divided.lesser_size;
-            numbers = divided.lesser;
             // fprintf(stderr, "Node %d sending to %d, size %d (greater)\n", iproc, dest, divided.greater_size);
             MPI_Isend(&(divided.greater_size), 1, MPI_INT,
                       dest, MSG_SIZE,    comm, &request);
             MPI_Isend(  divided.greater,  divided.greater_size, MPI_INT,
                       dest, MSG_NUMBERS, comm, &request);
+            // New size is just the size of our "lesser" half
+            size = divided.lesser_size;
         }
         else
         {
-            offset  = (int)(divided.greater - original_numbers);
-            size    = divided.greater_size;
-            numbers = divided.greater;
             // fprintf(stderr, "Node %d sending to %d, size %d (lesser)\n", iproc, dest, divided.lesser_size);
             MPI_Isend(&(divided.lesser_size), 1, MPI_INT,
                       dest, MSG_SIZE,    comm, &request);
             MPI_Isend(  divided.lesser,  divided.lesser_size, MPI_INT,
                       dest, MSG_NUMBERS, comm, &request);
+            // New size is just the size of our "greater" half
+            size    = divided.greater_size;
+            // Move the array of greater numbers back to the memory location origin
+            memmove( numbers, divided.greater, divided.greater_size );
         }
         
         // fprintf(stderr, "Node %d receiving from %d\n", iproc, dest);
         MPI_Recv(&tmp_size,      1, MPI_INT,
                  dest, MSG_SIZE,    comm, &status);
-        // if (tmp_size > max_size)
-        // {
-            int* new_pointer =
-                realloc( original_numbers,
-                        (offset + size + tmp_size) * sizeof(int) );
-            if (new_pointer != original_numbers)
+        if (size + tmp_size > allocated_size)
+        {
+            numbers = realloc( numbers, (size + tmp_size + 1) * sizeof(int) );
+            if (numbers == NULL)
             {
-                numbers = new_pointer + offset;
-                original_numbers = new_pointer;
+                fprintf(stderr, "Cannot allocate more memory.\n");
+                exit(1);
             }
-        // }
+            else
+            {
+                allocated_size = size + tmp_size;
+            }
+        }
         MPI_Recv(numbers + size, tmp_size, MPI_INT,
                  dest, MSG_NUMBERS, comm, &status);
         size += tmp_size;
@@ -140,8 +140,8 @@ void hypercube( int nproc, int original_iproc, int* original_numbers, int origin
         iproc = iproc >> 1;
     }
     
-    fprintf(stderr, "Final numbers for node %d: (%d)\n\t", original_iproc, size);
-    for( i = 0; i < size; i++) fprintf(stderr, "%d, ", numbers[i]);
+    // fprintf(stderr, "Final numbers for node %d: (%d)\n\t", original_iproc, size);
+    // for( i = 0; i < size; i++) fprintf(stderr, "%d, ", numbers[i]);
 }
 
 int main(int argc, char *argv[])
@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
     srandom(iproc);
     
     {
-        int i;
+        // int i;
         double start = 0.0, finish = 0.0;
         int all_size = shell_arg_int(argc, argv, "--size", 16);
         int *all_numbers = alloc_n_random( all_size );
