@@ -72,11 +72,13 @@ void hypercube( int nproc, int original_iproc, int* original_numbers, int origin
     // The "current size" of our "useful data"
     int size = original_size;
     // Memory space allocate to the original_numbers array
-    int allocated_size = original_size;
+    int allocated_size = original_size * 10;
     // A pointer to the "useful data"
     int* numbers = original_numbers;
     int median;
     int i;
+    
+    numbers = realloc(numbers, allocated_size * sizeof(int));
     
     // fprintf(stderr, "Node %d has %d random numbers.\n", iproc, original_size);
     
@@ -120,17 +122,20 @@ void hypercube( int nproc, int original_iproc, int* original_numbers, int origin
                  dest, MSG_SIZE,    comm, &status);
         if (size + tmp_size > allocated_size)
         {
-            numbers = realloc( numbers, (size + tmp_size + 1) * sizeof(int) );
-            if (numbers == NULL)
-            {
+            // int new_size = size + tmp_size + 1;
+            // fprintf(stderr, "Node %d reallocating from %d to %d\n", original_iproc, allocated_size, new_size);
+            // numbers = realloc( numbers, new_size * sizeof(int) );
+            // if (numbers == NULL)
+            // {
                 fprintf(stderr, "Cannot allocate more memory.\n");
                 exit(1);
-            }
-            else
-            {
-                allocated_size = size + tmp_size;
-            }
+            // }
+            // else
+            // {
+            //     allocated_size = new_size;
+            // }
         }
+        fprintf(stderr, "Node %d about to receive %d ints starting at %d...\n", original_iproc, tmp_size, size);
         MPI_Recv(numbers + size, tmp_size, MPI_INT,
                  dest, MSG_NUMBERS, comm, &status);
         size += tmp_size;
