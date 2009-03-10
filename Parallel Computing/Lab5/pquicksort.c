@@ -27,14 +27,14 @@ Div divide(int* numbers, int size, int median)
     d.median = median;
     int i = 0, j = size-1;
     int a;
-    while( 1 ) {
+    while( i < j ) {
         while( i < size && numbers[i] <= median ) i++;
         while( j > 0    && numbers[j] >  median ) j--;
         if ( i < j )
         {
             a = numbers[i];
             numbers[i++] = numbers[j];
-            numbers[j++] = a;
+            numbers[j--] = a;
         }
         else
         {
@@ -53,9 +53,9 @@ void show_div(int iproc, Div d)
     int i;
     fprintf(stderr, "Division for iproc %d:", iproc);
     fprintf(stderr, "\n\tLess than %d (%d): ", d.median, d.less_size);
-    for( i = 0; i < d.less_size; i++) printf("%d, ", d.less_than[i]);
+    for( i = 0; i < d.less_size; i++) fprintf(stderr, "%d, ", d.less_than[i]);
     fprintf(stderr, "\n\tGreater than %d (%d): ", d.median, d.greater_size);
-    for( i = 0; i < d.greater_size; i++) printf("%d, ", d.greater_than[i]);
+    for( i = 0; i < d.greater_size; i++) fprintf(stderr, "%d, ", d.greater_than[i]);
     fprintf (stderr, "\n");
 }
 
@@ -79,7 +79,7 @@ void hypercube( int nproc, int iproc, int* original_numbers, int original_size )
     int median;
     int i;
     
-    fprintf(stderr, "Node %d has %d random numbers.\n", iproc, original_size);
+    // fprintf(stderr, "Node %d has %d random numbers.\n", iproc, original_size);
     
     for ( i = 0; i < dim; i++ )
     {
@@ -89,8 +89,8 @@ void hypercube( int nproc, int iproc, int* original_numbers, int original_size )
         median = median_of_three( numbers, size );
         MPI_Bcast (&median, 1, MPI_INT, 0, comm);
         
+        fprintf(stderr, "Node %d dividing %d numbers using median %d...\n", iproc, size, median);
         divided = divide( numbers, size, median );
-        
         show_div(iproc, divided);
         
         if (iproc % 2 == 0)
@@ -149,20 +149,26 @@ int main(int argc, char *argv[])
     srandom(iproc);
     
     {
+        int i;
         double start = 0.0, finish = 0.0;
         int all_size = shell_arg_int(argc, argv, "--size", 16);
         int *all_numbers = alloc_n_random( all_size );
         
-        if (iproc == 0) fprintf( stderr, "Sorting %d numbers total...\n", nproc * all_size);
-        
-        printf("Node %d started...\n", iproc);
+        if (iproc == 0)
+        {
+            fprintf( stderr, "Sorting %d numbers total...\n", nproc * all_size);
+
+            fprintf(stderr, "Node %d started...\n\t", iproc);
+            for (i = 0; i < all_size; i++) fprintf(stderr, "%d, ", all_numbers[i]);
+            fprintf(stderr, "\n");
+        }
         
         start = when();
         hypercube( nproc, iproc, all_numbers, all_size );
         finish = when();
         
         // All nodes:
-        printf("Node %d completed in %f seconds.\n", iproc, finish - start);
+        fprintf(stderr, "Node %d completed in %f seconds.\n", iproc, finish - start);
     }
 
     
