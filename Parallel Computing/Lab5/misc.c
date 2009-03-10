@@ -17,6 +17,18 @@ int shell_arg_int( int argc, char* argv[], char* arg_switch, int default_value)
     return default_value;
 }
 
+/* Allocate and return an array of size n of random integers */
+int* alloc_n_random( int size ) 
+{
+    int i;
+    int* numbers = calloc( size, sizeof(int) );
+    for( i = 0; i < size; i++ )
+    {
+        numbers[ i ] = random() / 2;
+    }
+    return numbers;
+}
+
 /* Return the current time in seconds, using a double precision number. */
 double when()
 {

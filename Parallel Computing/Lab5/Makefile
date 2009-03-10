@@ -1,4 +1,4 @@
-OBJS = misc.o
+OBJS = misc.o median.o
 CC = mpicc
 DEBUG = -g
 CFLAGS = -Wall -c $(DEBUG)
@@ -9,6 +9,9 @@ pquicksort: $(OBJS) pquicksort.c
 
 misc.o: misc.h misc.c
 	$(CC) $(CFLAGS) misc.c
+
+median.o: median.h median.c
+	$(CC) $(CFLAGS) median.c
 
 clean:
 	\rm -f *.o *~ hotplate
