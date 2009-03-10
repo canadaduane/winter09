@@ -36,3 +36,17 @@ double when()
     gettimeofday(&tp, NULL);
     return ((double) tp.tv_sec + (double) tp.tv_usec * 1e-6);
 }
+
+/**
+ * Returns the floor form of binary logarithm for a 32 bit integer.
+ * -1 is returned if n is 0.
+ */
+int floor_log2(unsigned int n) {
+  int pos = 0;
+  if (n >= 1<<16) { n >>= 16; pos += 16; }
+  if (n >= 1<< 8) { n >>=  8; pos +=  8; }
+  if (n >= 1<< 4) { n >>=  4; pos +=  4; }
+  if (n >= 1<< 2) { n >>=  2; pos +=  2; }
+  if (n >= 1<< 1) {           pos +=  1; }
+  return ((n == 0) ? (-1) : pos);
+}

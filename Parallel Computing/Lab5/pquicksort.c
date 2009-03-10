@@ -11,6 +11,7 @@
 #define MSG_NUMBERS 1
 
 typedef struct DIV {
+    int median;
     int* less_than;
     int less_size;
     int* greater_than;
@@ -20,14 +21,15 @@ typedef struct DIV {
 int nproc, iproc;
 
 // Divides an array of ints into those that are less-than (or equal) and those that are greater-than
-Div divide(int* numbers, int size, int value)
+Div divide(int* numbers, int size, int median)
 {
     Div d;
+    d.median = median;
     int i = 0, j = size-1;
     int a;
     while( 1 ) {
-        while( i < size && numbers[i] <= value ) i++;
-        while( j > 0    && numbers[j] >  value ) j--;
+        while( i < size && numbers[i] <= median ) i++;
+        while( j > 0    && numbers[j] >  median ) j--;
         if ( i < j )
         {
             a = numbers[i];
@@ -46,55 +48,92 @@ Div divide(int* numbers, int size, int value)
     return d;
 }
 
-void show_div(Div d)
+void show_div(int iproc, Div d)
 {
     int i;
-    for( i = 0; i < size; i++) printf("%d, ", numbers[i]);
-    printf("\n");
-    printf("\tLess than (%d): ", d.less_size);
+    fprintf(stderr, "Division for iproc %d:", iproc);
+    fprintf(stderr, "\n\tLess than %d (%d): ", d.median, d.less_size);
     for( i = 0; i < d.less_size; i++) printf("%d, ", d.less_than[i]);
-    printf("\n\tGreater than (%d): ", d.greater_size);
+    fprintf(stderr, "\n\tGreater than %d (%d): ", d.median, d.greater_size);
     for( i = 0; i < d.greater_size; i++) printf("%d, ", d.greater_than[i]);
-    printf ("\n");
+    fprintf (stderr, "\n");
 }
 
-void reduce( int nproc, int iproc, int* numbers, int size )
+void hypercube( int nproc, int iproc, int* original_numbers, int original_size )
 {
     MPI_Request request;
     MPI_Status status;
-    MPI_Comm new_comm;
-    int dim = (int) ceil(sqrt( (double) nproc ));
+    MPI_Comm comm = MPI_COMM_WORLD;
+    // Number of dimensions e.g. 
+    int dim = floor_log2( nproc );
+    // The allocated space of our original_numbers array (grows as needed)
+    int max_size = original_size;
+    // A temporary location to receive the "incoming message length"
+    int tmp_size = 0;
+    // The offset between the start of the original_numbers pointer and our "useful data"
+    int offset = 0;
+    // The "current size" of our "useful data"
+    int size = original_size;
+    // A pointer to the "useful data"
+    int* numbers = original_numbers;
     int median;
     int i;
     
-    // Allocate buffer for receiving values
-    int tmp_max_size = size;
-    int tmp_size = 0;
-    int* tmp_numbers = calloc( tmp_max_size, sizeof(int) );
-    
-    fprintf(stderr, "Node %d has %d random numbers.\n", iproc, all_size);
+    fprintf(stderr, "Node %d has %d random numbers.\n", iproc, original_size);
     
     for ( i = 0; i < dim; i++ )
     {
-        int dest = iproc ^ (1 << i);
+        int dest = iproc ^ 1;
+        Div divided;
         
         median = median_of_three( numbers, size );
+        MPI_Bcast (&median, 1, MPI_INT, 0, comm);
+        
         divided = divide( numbers, size, median );
         
-        MPI_Isend(&size,      sizeof(int), MPI_INT,
-                  dest, MSG_SIZE,    MPI_COMM_WORLD, &request);
-        MPI_Isend(numbers,    sizeof(int), MPI_INT,
-                  dest, MSG_NUMBERS, MPI_COMM_WORLD, &request);
+        show_div(iproc, divided);
         
-        MPI_Recv(&tmp_size,   sizeof(int), MPI_INT,
-                 dest, MSG_SIZE,    MPI_COMM_WORLD, &status);
-        if (tmp_size > tmp_max_size) 
-            tmp_numbers = realloc( tmp_numbers, tmp_size * sizeof(int) );
-        MPI_Recv(tmp_numbers, sizeof(int), MPI_INT,
-                 dest, MSG_NUMBERS, MPI_COMM_WORLD, &status);
+        if (iproc % 2 == 0)
+        {
+            offset  = (int)(divided.less_than - original_numbers);
+            size    = divided.less_size;
+            numbers = divided.less_than;
+            MPI_Isend(&(divided.greater_size), 1, MPI_INT,
+                      dest, MSG_SIZE,    comm, &request);
+            MPI_Isend(  divided.greater_than,  divided.greater_size, MPI_INT,
+                      dest, MSG_NUMBERS, comm, &request);
+        }
+        else
+        {
+            offset  = (int)(divided.greater_than - original_numbers);
+            size    = divided.greater_size;
+            numbers = divided.greater_than;
+            MPI_Isend(&(divided.less_size), 1, MPI_INT,
+                      dest, MSG_SIZE,    comm, &request);
+            MPI_Isend(  divided.less_than,  divided.less_size, MPI_INT,
+                      dest, MSG_NUMBERS, comm, &request);
+        }
         
-        // other = iproc & 0x01
-        // MPI_Comm_split(MPI_COMM_WORLD, color, 0, &new_comm);
+        MPI_Recv(&tmp_size,      1, MPI_INT,
+                 dest, MSG_SIZE,    comm, &status);
+        if (tmp_size > max_size)
+        {
+            int* new_pointer =
+                realloc( original_numbers,
+                        (offset + size + tmp_size) * sizeof(int) );
+            if (new_pointer != original_numbers)
+            {
+                numbers = new_pointer + offset;
+                original_numbers = new_pointer;
+            }
+        }
+        MPI_Recv(numbers + size, tmp_size, MPI_INT,
+                 dest, MSG_NUMBERS, comm, &status);
+        size += tmp_size;
+        
+        // Inherit half of the communicator
+        MPI_Comm_split(comm, iproc % 2, iproc >> 1, &comm);
+        iproc = iproc >> 1;
     }
 
 }
@@ -119,11 +158,11 @@ int main(int argc, char *argv[])
         printf("Node %d started...\n", iproc);
         
         start = when();
-        reduce( nproc, iproc, all_numbers, all_size );
+        hypercube( nproc, iproc, all_numbers, all_size );
         finish = when();
         
         // All nodes:
-        printf("Node %d completed %d iterations in %f seconds.\n", iproc, iter, finish - start);
+        printf("Node %d completed in %f seconds.\n", iproc, finish - start);
     }
 
     
