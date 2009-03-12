@@ -11,6 +11,7 @@ module Silkworm.Game (startGame) where
   import qualified Physics.Hipmunk as H
   
   -- Graphics Modules
+  import Graphics.Formats.Obj (ObjModel, objFromFile)
   import Graphics.UI.GLFW (
     Key(..), KeyButtonState(..), SpecialKey(..), getKey,
     BitmapFont(..), renderString,
@@ -87,6 +88,7 @@ module Silkworm.Game (startGame) where
   -- objects, both active (on-screen) and inactive (off-screen)
   data GameState = GameState {
     gsSpace     :: H.Space,
+    gsResources :: [FilePath],
     gsActives   :: [GameObject],
     gsInactives :: [GameObject]
   } deriving Show
@@ -99,7 +101,8 @@ module Silkworm.Game (startGame) where
   newGameState :: IO GameState
   newGameState = do
     space <- newSpaceWithGravity
-    return (GameState space [] [])
+    cwd <- getCurrentDirectory
+    return (GameState space [cwd] [] [])
   
   generateRandomGround :: H.Space -> IO ()
   generateRandomGround space =
