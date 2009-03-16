@@ -2,9 +2,10 @@ from numpy import *
 from color import Color
 
 class Point:
-  def __init__(self, x = 0.0, y = 0.0, z = 0.0, color = Color.white):
+  def __init__(self, x = 0.0, y = 0.0, z = 0.0, color = Color.white, normal = Normal.default):
     self.x, self.y, self.z = [x, y, z]
     self.color = color
+    self.normal = normal
   
   def vector(self):
     return [self.x, self.y, self.z, 1.0]

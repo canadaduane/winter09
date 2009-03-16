@@ -16,7 +16,7 @@ from duanegl import *
 ESCAPE = '\033'
 window = 0
 drawMode = 2
-sceneChoice = 3
+sceneChoice = 0
 
 # Helper Function for floating-point ranges
 def frange(fr, to, step):
@@ -40,6 +40,22 @@ def vy(value):
   return (float(value) - 240) / 480
 
 def scene_a():
+  scene_clear()
+  matrixMode(GL_PROJECTION)
+  loadIdentity()
+  # frustum(-0.1,0.1, -0.1*480/640,0.1*480/640,  0.1,10)
+  perspective(90, double(640)/480, 0.1, 10)
+  matrixMode(GL_MODELVIEW)
+  loadIdentity()
+  
+  begin(GL_TRIANGLES)
+  color3f(1.0, 0.0, 0.0)
+  vertex3f(0.0, 0.0, -9.0)
+  vertex3f(-1.0, -0.5, -5.0)
+  vertex3f(1.0, -0.5, -5.0)
+  end()
+
+def scene_e():
   scene_clear()
   radius = 90.0
   

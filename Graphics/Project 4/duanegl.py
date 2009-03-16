@@ -24,6 +24,7 @@ depth_buffer = array([ 10000 for i in range(0, RASTER_WIDTH * RASTER_HEIGHT) ], 
 
 clear_color = Color.black
 curr_color = Color.white
+curr_normal = Normal.default
 
 vport = Viewport(0, 0, 640, 480)
 identity_matrix = matrix(array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]], dtype='float32'))
@@ -148,7 +149,7 @@ def transformed(vertices):
     x = vector[0,0] * vw + vw + vport.xmin
     y = vector[1,0] * vh + vh + vport.ymin
     z = vector[2,0]
-    return Point(x, y, z, point.color)
+    return Point(x, y, z, point.color, point.normal)
   
   values = [ viewport_transform(intermediate[i].transpose(), vertices[i]) \
              for i in range(len(vertices)) ]
@@ -256,6 +257,11 @@ def disable(features):
   glDisable(features)
   enabled[features] = False
 
+def normal3f(x, y, z):
+  global curr_normal
+  glNormal3f(x, y, z)
+  curr_normal = Normal(x, y, z)
+
 def color3f(r, g, b):
   global curr_color
   glColor3f(r, g, b)
@@ -279,17 +285,17 @@ def lineWidth(w):
 def vertex2i(x, y):
   global vertices
   glVertex2i(x, y)
-  vertices.append( Point(x, y, 0, curr_color) )
+  vertices.append( Point(x, y, 0, curr_color, curr_normal) )
 
 def vertex2f(x, y):
   global vertices
   glVertex2f(x, y)
-  vertices.append( Point(x, y, 0, curr_color) )
+  vertices.append( Point(x, y, 0, curr_color, curr_normal) )
 
 def vertex3f(x, y, z):
   global vertices
   glVertex3f(x, y, z)
-  vertices.append( Point(x, y, z, curr_color) )
+  vertices.append( Point(x, y, z, curr_color, curr_normal) )
 
 def _point( point, size = 1, smooth = False ):
   if (size <= 0):
@@ -301,8 +307,8 @@ def _point( point, size = 1, smooth = False ):
     if (smooth):
       _circle_filled( point, half, _set_pixel )
     else:
-      ul = Point( point.x - half, point.y + half, 0.0, point.color )
-      lr = Point( point.x + half, point.y - half, 0.0, point.color )
+      ul = Point( point.x - half, point.y + half, 0.0, point.color, point.normal )
+      lr = Point( point.x + half, point.y - half, 0.0, point.color, point.normal )
       _rect_filled( ul, lr, _set_pixel )
 
 def _circle(point, radius, fn):
@@ -315,14 +321,14 @@ def _circle(point, radius, fn):
     y = radius
     decision = 5.0/4 - radius
     while (x <= y):
-      fn( Point(point.x + x, point.y + y, 0.0, color) )
-      fn( Point(point.x - x, point.y + y, 0.0, color) )
-      fn( Point(point.x + x, point.y - y, 0.0, color) )
-      fn( Point(point.x - x, point.y - y, 0.0, color) )
-      fn( Point(point.x + y, point.y + x, 0.0, color) )
-      fn( Point(point.x - y, point.y + x, 0.0, color) )
-      fn( Point(point.x + y, point.y - x, 0.0, color) )
-      fn( Point(point.x - y, point.y - x, 0.0, color) )
+      fn( Point(point.x + x, point.y + y, 0.0, color, point.normal) )
+      fn( Point(point.x - x, point.y + y, 0.0, color, point.normal) )
+      fn( Point(point.x + x, point.y - y, 0.0, color, point.normal) )
+      fn( Point(point.x - x, point.y - y, 0.0, color, point.normal) )
+      fn( Point(point.x + y, point.y + x, 0.0, color, point.normal) )
+      fn( Point(point.x - y, point.y + x, 0.0, color, point.normal) )
+      fn( Point(point.x + y, point.y - x, 0.0, color, point.normal) )
+      fn( Point(point.x - y, point.y - x, 0.0, color, point.normal) )
       x = x + 1
       if (decision < 0):
         decision = decision + 2 * x + 1
@@ -344,13 +350,13 @@ def _circle_filled(point, radius, fn):
 def _rect(point1, point2, fn):
   min_x = min(point1.x, point2.x)
   for x in range(abs(int(point2.x - point1.x))):
-    fn( Point(min_x + x, point1.y, 0.0, color) )
-    fn( Point(min_x + x, point2.y, 0.0, color) )
+    fn( Point(min_x + x, point1.y, 0.0, color, point.normal) )
+    fn( Point(min_x + x, point2.y, 0.0, color, point.normal) )
 
   min_y = min(point1.y, point2.y)
   for y in range(abs(int(point2.y - point1.y))):
-    fn( Point(point1.x, min_y + y, 0.0, color) )
-    fn( Point(point2.x, min_y + y, 0.0, color) )
+    fn( Point(point1.x, min_y + y, 0.0, color, point.normal) )
+    fn( Point(point2.x, min_y + y, 0.0, color, point.normal) )
 
 def _rect_filled(point1, point2, fn):
   bucket = []
@@ -579,7 +585,7 @@ def frustum(left, right, bottom, top, znear, zfar):
   
   multMatrix(matrix([
     [(2*znear)/(right-left), 0, a, 0],
-    [0, (2*near)/(top-bottom), b, 0],
+    [0, (2*znear)/(top-bottom), b, 0],
     [0, 0, c, d],
     [0, 0, -1, 0]]))
 
