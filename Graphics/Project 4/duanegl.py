@@ -571,3 +571,23 @@ def fixed_scale(sx, sy, sz,  cx, cy, cz):
     [0.0, 0.0, 0.0, 1.0]]))
   translate(-cx, -cy, -cz)
 
+def frustum(left, right, bottom, top, znear, zfar):
+  a = (right+left) / (right-left)
+  b = (top+bottom) / (top-bottom)
+  c = (zfar-znear) / (zfar-znear)
+  d = (2*zfar*znear) / (zfar-znear)
+  
+  multMatrix(matrix([
+    [(2*znear)/(right-left), 0, a, 0],
+    [0, (2*near)/(top-bottom), b, 0],
+    [0, 0, c, d],
+    [0, 0, -1, 0]]))
+
+def perspective(fovy, aspect, znear, zfar):
+   ymax = znear * tan(fovy * math.pi / 360.0)
+   ymin = -ymax
+   xmin = ymin * aspect
+   xmax = ymax * aspect
+   
+   frustum(xmin, xmax, ymin, ymax, znear, zfar)
+
