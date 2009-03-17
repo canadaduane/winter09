@@ -5,6 +5,7 @@ from OpenGL.GLU import *
 from copy import copy, deepcopy
 
 from color import Color
+from normal import Normal
 from point import Point
 
 class Viewport:
