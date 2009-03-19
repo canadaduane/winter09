@@ -1,0 +1,34 @@
+Sorting 40000000 numbers total...
+Node 0 started...
+Node 11 completed in 0.202311 seconds.
+Node 27 completed in 0.231611 seconds.
+Node 1 completed in 1.071141 seconds.
+Node 2 completed in 0.377783 seconds.
+Node 5 completed in 0.637881 seconds.
+Node 6 completed in 0.486303 seconds.
+Node 10 completed in 0.433824 seconds.
+Node 9 completed in 0.486789 seconds.
+Node 15 completed in 0.595967 seconds.
+Node 13 completed in 0.462985 seconds.
+Node 16 completed in 0.459967 seconds.
+Node 18 completed in 0.252362 seconds.
+Node 21 completed in 0.313165 seconds.
+Node 23 completed in 0.261315 seconds.
+Node 25 completed in 0.589057 seconds.
+Node 26 completed in 0.360039 seconds.
+Node 29 completed in 0.241456 seconds.
+Node 31 completed in 0.300613 seconds.
+Node 3 completed in 0.423358 seconds.
+Node 7 completed in 0.647488 seconds.
+Node 14 completed in 0.975510 seconds.
+Node 19 completed in 0.513448 seconds.
+Node 24 completed in 0.882260 seconds.
+Node 30 completed in 0.976379 seconds.
+Node 22 completed in 1.231920 seconds.
+Node 17 completed in 1.239351 seconds.
+Node 8 completed in 1.532100 seconds.
+Node 28 completed in 1.580810 seconds.
+Node 12 completed in 2.071913 seconds.
+Node 0 completed in 2.102794 seconds.
+Node 20 completed in 11.440630 seconds.
+Node 4 completed in 14.442184 seconds.

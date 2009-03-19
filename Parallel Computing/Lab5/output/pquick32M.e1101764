@@ -1,0 +1,36 @@
+Sorting 4000000 numbers total...
+Node 0 started...
+Cannot allocate more memory.
+Node 15 completed in 1.214097 seconds.
+Cannot allocate more memory.
+Node 27 completed in 1.217800 seconds.
+Node 31 completed in 1.211441 seconds.
+Node 11 completed in 1.219708 seconds.
+Node 21 completed in 1.221881 seconds.
+Node 23 completed in 1.220275 seconds.
+Node 26 completed in 1.221562 seconds.
+Node 30 completed in 1.223386 seconds.
+Node 22 completed in 1.226464 seconds.
+Node 7 completed in 1.218470 seconds.
+Node 28 completed in 1.228728 seconds.
+Node 10 completed in 1.230338 seconds.
+Node 29 completed in 1.228012 seconds.
+Node 2 completed in 1.237043 seconds.
+Node 14 completed in 1.238478 seconds.
+Node 17 completed in 1.237722 seconds.
+Node 3 completed in 1.242571 seconds.
+Node 12 completed in 1.242582 seconds.
+Node 19 completed in 1.237869 seconds.
+Node 13 completed in 1.246117 seconds.
+Node 9 completed in 1.245398 seconds.
+Node 25 completed in 1.263117 seconds.
+Node 20 completed in 1.273213 seconds.
+Node 6 completed in 1.278992 seconds.
+Node 5 completed in 1.305074 seconds.
+Node 18 completed in 1.318393 seconds.
+Node 1 completed in 1.337906 seconds.
+Node 4 completed in 1.439134 seconds.
+=>> PBS: job killed: walltime 152 exceeded limit 120
+orterun: killing job...
+
+orterun noticed that job rank 1 with PID 28040 on node m4a-5-7i exited on signal 15 (Terminated). 

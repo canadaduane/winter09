@@ -1,0 +1,10 @@
+Sorting 40000000 numbers total...
+Node 0 started...
+Node 6 completed in 0.526354 seconds.
+Node 7 completed in 1.937246 seconds.
+Node 5 completed in 2.137659 seconds.
+Node 4 completed in 2.759995 seconds.
+Node 3 completed in 7.943907 seconds.
+Node 1 completed in 9.481845 seconds.
+Node 2 completed in 10.017373 seconds.
+Node 0 completed in 11.038088 seconds.

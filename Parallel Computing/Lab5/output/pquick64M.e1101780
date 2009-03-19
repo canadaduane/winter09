@@ -1,0 +1,77 @@
+Sorting 4000000 numbers total...
+Node 0 started...
+Node 45 completed in 8.448972 seconds.
+Node 61 completed in 8.454094 seconds.
+Node 13 completed in 8.445157 seconds.
+Node 21 completed in 8.454833 seconds.
+Node 29 completed in 8.450005 seconds.
+Node 37 completed in 8.450375 seconds.
+Node 53 completed in 8.453110 seconds.
+Node 5 completed in 8.458209 seconds.
+Node 33 completed in 8.459131 seconds.
+Node 49 completed in 8.455417 seconds.
+Node 44 completed in 8.465236 seconds.
+Node 9 completed in 8.462648 seconds.
+Node 1 completed in 8.467704 seconds.
+Node 57 completed in 8.468769 seconds.
+Node 60 completed in 8.470024 seconds.
+Node 17 completed in 8.467738 seconds.
+Node 25 completed in 8.471632 seconds.
+Node 28 completed in 8.496274 seconds.
+Node 52 completed in 8.511222 seconds.
+Node 12 completed in 8.519943 seconds.
+Node 4 completed in 8.545522 seconds.
+Node 41 completed in 8.579264 seconds.
+Node 40 completed in 8.599511 seconds.
+Node 24 completed in 8.604496 seconds.
+Node 18 completed in 8.609837 seconds.
+Node 50 completed in 8.609769 seconds.
+Node 58 completed in 8.610202 seconds.
+Node 26 completed in 8.613248 seconds.
+Node 34 completed in 8.618219 seconds.
+Node 20 completed in 8.623654 seconds.
+Node 42 completed in 8.623518 seconds.
+Node 2 completed in 8.627457 seconds.
+Node 10 completed in 8.639551 seconds.
+Node 56 completed in 8.681014 seconds.
+Node 8 completed in 8.729450 seconds.
+Node 36 completed in 8.966916 seconds.
+Node 54 completed in 9.106354 seconds.
+Node 22 completed in 9.108163 seconds.
+Node 46 completed in 9.108544 seconds.
+Node 38 completed in 9.108778 seconds.
+Node 62 completed in 9.112583 seconds.
+Node 30 completed in 9.113848 seconds.
+Node 14 completed in 9.037382 seconds.
+Cannot allocate more memory.
+Node 6 completed in 9.145532 seconds.
+Node 48 completed in 9.159517 seconds.
+Node 43 completed in 9.543632 seconds.
+Node 55 completed in 9.536424 seconds.
+Node 59 completed in 9.539887 seconds.
+Node 27 completed in 9.544415 seconds.
+Node 11 completed in 9.540844 seconds.
+Node 39 completed in 9.548510 seconds.
+Node 51 completed in 9.551685 seconds.
+Node 7 completed in 9.553239 seconds.
+Node 19 completed in 9.560815 seconds.
+Node 23 completed in 9.566022 seconds.
+Node 35 completed in 9.560514 seconds.
+Node 3 completed in 9.612220 seconds.
+Node 16 completed in 9.646850 seconds.
+Node 63 completed in 9.735855 seconds.
+Node 31 completed in 9.737640 seconds.
+Node 47 completed in 9.751538 seconds.
+Node 15 completed in 8.285665 seconds.
+=>> PBS: job killed: walltime 145 exceeded limit 120
+orterun: killing job...
+
+--------------------------------------------------------------------------
+WARNING: orterun is in the process of killing a job, but has detected an
+interruption (probably control-C).
+
+It is dangerous to interrupt orterun while it is killing a job (proper
+termination may not be guaranteed).  Hit control-C again within 1
+second if you really want to kill orterun immediately.
+--------------------------------------------------------------------------
+orterun noticed that job rank 1 with PID 15820 on node m4a-5-17i exited on signal 15 (Terminated). 

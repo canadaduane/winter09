@@ -1,0 +1,69 @@
+Sorting 40000000 numbers total...
+Node 0 started...
+Node 47 completed in 0.147509 seconds.
+Node 59 completed in 0.147270 seconds.
+Node 63 completed in 0.148913 seconds.
+Node 15 completed in 0.153532 seconds.
+Node 27 completed in 0.154751 seconds.
+Node 31 completed in 0.154888 seconds.
+Node 43 completed in 0.155068 seconds.
+Node 39 completed in 0.156409 seconds.
+Node 61 completed in 0.166710 seconds.
+Node 45 completed in 0.175471 seconds.
+Node 51 completed in 0.174676 seconds.
+Node 55 completed in 0.183892 seconds.
+Node 13 completed in 0.187638 seconds.
+Node 19 completed in 0.186706 seconds.
+Node 29 completed in 0.190671 seconds.
+Node 44 completed in 0.192156 seconds.
+Node 57 completed in 0.192225 seconds.
+Node 28 completed in 0.199130 seconds.
+Node 41 completed in 0.200437 seconds.
+Node 11 completed in 0.208058 seconds.
+Node 60 completed in 0.217799 seconds.
+Node 23 completed in 0.219984 seconds.
+Node 22 completed in 0.228390 seconds.
+Node 21 completed in 0.237398 seconds.
+Node 35 completed in 0.237021 seconds.
+Node 25 completed in 0.236250 seconds.
+Node 38 completed in 0.243675 seconds.
+Node 52 completed in 0.243896 seconds.
+Cannot allocate more memory.
+Node 1 completed in 1.200828 seconds.
+Node 5 completed in 1.174073 seconds.
+Node 3 completed in 0.402144 seconds.
+Node 9 completed in 0.360918 seconds.
+Node 10 completed in 0.434002 seconds.
+Node 12 completed in 0.569528 seconds.
+Node 14 completed in 1.031252 seconds.
+Node 16 completed in 0.974198 seconds.
+Node 26 completed in 0.591195 seconds.
+Node 30 completed in 1.149695 seconds.
+Node 36 completed in 0.269115 seconds.
+Node 42 completed in 0.468591 seconds.
+Node 46 completed in 0.402478 seconds.
+Node 48 completed in 0.583810 seconds.
+Node 53 completed in 0.261252 seconds.
+Node 54 completed in 0.864467 seconds.
+Node 58 completed in 0.570448 seconds.
+Node 56 completed in 0.605389 seconds.
+Node 62 completed in 0.550846 seconds.
+Node 7 completed in 0.269354 seconds.
+Node 20 completed in 0.270836 seconds.
+Node 37 completed in 0.285032 seconds.
+Node 49 completed in 0.839085 seconds.
+Node 6 completed in 0.310179 seconds.
+Node 24 completed in 1.425150 seconds.
+Node 8 completed in 1.608539 seconds.
+Node 34 completed in 1.690173 seconds.
+Node 33 completed in 1.694303 seconds.
+Node 4 completed in 1.777046 seconds.
+Node 40 completed in 1.969888 seconds.
+Node 2 completed in 1.976719 seconds.
+Node 32 completed in 2.056018 seconds.
+Node 17 completed in 2.778694 seconds.
+Node 0 completed in 5.139396 seconds.
+=>> PBS: job killed: walltime 312 exceeded limit 300
+orterun: killing job...
+
+orterun noticed that job rank 0 with PID 22355 on node m4a-1-4i exited on signal 15 (Terminated). 

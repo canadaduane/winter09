@@ -1,0 +1,36 @@
+Sorting 4000000 numbers total...
+Node 0 started...
+Node 31 completed in 1.134282 seconds.
+Node 3 completed in 1.158624 seconds.
+Node 7 completed in 1.145710 seconds.
+Node 5 completed in 2.003161 seconds.
+Node 11 completed in 1.136333 seconds.
+Node 15 completed in 1.137867 seconds.
+Node 13 completed in 1.942356 seconds.
+Node 19 completed in 1.163069 seconds.
+Node 21 completed in 1.920762 seconds.
+Node 23 completed in 1.147075 seconds.
+Node 27 completed in 1.139622 seconds.
+Node 29 completed in 1.932503 seconds.
+Node 30 completed in 2.610528 seconds.
+Node 14 completed in 2.615600 seconds.
+Node 18 completed in 2.650040 seconds.
+Node 20 completed in 2.679428 seconds.
+Node 22 completed in 2.635127 seconds.
+Node 25 completed in 2.679746 seconds.
+Node 26 completed in 2.620730 seconds.
+Node 28 completed in 2.739493 seconds.
+Node 1 completed in 2.692893 seconds.
+Node 2 completed in 2.715599 seconds.
+Node 6 completed in 2.719747 seconds.
+Node 4 completed in 2.674329 seconds.
+Node 9 completed in 2.663441 seconds.
+Node 10 completed in 2.619694 seconds.
+Node 12 completed in 2.685826 seconds.
+Node 17 completed in 2.710347 seconds.
+Cannot allocate more memory.
+Node 0 completed in 3.731197 seconds.
+Node 16 completed in 3.774956 seconds.
+=>> PBS: job killed: walltime 143 exceeded limit 120
+orterun: killing job...
+

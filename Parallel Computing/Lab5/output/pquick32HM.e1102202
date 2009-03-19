@@ -1,0 +1,37 @@
+Sorting 40000000 numbers total...
+Node 0 started...
+Node 2 completed in 0.229900 seconds.
+Node 11 completed in 0.219203 seconds.
+Node 13 completed in 0.216166 seconds.
+Node 27 completed in 0.241118 seconds.
+Node 18 completed in 0.336366 seconds.
+Node 23 completed in 0.272277 seconds.
+Node 31 completed in 0.315461 seconds.
+Node 3 completed in 0.407069 seconds.
+Node 16 completed in 0.462981 seconds.
+Cannot allocate more memory.
+Node 22 completed in 0.468503 seconds.
+Node 25 completed in 0.434622 seconds.
+Node 26 completed in 0.461378 seconds.
+Node 5 completed in 0.546645 seconds.
+Node 10 completed in 0.477066 seconds.
+Node 19 completed in 0.546959 seconds.
+Node 29 completed in 0.499233 seconds.
+Node 7 completed in 0.645872 seconds.
+Node 9 completed in 0.635853 seconds.
+Node 15 completed in 0.612019 seconds.
+Node 6 completed in 0.673994 seconds.
+Node 21 completed in 0.433145 seconds.
+Node 17 completed in 0.846807 seconds.
+Node 30 completed in 0.851141 seconds.
+Node 24 completed in 0.904549 seconds.
+Node 28 completed in 1.064500 seconds.
+Node 8 completed in 1.527887 seconds.
+Node 1 completed in 1.512223 seconds.
+Node 14 completed in 1.654919 seconds.
+Node 0 completed in 2.103576 seconds.
+Node 12 completed in 2.616444 seconds.
+=>> PBS: job killed: walltime 326 exceeded limit 300
+orterun: killing job...
+
+orterun noticed that job rank 0 with PID 14046 on node m4a-5-28i exited on signal 15 (Terminated). 

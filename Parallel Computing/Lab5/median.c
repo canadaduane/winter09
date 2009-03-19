@@ -13,8 +13,10 @@
  * NOTE: Only works on values of magnitude 1/2 the maximum allowable for that type
  */
 
-int median(int *m, int n)
+int median( Array numbers )
 {
+    int* m = numbers.ptr;
+    int n = numbers.size;
     int i, less, greater, equal;
     int min, max, guess, maxltguess, mingtguess;
 
@@ -47,10 +49,10 @@ int median(int *m, int n)
 }
 
 
-int median_of_first( int* numbers, int size )
+int median_of_first( Array numbers )
 {
-    if (size > 0)
-        return numbers[0];
+    if (numbers.size > 0)
+        return numbers.ptr[0];
     else
         return 0;
 }

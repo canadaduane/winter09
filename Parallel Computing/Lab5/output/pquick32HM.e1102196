@@ -1,0 +1,44 @@
+Sorting 40000000 numbers total...
+Node 0 started...
+Node 11 completed in 0.199925 seconds.
+Node 27 completed in 0.219862 seconds.
+Node 23 completed in 0.249202 seconds.
+Node 13 completed in 0.292311 seconds.
+Node 31 completed in 0.293238 seconds.
+Node 21 completed in 0.295987 seconds.
+Node 18 completed in 0.330916 seconds.
+Cannot allocate more memory.
+Node 26 completed in 0.342157 seconds.
+Node 10 completed in 0.357557 seconds.
+Node 2 completed in 0.369229 seconds.
+Node 29 completed in 0.377469 seconds.
+Node 3 completed in 0.388037 seconds.
+Node 16 completed in 0.425266 seconds.
+Node 6 completed in 0.446900 seconds.
+Node 25 completed in 0.479170 seconds.
+Node 19 completed in 0.506296 seconds.
+Node 22 completed in 0.580912 seconds.
+Node 9 completed in 0.590408 seconds.
+Node 15 completed in 0.595705 seconds.
+Node 5 completed in 0.620555 seconds.
+Node 7 completed in 0.624084 seconds.
+Node 30 completed in 0.947387 seconds.
+Node 28 completed in 1.037148 seconds.
+Node 24 completed in 1.044118 seconds.
+Node 1 completed in 1.057250 seconds.
+Node 17 completed in 1.183765 seconds.
+Node 8 completed in 1.294351 seconds.
+Node 14 completed in 1.568330 seconds.
+Node 0 completed in 2.041551 seconds.
+Node 12 completed in 2.541699 seconds.
+=>> PBS: job killed: walltime 332 exceeded limit 300
+orterun: killing job...
+
+--------------------------------------------------------------------------
+WARNING: orterun is in the process of killing a job, but has detected an
+interruption (probably control-C).
+
+It is dangerous to interrupt orterun while it is killing a job (proper
+termination may not be guaranteed).  Hit control-C again within 1
+second if you really want to kill orterun immediately.
+--------------------------------------------------------------------------

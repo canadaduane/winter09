@@ -1,0 +1,67 @@
+Sorting 4000000 numbers total...
+Node 0 started...
+Node 13 completed in 0.665305 seconds.
+Node 45 completed in 0.670339 seconds.
+Node 1 completed in 0.687035 seconds.
+Node 5 completed in 0.667101 seconds.
+Node 21 completed in 0.674623 seconds.
+Node 29 completed in 0.664185 seconds.
+Node 31 completed in 0.684280 seconds.
+Node 33 completed in 0.674024 seconds.
+Node 39 completed in 0.677645 seconds.
+Node 49 completed in 0.674952 seconds.
+Node 53 completed in 0.671156 seconds.
+Node 55 completed in 0.670962 seconds.
+Node 61 completed in 0.663634 seconds.
+Node 63 completed in 0.677729 seconds.
+Node 37 completed in 0.673430 seconds.
+Node 28 completed in 0.686361 seconds.
+Node 60 completed in 0.687358 seconds.
+Node 57 completed in 0.684800 seconds.
+Node 17 completed in 0.688747 seconds.
+Cannot allocate more memory.
+Cannot allocate more memory.
+Node 7 completed in 0.684690 seconds.
+Node 41 completed in 0.688461 seconds.
+Node 44 completed in 0.694055 seconds.
+Node 52 completed in 0.695036 seconds.
+Node 20 completed in 0.696377 seconds.
+Node 25 completed in 0.691854 seconds.
+Node 23 completed in 0.687906 seconds.
+Node 47 completed in 0.695437 seconds.
+Node 15 completed in 0.702934 seconds.
+Node 16 completed in 0.723152 seconds.
+Node 32 completed in 0.731506 seconds.
+Node 0 completed in 0.732464 seconds.
+Node 36 completed in 0.736210 seconds.
+Node 12 completed in 0.763014 seconds.
+Node 9 completed in 0.792630 seconds.
+Node 4 completed in 0.945057 seconds.
+Node 48 completed in 1.198405 seconds.
+Node 42 completed in 2.132969 seconds.
+Node 50 completed in 2.133277 seconds.
+Node 58 completed in 2.133514 seconds.
+Node 54 completed in 2.133727 seconds.
+Node 18 completed in 2.135239 seconds.
+Node 26 completed in 2.135118 seconds.
+Node 46 completed in 2.135247 seconds.
+Node 10 completed in 2.137030 seconds.
+Node 30 completed in 2.141093 seconds.
+Node 22 completed in 2.142312 seconds.
+Node 62 completed in 2.142600 seconds.
+Node 34 completed in 2.146610 seconds.
+Node 6 completed in 2.148275 seconds.
+Node 38 completed in 2.148297 seconds.
+Node 14 completed in 2.155799 seconds.
+Node 2 completed in 2.202532 seconds.
+Node 43 completed in 2.684262 seconds.
+Node 59 completed in 2.689253 seconds.
+Node 27 completed in 2.691585 seconds.
+Node 11 completed in 2.694639 seconds.
+Node 51 completed in 2.696002 seconds.
+Node 19 completed in 2.701343 seconds.
+Node 35 completed in 2.714063 seconds.
+Node 3 completed in 2.759168 seconds.
+=>> PBS: job killed: walltime 163 exceeded limit 120
+orterun: killing job...
+

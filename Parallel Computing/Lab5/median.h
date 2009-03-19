@@ -6,8 +6,8 @@ typedef struct ARRAY {
     int size;
 } Array;
 
-int median(int *numbers, int size);
-int median_of_first( int* numbers, int size );
+int median( Array numbers );
+int median_of_first( Array numbers );
 int median_of_three( Array numbers );
 int median_random( Array numbers );
 
