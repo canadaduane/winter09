@@ -17,6 +17,12 @@ ESCAPE = '\033'
 window = 0
 drawMode = 1
 sceneChoice = 0
+x = 0.0
+y = 0.05
+z = -0.5
+w = 0.1
+d = 1.0
+
 
 # Helper Function for floating-point ranges
 def frange(fr, to, step):
@@ -27,9 +33,9 @@ def frange(fr, to, step):
 def scene_clear():
   clearColor(0.0, 0.0, 0.0)
   clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-  disable(GL_POINT_SMOOTH)
-  pointSize(1)
-  lineWidth(1)
+  # disable(GL_POINT_SMOOTH)
+  # pointSize(1)
+  # lineWidth(1)
   matrixMode(GL_MODELVIEW)
   loadIdentity()
   
@@ -40,15 +46,8 @@ def vy(value):
   return (float(value) - 240) / 480
 
 def scene_a():
-  scene_clear()
-  matrixMode(GL_PROJECTION)
-  loadIdentity()
-  frustum(-0.1,0.1, -0.1*480/640,0.1*480/640,  0.1,10)
-  # perspective(90, double(640)/480, 0.1, 10)
-  matrixMode(GL_MODELVIEW)
-  loadIdentity()
-  
-  # viewport(0, 0, 640, 480)
+  global x, y, z, w, d
+  scene_clear()  
   
   # begin(GL_TRIANGLES)
   # color3f(1.0, 0.0, 0.0)
@@ -57,19 +56,19 @@ def scene_a():
   # vertex3f(0.5, -0.1, 0.5)
   # end()
 
-  glBegin(GL_TRIANGLES)
-  glColor3f(0.0, 0.0, 1.0)
-  glVertex3f(0.0, 0.0, 1.0)
-  glVertex3f(-0.5, -0.1, 0.5)
-  glVertex3f(0.5, -0.1, 0.5)
-  glEnd()
-  
+  # glBegin(GL_TRIANGLES)
+  # glColor3f(0.0, 0.0, 1.0)
+  # glVertex3f(0.0, 0.0, 1.0)
+  # glVertex3f(-0.5, -0.1, 0.5)
+  # glVertex3f(0.5, -0.1, 0.5)
+  # glEnd()
+  glTranslatef(x, y, z)
   glBegin(GL_QUADS)
   glColor3f(1.0, 0.0, 0.0)
-  glVertex3f(-0.2,  0.2,  1.0)
-  glVertex3f( 0.2,  0.2,  1.0)
-  glVertex3f( 0.2,  0.2,  0.5)
-  glVertex3f(-0.2,  0.2,  0.5)
+  glVertex3f(-w/2,  0,  -d/2)
+  glVertex3f( w/2,  0,  -d/2)
+  glVertex3f( w/2,  0.1,   d/2)
+  glVertex3f(-w/2,  0.1,   d/2)
   glEnd()
   
   # begin(GL_QUADS)
@@ -137,72 +136,79 @@ def InitGL(width, height):
   glDepthFunc(GL_LESS)              # The Type Of Depth Test To Do
   glEnable(GL_DEPTH_TEST)           # Enables Depth Testing
   glShadeModel(GL_SMOOTH)           # Enables Smooth Color Shading
-  
+    
 def ReSizeGLScene(width, height):
   # Prevent A Divide By Zero If The Window Is Too Small 
   if height == 0:
     height = 1
-
+  
+  glViewport(0, 0, width, height)
+  
   # Reset The Current Viewport And Perspective Transformation
   # glViewport(0, 0, width, height)
   glMatrixMode(GL_PROJECTION)
   glLoadIdentity()
+  # print projectionMatrix(True)
+  # glFrustum(-1.0,1.0, -1.0*float(height)/float(width),1.0*float(height)/float(width), 0.1, 100)
+  # frustum(-1.0,1.0, -1.0*float(height)/float(width),1.0*float(height)/float(width),  0.1,100)
+  frustum(-0.1,0.1, -0.1*480/640,0.1*480/640,  0.1,10)
+  # print projectionMatrix(True)
+  # gluPerspective(45, float(width)/float(height), 0.1, 100)
+  # perspective(45, float(width)/float(height), 0.1, 100)
+  
   glMatrixMode(GL_MODELVIEW)
   glLoadIdentity()
-  # glOrtho(0,width, 0,height, -1,1);
-  
-  # DrawGLScene()
 
 def DrawGLScene():
   global sceneChoice
-  glClearColor(0.1, 0.1, 0.1, 1)
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); # Clear The Screen And The Depth Buffer
+  glClearColor(0.0, 0.0, 0.0, 0.0)
   
   # Draw the chosen scene
   [scene_a, scene_b, scene_c, scene_d][sceneChoice]()
   
-  if drawMode == 2:
-    
-    clippingWasOn = [glIsEnabled(GL_CLIP_PLANE0 + i) for i in range(6)]
-    [glDisable(GL_CLIP_PLANE0+i) for i in range(6)]
-    
-    depthWasEnabled = glIsEnabled(GL_DEPTH_TEST)
-    glDisable(GL_DEPTH_TEST)
-
-    oldViewport = glGetIntegerv(GL_VIEWPORT)
-    glViewport(0,0,640,480);
-    
-    oldMatrixMode = glGetIntegerv(GL_MATRIX_MODE)
-    
-    glMatrixMode(GL_MODELVIEW)
-    glPushMatrix()
-    glLoadIdentity()
-    
-    glMatrixMode(GL_PROJECTION)
-    glPushMatrix()
-    glLoadIdentity()
-    
-    # Draw the raster image
-    glRasterPos2f(-1,-1)
-    glDrawPixels(640, 480, GL_RGB, GL_FLOAT, duanegl.raster);
-    
-    # Set the state back to what it was
-    glMatrixMode(GL_PROJECTION)
-    glPopMatrix()
-
-    glMatrixMode(GL_MODELVIEW)
-    glPopMatrix()
-
-    glMatrixMode(oldMatrixMode)
-    
-    glViewport(oldViewport[0], oldViewport[1], oldViewport[2], oldViewport[3])
-    
-    if (depthWasEnabled):
-      glEnable(GL_DEPTH_TEST)
-    
-    for i in range(6):
-      if clippingWasOn[i]:
-        glEnable(GL_CLIP_PLANE0 + i)
+  # if drawMode == 2:
+  #   
+  #   clippingWasOn = [glIsEnabled(GL_CLIP_PLANE0 + i) for i in range(6)]
+  #   [glDisable(GL_CLIP_PLANE0+i) for i in range(6)]
+  #   
+  #   depthWasEnabled = glIsEnabled(GL_DEPTH_TEST)
+  #   glDisable(GL_DEPTH_TEST)
+  # 
+  #   oldViewport = glGetIntegerv(GL_VIEWPORT)
+  #   glViewport(0,0,640,480);
+  #   
+  #   oldMatrixMode = glGetIntegerv(GL_MATRIX_MODE)
+  #   
+  #   glMatrixMode(GL_MODELVIEW)
+  #   glPushMatrix()
+  #   glLoadIdentity()
+  #   
+  #   glMatrixMode(GL_PROJECTION)
+  #   glPushMatrix()
+  #   glLoadIdentity()
+  #   
+  #   # Draw the raster image
+  #   glRasterPos2f(-1,-1)
+  #   glDrawPixels(640, 480, GL_RGB, GL_FLOAT, duanegl.raster);
+  #   
+  #   # Set the state back to what it was
+  #   glMatrixMode(GL_PROJECTION)
+  #   glPopMatrix()
+  # 
+  #   glMatrixMode(GL_MODELVIEW)
+  #   glPopMatrix()
+  # 
+  #   glMatrixMode(oldMatrixMode)
+  #   
+  #   glViewport(oldViewport[0], oldViewport[1], oldViewport[2], oldViewport[3])
+  #   
+  #   if (depthWasEnabled):
+  #     glEnable(GL_DEPTH_TEST)
+  #   
+  #   for i in range(6):
+  #     if clippingWasOn[i]:
+  #       glEnable(GL_CLIP_PLANE0 + i)
     
   glFlush()
     
@@ -211,6 +217,7 @@ def DrawGLScene():
 # The function called whenever a key is pressed. Note the use of Python tuples to pass in: (key, x, y)  
 def keyPressed(*args):
   global drawMode, sceneChoice
+  global x, y, z, w, d
   
   def set_draw_mode(m):
     global drawMode
@@ -220,6 +227,18 @@ def keyPressed(*args):
     global sceneChoice
     print "set_scene_choice"
     sceneChoice = m
+  
+  def right(amount):
+    global x
+    x += amount
+  
+  def up(amount):
+    global y
+    y += amount
+
+  def into(amount):
+    global z
+    z += amount
   
   try:
     # If escape is pressed, kill everything.
@@ -231,7 +250,15 @@ def keyPressed(*args):
       'a': lambda: set_scene_choice(0),
       's': lambda: set_scene_choice(1),
       'd': lambda: set_scene_choice(2),
-      'f': lambda: set_scene_choice(3)
+      'f': lambda: set_scene_choice(3),
+      
+      'i': lambda: up(0.02),
+      'k': lambda: up(-0.02),
+      'j': lambda: right(-0.02),
+      'l': lambda: right(0.02),
+      'u': lambda: into(0.5),
+      'h': lambda: into(-0.5)
+      
     }[args[0]]()
   except KeyError:
     # that's ok

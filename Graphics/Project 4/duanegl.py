@@ -42,6 +42,18 @@ enabled = {}
 
 lights = [Light() for i in range(0, 8)]
 
+def projectionMatrix(opengl = False):
+  if (opengl):
+    return glGetFloatv(GL_PROJECTION_MATRIX).transpose()
+  else:
+    return projection_matrix_stack[-1]
+
+def modelviewMatrix():
+  if (opengl):
+    return glGetFloatv(GL_MODELVIEW_MATRIX).transpose()
+  else:
+    return modelview_matrix_stack[-1]
+
 def clearColor(r, g, b, a = 1.0):
   """Sets the color that will be used by clear()"""
   global clear_color
@@ -71,22 +83,22 @@ def loadIdentity():
   elif matrix_mode == GL_MODELVIEW:
     modelview_matrix_stack[-1] = copy(identity_matrix)
 
-def loadMatrix(v16):
+def loadMatrix(m):
   global matrix_mode, projection_matrix_stack, modelview_matrix_stack
-  glLoadMatrixd(v16)
+  glLoadMatrixd(m.transpose)
   if matrix_mode == GL_PROJECTION:
-    projection_matrix_stack[-1] = matrix(v16).reshape(4, 4)
+    projection_matrix_stack[-1] = copy(m)
   elif matrix_mode == GL_MODELVIEW:
-    modelview_matrix_stack[-1] = matrix(v16).reshape(4, 4)
+    modelview_matrix_stack[-1] = copy(m)
 
-def multMatrix(v16, useGl = True):
+def multMatrix(m, useGl = True):
   global matrix_mode, projection_matrix_stack, modelview_matrix_stack
-  if useGl:
-    glMultMatrixd(v16)
+  glMultMatrixd(m.transpose())
+  # m16 = matrix(copy(v16)).reshape(4, 4)
   if matrix_mode == GL_PROJECTION:
-    projection_matrix_stack[-1] = projection_matrix_stack[-1] * matrix(copy(v16)).reshape(4, 4).transpose()
+    projection_matrix_stack[-1] *= m
   elif matrix_mode == GL_MODELVIEW:
-    modelview_matrix_stack[-1] = modelview_matrix_stack[-1] * matrix(copy(v16)).reshape(4, 4).transpose()
+    modelview_matrix_stack[-1] *= m
 
 def pushMatrix():
   global matrix_mode, projection_matrix_stack, modelview_matrix_stack
@@ -604,20 +616,29 @@ def fixed_scale(sx, sy, sz,  cx, cy, cz):
 def frustum(left, right, bottom, top, znear, zfar):
   a = (right+left) / (right-left)
   b = (top+bottom) / (top-bottom)
-  c = (zfar-znear) / (zfar-znear)
+  c = (zfar+znear) / (zfar-znear)
   d = (2*zfar*znear) / (zfar-znear)
-  
-  multMatrix(matrix([
-    [(2*znear)/(right-left), 0, a, 0],
-    [0, (2*znear)/(top-bottom), b, 0],
+  e = (2*znear) / (right-left)
+  f = (2*znear) / (top-bottom)
+  m = matrix(array([
+    [e, 0, a, 0],
+    [0, f, b, 0],
     [0, 0, c, d],
-    [0, 0, -1, 0]]))
+    [0, 0, -1, 0]],
+    dtype='float32'))
+  multMatrix(m)
 
 def perspective(fovy, aspect, znear, zfar):
-   ymax = znear * tan(fovy * math.pi / 360.0)
-   ymin = -ymax
-   xmin = ymin * aspect
-   xmax = ymax * aspect
-   
-   frustum(xmin, xmax, ymin, ymax, znear, zfar)
+  rad = float(fovy)/180*math.pi
+  f = 1.0/math.tan(rad/2)
+  g = f/float(aspect)
+  a = float(zfar+znear)/(znear-zfar)
+  b = float(2*zfar*znear)/(znear-zfar)
+  m = matrix(array([
+    [g, 0, 0, 0],
+    [0, f, 0, 0],
+    [0, 0, a, b],
+    [0, 0, -1, 0]],
+    dtype='float32'))
+  multMatrix(m)
 
