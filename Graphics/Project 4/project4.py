@@ -19,7 +19,7 @@ drawMode = 1
 sceneChoice = 0
 x = 0.0
 y = 0.05
-z = -0.5
+z = -2.5
 w = 0.1
 d = 1.0
 
@@ -49,35 +49,23 @@ def scene_a():
   global x, y, z, w, d
   scene_clear()  
   
-  # begin(GL_TRIANGLES)
-  # color3f(1.0, 0.0, 0.0)
-  # vertex3f(0.0, 0.0, 1.0)
-  # vertex3f(-0.5, -0.1, 0.5)
-  # vertex3f(0.5, -0.1, 0.5)
-  # end()
-
-  # glBegin(GL_TRIANGLES)
-  # glColor3f(0.0, 0.0, 1.0)
-  # glVertex3f(0.0, 0.0, 1.0)
-  # glVertex3f(-0.5, -0.1, 0.5)
-  # glVertex3f(0.5, -0.1, 0.5)
+  # glTranslatef(x, y, z)
+  # glBegin(GL_QUADS)
+  # glColor3f(1.0, 0.0, 0.0)
+  # glVertex3f(-w/2,  0,  -d/2)
+  # glVertex3f( w/2,  0,  -d/2)
+  # glVertex3f( w/2,  0.1,   d/2)
+  # glVertex3f(-w/2,  0.1,   d/2)
   # glEnd()
-  glTranslatef(x, y, z)
-  glBegin(GL_QUADS)
-  glColor3f(1.0, 0.0, 0.0)
-  glVertex3f(-w/2,  0,  -d/2)
-  glVertex3f( w/2,  0,  -d/2)
-  glVertex3f( w/2,  0.1,   d/2)
-  glVertex3f(-w/2,  0.1,   d/2)
-  glEnd()
   
-  # begin(GL_QUADS)
-  # color3f(1.0, 0.0, 0.0)
-  # vertex3f(-0.2,  0.2,  1.0)
-  # vertex3f( 0.2,  0.2,  1.0)
-  # vertex3f( 0.2,  0.2,  0.5)
-  # vertex3f(-0.2,  0.2,  0.5)
-  # end()
+  translate(x, y, z)
+  begin(GL_QUADS)
+  color3f(1.0, 0.0, 0.0)
+  vertex3f(-w/2,  0,  -d/2)
+  vertex3f( w/2,  0,  -d/2)
+  vertex3f( w/2,  0.1,   d/2)
+  vertex3f(-w/2,  0.1,   d/2)
+  end()
 
 def scene_b():
   scene_clear()
@@ -108,11 +96,14 @@ def scene_b():
 def scene_c():
   scene_clear()
   
-  # enable(GL_LIGHTING)
-  # enable(GL_LIGHT0)
-  # light(GL_LIGHT0, GL_DIFFUSE, [0.0, 0.0, 0.0, 1.0])
+  enable(GL_LIGHTING)
+  enable(GL_LIGHT0)
+  light(GL_LIGHT0, GL_DIFFUSE, [0.5, 0.0, 0.0, 1.0])
+  light(GL_LIGHT0, GL_AMBIENT, [0.1, 0.1, 0.1, 1.0])
+  light(GL_LIGHT0, GL_POSITION, [0.5, 0.5, -3.0, 0.0])
   
-  dp = math.pi/16 # 16 picked arbitrarily; try other numbers too
+  dp = math.pi/4 # 16 picked arbitrarily; try other numbers too
+  translate(0, 0, -5.0)
   begin(GL_QUADS)
   for theta in frange(0, 2*math.pi, dp):
     for phi in frange(0, math.pi, dp):
@@ -125,6 +116,27 @@ def scene_c():
       normal3f(math.cos(theta)   *math.sin(phi+dp), math.cos(phi+dp), math.sin(theta)   *math.sin(phi+dp))
       vertex3f(math.cos(theta)   *math.sin(phi+dp), math.cos(phi+dp), math.sin(theta)   *math.sin(phi+dp))
   end()
+  
+  # glEnable(GL_LIGHTING)
+  # glEnable(GL_LIGHT0)
+  # glLightfv(GL_LIGHT0, GL_DIFFUSE, [0.5, 0.0, 0.0, 1.0])
+  # glLightfv(GL_LIGHT0, GL_AMBIENT, [0.1, 0.1, 0.1, 1.0])
+  # glLightfv(GL_LIGHT0, GL_POSITION, [0.5, 0.5, -3.0, 0.0])
+  # 
+  # dp = math.pi/4 # 16 picked arbitrarily; try other numbers too
+  # glTranslatef(0, 0, -5.0)
+  # glBegin(GL_QUADS)
+  # for theta in frange(0, 2*math.pi, dp):
+  #   for phi in frange(0, math.pi, dp):
+  #     glNormal3f(math.cos(theta)   *math.sin(phi),    math.cos(phi),    math.sin(theta)   *math.sin(phi))
+  #     glVertex3f(math.cos(theta)   *math.sin(phi),    math.cos(phi),    math.sin(theta)   *math.sin(phi))
+  #     glNormal3f(math.cos(theta+dp)*math.sin(phi),    math.cos(phi),    math.sin(theta+dp)*math.sin(phi))
+  #     glVertex3f(math.cos(theta+dp)*math.sin(phi),    math.cos(phi),    math.sin(theta+dp)*math.sin(phi))
+  #     glNormal3f(math.cos(theta+dp)*math.sin(phi+dp), math.cos(phi+dp), math.sin(theta+dp)*math.sin(phi+dp))
+  #     glVertex3f(math.cos(theta+dp)*math.sin(phi+dp), math.cos(phi+dp), math.sin(theta+dp)*math.sin(phi+dp))
+  #     glNormal3f(math.cos(theta)   *math.sin(phi+dp), math.cos(phi+dp), math.sin(theta)   *math.sin(phi+dp))
+  #     glVertex3f(math.cos(theta)   *math.sin(phi+dp), math.cos(phi+dp), math.sin(theta)   *math.sin(phi+dp))
+  # glEnd()
 
 def scene_d():
   scene_clear()
@@ -167,48 +179,48 @@ def DrawGLScene():
   # Draw the chosen scene
   [scene_a, scene_b, scene_c, scene_d][sceneChoice]()
   
-  # if drawMode == 2:
-  #   
-  #   clippingWasOn = [glIsEnabled(GL_CLIP_PLANE0 + i) for i in range(6)]
-  #   [glDisable(GL_CLIP_PLANE0+i) for i in range(6)]
-  #   
-  #   depthWasEnabled = glIsEnabled(GL_DEPTH_TEST)
-  #   glDisable(GL_DEPTH_TEST)
-  # 
-  #   oldViewport = glGetIntegerv(GL_VIEWPORT)
-  #   glViewport(0,0,640,480);
-  #   
-  #   oldMatrixMode = glGetIntegerv(GL_MATRIX_MODE)
-  #   
-  #   glMatrixMode(GL_MODELVIEW)
-  #   glPushMatrix()
-  #   glLoadIdentity()
-  #   
-  #   glMatrixMode(GL_PROJECTION)
-  #   glPushMatrix()
-  #   glLoadIdentity()
-  #   
-  #   # Draw the raster image
-  #   glRasterPos2f(-1,-1)
-  #   glDrawPixels(640, 480, GL_RGB, GL_FLOAT, duanegl.raster);
-  #   
-  #   # Set the state back to what it was
-  #   glMatrixMode(GL_PROJECTION)
-  #   glPopMatrix()
-  # 
-  #   glMatrixMode(GL_MODELVIEW)
-  #   glPopMatrix()
-  # 
-  #   glMatrixMode(oldMatrixMode)
-  #   
-  #   glViewport(oldViewport[0], oldViewport[1], oldViewport[2], oldViewport[3])
-  #   
-  #   if (depthWasEnabled):
-  #     glEnable(GL_DEPTH_TEST)
-  #   
-  #   for i in range(6):
-  #     if clippingWasOn[i]:
-  #       glEnable(GL_CLIP_PLANE0 + i)
+  if drawMode == 2:
+    
+    clippingWasOn = [glIsEnabled(GL_CLIP_PLANE0 + i) for i in range(6)]
+    [glDisable(GL_CLIP_PLANE0+i) for i in range(6)]
+    
+    depthWasEnabled = glIsEnabled(GL_DEPTH_TEST)
+    glDisable(GL_DEPTH_TEST)
+  
+    oldViewport = glGetIntegerv(GL_VIEWPORT)
+    glViewport(0,0,640,480);
+    
+    oldMatrixMode = glGetIntegerv(GL_MATRIX_MODE)
+    
+    glMatrixMode(GL_MODELVIEW)
+    glPushMatrix()
+    glLoadIdentity()
+    
+    glMatrixMode(GL_PROJECTION)
+    glPushMatrix()
+    glLoadIdentity()
+    
+    # Draw the raster image
+    glRasterPos2f(-1,-1)
+    glDrawPixels(640, 480, GL_RGB, GL_FLOAT, duanegl.raster);
+    
+    # Set the state back to what it was
+    glMatrixMode(GL_PROJECTION)
+    glPopMatrix()
+  
+    glMatrixMode(GL_MODELVIEW)
+    glPopMatrix()
+  
+    glMatrixMode(oldMatrixMode)
+    
+    glViewport(oldViewport[0], oldViewport[1], oldViewport[2], oldViewport[3])
+    
+    if (depthWasEnabled):
+      glEnable(GL_DEPTH_TEST)
+    
+    for i in range(6):
+      if clippingWasOn[i]:
+        glEnable(GL_CLIP_PLANE0 + i)
     
   glFlush()
     
