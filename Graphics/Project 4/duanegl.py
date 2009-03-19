@@ -7,6 +7,7 @@ from copy import copy, deepcopy
 from color import Color
 from normal import Normal
 from point import Point
+from light import Light
 
 class Viewport:
   def __init__(self, xmin, ymin, width, height):
@@ -38,6 +39,8 @@ modelview_matrix_stack = [copy(identity_matrix)]
 point_size = 1
 line_width = 1
 enabled = {}
+
+lights = [Light() for i in range(0, 8)]
 
 def clearColor(r, g, b, a = 1.0):
   """Sets the color that will be used by clear()"""
@@ -81,9 +84,9 @@ def multMatrix(v16, useGl = True):
   if useGl:
     glMultMatrixd(v16)
   if matrix_mode == GL_PROJECTION:
-    projection_matrix_stack[-1] = projection_matrix_stack[-1] * matrix(copy(v16)).reshape(4, 4)
+    projection_matrix_stack[-1] = projection_matrix_stack[-1] * matrix(copy(v16)).reshape(4, 4).transpose()
   elif matrix_mode == GL_MODELVIEW:
-    modelview_matrix_stack[-1] = modelview_matrix_stack[-1] * matrix(copy(v16)).reshape(4, 4)
+    modelview_matrix_stack[-1] = modelview_matrix_stack[-1] * matrix(copy(v16)).reshape(4, 4).transpose()
 
 def pushMatrix():
   global matrix_mode, projection_matrix_stack, modelview_matrix_stack
@@ -134,25 +137,24 @@ def transformed(vertices):
   p = projection_matrix_stack[-1]
   m = modelview_matrix_stack[-1]
   vvecs = matrix([v.vector() for v in vertices]).transpose()
-  intermediate = (p * m * vvecs).transpose()
-  # print "p", p
-  # print "m", m
-  # print "vvecs", vvecs
-  # print "intermediate", intermediate
+  vnorms = matrix([v.normal.vector() for v in vertices]).transpose()
+  
+  vintermediate = (p * m * vvecs).transpose()
+  nintermediate = (m.transpose() * vnorms).transpose()
   
   # Divide by w
-  for i in range(len(intermediate)):
-    intermediate[i] = intermediate[i] / intermediate[i,3]
+  for i in range(len(vintermediate)):
+    vintermediate[i] = vintermediate[i] / vintermediate[i,3]
   
   vw = vport.width/2
   vh = vport.height/2
-  def viewport_transform(vector, point):
+  def viewport_transform(vector, point, norm):
     x = vector[0,0] * vw + vw + vport.xmin
     y = vector[1,0] * vh + vh + vport.ymin
     z = vector[2,0]
-    return Point(x, y, z, point.color, point.normal)
+    return Point(x, y, z, point.color, norm)
   
-  values = [ viewport_transform(intermediate[i].transpose(), vertices[i]) \
+  values = [ viewport_transform(vintermediate[i].transpose(), vertices[i], nintermediate[i]) \
              for i in range(len(vertices)) ]
   return values
 
@@ -249,14 +251,22 @@ def isEnabled(feature):
   except: return False
 
 def enable(features):
-  global enabled
+  global enabled, lights
   glEnable(features)
-  enabled[features] = True
+  if (features >= GL_LIGHT0 and features <= GL_LIGHT7):
+    index = features-GL_LIGHT0
+    lights[index].enabled = True
+  else:
+    enabled[features] = True
 
 def disable(features):
   global enabled
   glDisable(features)
-  enabled[features] = False
+  if (features >= GL_LIGHT0 and features <= GL_LIGHT7):
+    index = features-GL_LIGHT0
+    lights[index].enabled = False
+  else:
+    enabled[features] = False
 
 def normal3f(x, y, z):
   global curr_normal
@@ -297,6 +307,19 @@ def vertex3f(x, y, z):
   global vertices
   glVertex3f(x, y, z)
   vertices.append( Point(x, y, z, curr_color, curr_normal) )
+
+def light(light_id, gl_const, vec):
+  global lights
+  glLightfv(light_id, gl_const, vec)
+  index = light_id - GL_LIGHT0
+  if (gl_const == GL_DIFFUSE):
+    apply(lights[index].diffuse.set, vec)
+  elif (gl_const == GL_AMBIENT):
+    apply(lights[index].ambient.set, vec)
+  elif (gl_const == GL_POSITION):
+    apply(lights[index].point.set, vec)
+  else:
+    raise "Invalid constant for light() call"
 
 def _point( point, size = 1, smooth = False ):
   if (size <= 0):
@@ -560,7 +583,7 @@ def ortho(l, r, b, t, n, f):
     [2.0/float(r-l), 0.0, 0.0, float(r+l)/float(r-l)],
     [0.0, 2.0/float(t-b), 0.0, float(t+b)/float(t-b)],
     [0.0, 0.0, -2.0/float(f-n), float(f+n)/float(f-n)],
-    [0.0, 0.0, 0.0, 1.0]]).transpose())
+    [0.0, 0.0, 0.0, 1.0]]))
 
 def shear(sxy, sxz, syx, syz, szx, szy):
   multMatrix(matrix([

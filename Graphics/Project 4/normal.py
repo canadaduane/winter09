@@ -4,6 +4,9 @@ class Normal:
   def __init__(self, x, y, z):
     self.x, self.y, self.z = [x, y, z]
   
+  def vector(self):
+    return [self.x, self.y, self.z, 0.0]
+  
   def __str__(self):
     return '[x:%0.1f, y:%0.1f, z:%0.1f]' % (self.x, self.y, self.z)
   

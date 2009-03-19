@@ -17,6 +17,9 @@ class Point:
   def xyz(self):
     return [self.x, self.y, self.z]
   
+  def set(self, x, y, z, n = 1.0):
+    self.x, self.y, self.z = x, y, z
+  
   def __str__(self):
     return '[x:%.03f, y:%0.3f, z:%.03f, r:%.01f, g:%.01f, b:%.01f]' % (self.x, self.y, self.z, self.color.r, self.color.g, self.color.b)
   

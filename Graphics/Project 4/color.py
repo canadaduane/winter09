@@ -10,6 +10,9 @@ class Color:
   def rgb(self):
     return [self.r, self.g, self.b]
   
+  def set(self, r, g, b, a = 1.0):
+    self.r, self.g, self.b, self.a = r, g, b, a
+  
   def increments(self, color, steps):
       r_delta = color.r - self.r
       g_delta = color.g - self.g
