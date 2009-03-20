@@ -1,3 +1,4 @@
+import numpy
 from copy import copy
 
 class Normal:
@@ -5,7 +6,10 @@ class Normal:
     self.x, self.y, self.z = [x, y, z]
   
   def vector(self):
-    return [self.x, self.y, self.z, 0.0]
+    return numpy.array([self.x, self.y, self.z, 0.0])
+  
+  def norm(self):
+    return self.vector() / numpy.linalg.norm(self.vector())
   
   def __str__(self):
     return '[x:%0.1f, y:%0.1f, z:%0.1f]' % (self.x, self.y, self.z)

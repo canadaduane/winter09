@@ -15,8 +15,8 @@ from duanegl import *
 # Define some constants that we'll be using
 ESCAPE = '\033'
 window = 0
-drawMode = 1
-sceneChoice = 0
+drawMode = 2
+sceneChoice = 2
 x = 0.0
 y = 0.05
 z = -2.5

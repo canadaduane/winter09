@@ -1,3 +1,4 @@
+from numpy import array
 from copy import copy
 
 class Color:
@@ -9,6 +10,9 @@ class Color:
   
   def rgb(self):
     return [self.r, self.g, self.b]
+  
+  def vector(self):
+    return array([self.r, self.g, self.b, 1.0])
   
   def set(self, r, g, b, a = 1.0):
     self.r, self.g, self.b, self.a = r, g, b, a

@@ -40,7 +40,7 @@ point_size = 1
 line_width = 1
 enabled = {}
 
-lights = [Light() for i in range(0, 8)]
+lights = {}
 
 def projectionMatrix(opengl = False):
   if (opengl):
@@ -166,7 +166,7 @@ def transformed(vertices):
     z = vector[2,0]
     return Point(x, y, z, point.color, norm)
   
-  values = [ viewport_transform(vintermediate[i].transpose(), vertices[i], nintermediate[i]) \
+  values = [ viewport_transform(vintermediate[i].transpose(), vertices[i], Normal(nintermediate[i,0], nintermediate[i,1], nintermediate[i,2])) \
              for i in range(len(vertices)) ]
   return values
 
@@ -267,7 +267,7 @@ def enable(features):
   glEnable(features)
   if (features >= GL_LIGHT0 and features <= GL_LIGHT7):
     index = features-GL_LIGHT0
-    lights[index].enabled = True
+    lights[index] = Light()
   else:
     enabled[features] = True
 
@@ -276,7 +276,7 @@ def disable(features):
   glDisable(features)
   if (features >= GL_LIGHT0 and features <= GL_LIGHT7):
     index = features-GL_LIGHT0
-    lights[index].enabled = False
+    del lights[index]
   else:
     enabled[features] = False
 
@@ -492,6 +492,33 @@ def _bresenham_line(p1, p2, fn):
 
 def _triangle(v1, v2, v3, fn = _set_pixel):
   """Draws a shaded triangle from v1 to v2 to v3"""
+  global lights
+  if (isEnabled(GL_LIGHTING)):
+    if (isEnabled(GL_COLOR_MATERIAL)):
+      # skip for now
+      pass
+    else:
+      c1 = array([0.0, 0.0, 0.0, 0.0])
+      for i in lights:
+        light = lights[i]
+        c1 += light.ambient.vector() + v1.litby(light.point) * light.diffuse.vector()
+      v1.color.r = c1[0]
+      v1.color.g = c1[1]
+      v1.color.b = c1[2]
+      c2 = array([0.0, 0.0, 0.0, 0.0])
+      for i in lights:
+        light = lights[i]
+        c2 += light.ambient.vector() + v2.litby(light.point) * light.diffuse.vector()
+      v2.color.r = c2[0]
+      v2.color.g = c2[1]
+      v2.color.b = c2[2]
+      c3 = array([0.0, 0.0, 0.0, 0.0])
+      for i in lights:
+        light = lights[i]
+        c3 += light.ambient.vector() + v3.litby(light.point) * light.diffuse.vector()
+      v3.color.r = c3[0]
+      v3.color.g = c3[1]
+      v3.color.b = c3[2]
   
   bucket = []
   

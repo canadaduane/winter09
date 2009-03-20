@@ -3,13 +3,13 @@ from color import Color
 from normal import Normal
 
 class Point:
-  def __init__(self, x = 0.0, y = 0.0, z = 0.0, color = Color.white, normal = Normal.default):
+  def __init__(self, x = 0.0, y = 0.0, z = 0.0, color = Color.white, n = Normal.default):
     self.x, self.y, self.z = [x, y, z]
     self.color = color
-    self.normal = normal
+    self.normal = n
   
   def vector(self):
-    return [self.x, self.y, self.z, 1.0]
+    return array([self.x, self.y, self.z, 1.0])
   
   def xy(self):
     return [self.x, self.y]
@@ -19,6 +19,11 @@ class Point:
   
   def set(self, x, y, z, n = 1.0):
     self.x, self.y, self.z = x, y, z
+  
+  def litby(self, point):
+    distance = point.vector() - self.vector()
+    normalized_distance = distance / linalg.norm(distance)
+    return max(0, dot(self.normal.vector(), normalized_distance))
   
   def __str__(self):
     return '[x:%.03f, y:%0.3f, z:%.03f, r:%.01f, g:%.01f, b:%.01f]' % (self.x, self.y, self.z, self.color.r, self.color.g, self.color.b)
