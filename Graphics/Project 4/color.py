@@ -33,10 +33,10 @@ class Color:
     self.b += b_inc
   
   def __str__(self):
-    return '[r:%0.1f, g:%0.1f, b:%0.1f]' % (self.r, self.g, self.b)
+    return '[r:%0.3f, g:%0.3f, b:%0.3f]' % (self.r, self.g, self.b)
   
   def __repr__(self):
-    return '%s(r:%0.1f, g:%0.1f, b:%0.1f)' % (
+    return '%s(r:%0.3f, g:%0.3f, b:%0.3f)' % (
       self.__class__.__name__,  # the instance class name
       self.r, self.g, self.b
     )

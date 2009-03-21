@@ -499,26 +499,25 @@ def _triangle(v1, v2, v3, fn = _set_pixel):
       pass
     else:
       c1 = array([0.0, 0.0, 0.0, 0.0])
-      for i in lights:
-        light = lights[i]
-        c1 += light.ambient.vector() + v1.litby(light.point) * light.diffuse.vector()
-      v1.color.r = c1[0]
-      v1.color.g = c1[1]
-      v1.color.b = c1[2]
       c2 = array([0.0, 0.0, 0.0, 0.0])
-      for i in lights:
-        light = lights[i]
-        c2 += light.ambient.vector() + v2.litby(light.point) * light.diffuse.vector()
-      v2.color.r = c2[0]
-      v2.color.g = c2[1]
-      v2.color.b = c2[2]
       c3 = array([0.0, 0.0, 0.0, 0.0])
       for i in lights:
         light = lights[i]
+        c1 += light.ambient.vector() + v1.litby(light.point) * light.diffuse.vector()
+        c2 += light.ambient.vector() + v2.litby(light.point) * light.diffuse.vector()
         c3 += light.ambient.vector() + v3.litby(light.point) * light.diffuse.vector()
+      v1.color.r = c1[0]
+      v1.color.g = c1[1]
+      v1.color.b = c1[2]
+      print "v1.color", v1.color
+      v2.color.r = c2[0]
+      v2.color.g = c2[1]
+      v2.color.b = c2[2]
+      print "v2.color", v2.color
       v3.color.r = c3[0]
       v3.color.g = c3[1]
       v3.color.b = c3[2]
+      print "v3.color", v3.color
   
   bucket = []
   
