@@ -125,7 +125,7 @@ def begin(mode):
   vertices = []
 
 def end():
-  global vertices, vertex_mode
+  global vertices, lights, vertex_mode
   glEnd()
 
   # Call the appropriate "end" function
@@ -140,12 +140,90 @@ def end():
     GL_QUADS:          _end_quads,
     GL_QUAD_STRIP:     _end_quad_strip,
     GL_POLYGON:        _end_triangle_fan
-  }[vertex_mode](transformed(vertices))
+  }[vertex_mode](transformed(vertices, lights))
   
   vertices = []
   vertex_mode = 0
 
-def transformed(vertices):
+def matrix_of_points(points):
+  return matrix([p.vector() for p in points])
+
+def matrix_of_normals(points):
+  return matrix([p.normal.vector() for p in points])
+
+def colors_from_points(points):
+  return [p.color for p in points]
+
+def reconstruct_points(vs, ns, cs):
+  def reconstruct(i):
+    px, py, pz = vs[i,0], vs[i,1], vs[i,2]
+    nx, ny, nz = ns[i,0], ns[i,1], ns[i,2]
+    return Point(px, py, pz, cs[i], Normal(nx, ny, nz))
+  return [reconstruct(i) for i in range(len(vs))]
+
+def modelview_transform(vertices, transposed = False):
+  m = modelview_matrix_stack[-1]
+  if (transposed): return (m.transpose() * vertices.transpose()).transpose()
+  else:            return (m * vertices.transpose()).transpose()
+
+def projection_transform(vertices):
+  p = projection_matrix_stack[-1]
+  return (p * vertices.transpose()).transpose()
+
+def viewport_transform(vertices):
+  w = vport.width/2
+  h = vport.height/2
+  x = vport.xmin
+  y = vport.ymin
+  v = matrix(array([
+    [w, 0, 0, x + w],
+    [0, h, 0, y + h],
+    [0, 0, 1, 0],
+    [0, 0, 0, 0]],
+    dtype='float32'))
+  return (v * vertices.transpose()).transpose();
+  
+def incident_light(pv, norm, lv):
+  def unit(vec):
+    return vec / linalg.norm(vec)
+  return max(0, dot(norm, unit(lv - pv)))
+
+def lightcolor_transform(p_vs, p_ns, p_cs, l_vs, l_as, l_ds):
+  if (isEnabled(GL_COLOR_MATERIAL)):
+    # skip for now
+    return p_cs
+  else:
+    colors = []
+    for j in range(len(p_vs)):
+      p_v, p_n, p_c = p_vs[j], p_ns[j], p_cs[j]
+      c = array([0.0, 0.0, 0.0, 1.0])
+      for i in range(len(l_vs)):
+        l_v, l_a, l_d = l_vs[i], l_as[i], l_ds[i]
+        c += l_a + incident_light(p_v, p_n, l_v) * l_d
+      colors.append(Color(c[0], c[1], c[2], 1.0))
+    return colors
+
+def transformed(points, lights):
+  p_vs = modelview_transform(matrix_of_points(points))
+  p_ns = modelview_transform(matrix_of_normals(points), True)
+  p_cs = colors_from_points(points)
+  l_vs = modelview_transform(matrix_of_points([lights[i].point for i in lights]))
+  l_as = [lights[i].ambient for i in lights]
+  l_ds = [lights[i].diffuse for i in lights]
+  # if (isEnabled(GL_LIGHTING)):
+    # p_cs = lightcolor_transform(p_vs, p_ns, p_cs, l_vs, l_as, l_ds)
+  
+  proj_vs = projection_transform(p_vs)
+  
+  # Divide by w
+  for i in range(len(proj_vs)):
+    proj_vs[i] = proj_vs[i] / proj_vs[i,3]
+  
+  view_vs = viewport_transform(proj_vs)
+  
+  return reconstruct_points(view_vs, p_ns, p_cs)
+
+def transformed_old(vertices):
   p = projection_matrix_stack[-1]
   m = modelview_matrix_stack[-1]
   vvecs = matrix([v.vector() for v in vertices]).transpose()
@@ -493,31 +571,6 @@ def _bresenham_line(p1, p2, fn):
 def _triangle(v1, v2, v3, fn = _set_pixel):
   """Draws a shaded triangle from v1 to v2 to v3"""
   global lights
-  if (isEnabled(GL_LIGHTING)):
-    if (isEnabled(GL_COLOR_MATERIAL)):
-      # skip for now
-      pass
-    else:
-      c1 = array([0.0, 0.0, 0.0, 0.0])
-      c2 = array([0.0, 0.0, 0.0, 0.0])
-      c3 = array([0.0, 0.0, 0.0, 0.0])
-      for i in lights:
-        light = lights[i]
-        c1 += light.ambient.vector() + v1.litby(light.point) * light.diffuse.vector()
-        c2 += light.ambient.vector() + v2.litby(light.point) * light.diffuse.vector()
-        c3 += light.ambient.vector() + v3.litby(light.point) * light.diffuse.vector()
-      v1.color.r = c1[0]
-      v1.color.g = c1[1]
-      v1.color.b = c1[2]
-      print "v1.color", v1.color
-      v2.color.r = c2[0]
-      v2.color.g = c2[1]
-      v2.color.b = c2[2]
-      print "v2.color", v2.color
-      v3.color.r = c3[0]
-      v3.color.g = c3[1]
-      v3.color.b = c3[2]
-      print "v3.color", v3.color
   
   bucket = []
   
