@@ -186,7 +186,7 @@ def viewport_transform(vertices):
 def incident_light(pv, norm, lv):
   def unit(vec):
     return vec / linalg.norm(vec)
-  return max(0, dot(norm, unit(lv - pv)))
+  return max(0, dot(norm, unit(lv - pv).transpose())[0,0])
 
 def lightcolor_transform(p_vs, p_ns, p_cs, l_vs, l_as, l_ds):
   if (isEnabled(GL_COLOR_MATERIAL)):
@@ -199,7 +199,8 @@ def lightcolor_transform(p_vs, p_ns, p_cs, l_vs, l_as, l_ds):
       c = array([0.0, 0.0, 0.0, 1.0])
       for i in range(len(l_vs)):
         l_v, l_a, l_d = l_vs[i], l_as[i], l_ds[i]
-        c += l_a + incident_light(p_v, p_n, l_v) * l_d
+        il = incident_light(p_v, p_n, l_v)
+        c += l_a + l_d * il
       colors.append(Color(c[0], c[1], c[2], 1.0))
     return colors
 
@@ -208,10 +209,10 @@ def transformed(points, lights):
   p_ns = modelview_transform(matrix_of_normals(points), True)
   p_cs = colors_from_points(points)
   l_vs = modelview_transform(matrix_of_points([lights[i].point for i in lights]))
-  l_as = [lights[i].ambient for i in lights]
-  l_ds = [lights[i].diffuse for i in lights]
-  # if (isEnabled(GL_LIGHTING)):
-    # p_cs = lightcolor_transform(p_vs, p_ns, p_cs, l_vs, l_as, l_ds)
+  l_as = [lights[i].ambient.vector() for i in lights]
+  l_ds = [lights[i].diffuse.vector() for i in lights]
+  if (isEnabled(GL_LIGHTING)):
+    p_cs = lightcolor_transform(p_vs, p_ns, p_cs, l_vs, l_as, l_ds)
   
   proj_vs = projection_transform(p_vs)
   

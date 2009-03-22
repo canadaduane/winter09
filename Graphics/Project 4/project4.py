@@ -105,29 +105,29 @@ def scene_c():
   
   dp = math.pi/4 # 16 picked arbitrarily; try other numbers too
   translate(0, 0, -5.0)
-  begin(GL_TRIANGLES)
-  normal3f(0.0, 0.0, -1.0)
-  vertex3f(0.0, 0.2, 0.0)
-  vertex3f(-0.2, -0.1, 0.0)
-  vertex3f(0.2, 0.0, 0.0)
-  end()
-  
-  # begin(GL_QUADS)
-  # for theta in frange(0, 2*math.pi, dp):
-  #   for phi in frange(0, math.pi, dp):
-  #     # color3f(1.0, 0.0, 0.0)
-  #     normal3f(math.cos(theta)   *math.sin(phi),    math.cos(phi),    math.sin(theta)   *math.sin(phi))
-  #     vertex3f(math.cos(theta)   *math.sin(phi),    math.cos(phi),    math.sin(theta)   *math.sin(phi))
-  #     # color3f(0.0, 1.0, 0.0)
-  #     normal3f(math.cos(theta+dp)*math.sin(phi),    math.cos(phi),    math.sin(theta+dp)*math.sin(phi))
-  #     vertex3f(math.cos(theta+dp)*math.sin(phi),    math.cos(phi),    math.sin(theta+dp)*math.sin(phi))
-  #     # color3f(1.0, 1.0, 0.0)
-  #     normal3f(math.cos(theta+dp)*math.sin(phi+dp), math.cos(phi+dp), math.sin(theta+dp)*math.sin(phi+dp))
-  #     vertex3f(math.cos(theta+dp)*math.sin(phi+dp), math.cos(phi+dp), math.sin(theta+dp)*math.sin(phi+dp))
-  #     # color3f(0.0, 0.0, 1.0)
-  #     normal3f(math.cos(theta)   *math.sin(phi+dp), math.cos(phi+dp), math.sin(theta)   *math.sin(phi+dp))
-  #     vertex3f(math.cos(theta)   *math.sin(phi+dp), math.cos(phi+dp), math.sin(theta)   *math.sin(phi+dp))
+  # begin(GL_TRIANGLES)
+  # normal3f(0.0, 0.0, -1.0)
+  # vertex3f(0.0, 0.2, 0.0)
+  # vertex3f(-0.2, -0.1, 0.0)
+  # vertex3f(0.2, 0.0, 0.0)
   # end()
+  
+  begin(GL_QUADS)
+  for theta in frange(0, 2*math.pi, dp):
+    for phi in frange(0, math.pi, dp):
+      # color3f(1.0, 0.0, 0.0)
+      normal3f(math.cos(theta)   *math.sin(phi),    math.cos(phi),    math.sin(theta)   *math.sin(phi))
+      vertex3f(math.cos(theta)   *math.sin(phi),    math.cos(phi),    math.sin(theta)   *math.sin(phi))
+      # color3f(0.0, 1.0, 0.0)
+      normal3f(math.cos(theta+dp)*math.sin(phi),    math.cos(phi),    math.sin(theta+dp)*math.sin(phi))
+      vertex3f(math.cos(theta+dp)*math.sin(phi),    math.cos(phi),    math.sin(theta+dp)*math.sin(phi))
+      # color3f(1.0, 1.0, 0.0)
+      normal3f(math.cos(theta+dp)*math.sin(phi+dp), math.cos(phi+dp), math.sin(theta+dp)*math.sin(phi+dp))
+      vertex3f(math.cos(theta+dp)*math.sin(phi+dp), math.cos(phi+dp), math.sin(theta+dp)*math.sin(phi+dp))
+      # color3f(0.0, 0.0, 1.0)
+      normal3f(math.cos(theta)   *math.sin(phi+dp), math.cos(phi+dp), math.sin(theta)   *math.sin(phi+dp))
+      vertex3f(math.cos(theta)   *math.sin(phi+dp), math.cos(phi+dp), math.sin(theta)   *math.sin(phi+dp))
+  end()
   
   # glEnable(GL_LIGHTING)
   # glEnable(GL_LIGHT0)
