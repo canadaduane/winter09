@@ -14,6 +14,9 @@ class Viewport:
     self.xmin, self.ymin = float(xmin), float(ymin)
     self.width, self.height = float(width), float(height)
 
+def _normalize(vec):
+  return vec / linalg.norm(vec)
+
 def n_at_a_time(list_, n):
     return [list_[i:i+n] for i in xrange(0, len(list_), n)]
 
@@ -182,11 +185,9 @@ def viewport_transform(vertices):
     [0, 0, 0, 0]],
     dtype='float32'))
   return (v * vertices.transpose()).transpose();
-  
+
 def incident_light(pv, norm, lv):
-  def unit(vec):
-    return vec / linalg.norm(vec)
-  return max(0, dot(norm, unit(lv - pv).transpose())[0,0])
+  return max(0, dot(norm, _normalize(lv - pv).transpose())[0,0])
 
 def lightcolor_transform(p_vs, p_ns, p_cs, l_vs, l_as, l_ds):
   if (isEnabled(GL_COLOR_MATERIAL)):
@@ -362,7 +363,11 @@ def disable(features):
 def normal3f(x, y, z):
   global curr_normal
   glNormal3f(x, y, z)
-  curr_normal = Normal(x, y, z)
+  if (isEnabled(GL_NORMALIZE)):
+    v = sqrt(x**2 + y**2 + z**2)
+    curr_normal = Normal(float(x)/v, float(y)/v, float(z)/v)
+  else:
+    curr_normal = Normal(x, y, z)
 
 def color3f(r, g, b):
   global curr_color
