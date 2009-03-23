@@ -225,31 +225,6 @@ def transformed(points, lights):
   
   return reconstruct_points(view_vs, p_ns, p_cs)
 
-def transformed_old(vertices):
-  p = projection_matrix_stack[-1]
-  m = modelview_matrix_stack[-1]
-  vvecs = matrix([v.vector() for v in vertices]).transpose()
-  vnorms = matrix([v.normal.vector() for v in vertices]).transpose()
-  
-  vintermediate = (p * m * vvecs).transpose()
-  nintermediate = (m.transpose() * vnorms).transpose()
-  
-  # Divide by w
-  for i in range(len(vintermediate)):
-    vintermediate[i] = vintermediate[i] / vintermediate[i,3]
-  
-  vw = vport.width/2
-  vh = vport.height/2
-  def viewport_transform(vector, point, norm):
-    x = vector[0,0] * vw + vw + vport.xmin
-    y = vector[1,0] * vh + vh + vport.ymin
-    z = vector[2,0]
-    return Point(x, y, z, point.color, norm)
-  
-  values = [ viewport_transform(vintermediate[i].transpose(), vertices[i], Normal(nintermediate[i,0], nintermediate[i,1], nintermediate[i,2])) \
-             for i in range(len(vertices)) ]
-  return values
-
 def _set_pixel(point):
   global raster, depth_buffer
   x = int(point.x)
