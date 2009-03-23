@@ -17,6 +17,7 @@ ESCAPE = '\033'
 window = 0
 drawMode = 2
 sceneChoice = 0
+selectedObject = -1
 x = 0.0
 y = 0.01
 z = -2.5
@@ -46,6 +47,13 @@ def vx(value):
 def vy(value):
   return (float(value) - 240) / 480
 
+def selColor(r, g, b, o):
+  global selectedObject
+  if selectedObject >= 0 and selectedObject == o:
+    color3f(1.0, 1.0, 1.0)
+  else:
+    color3f(r, g, b)
+  
 def scene_a():
   global x, y, z, w, d
   scene_clear()  
@@ -56,21 +64,24 @@ def scene_a():
   
   translate(x, y, z)
   begin(GL_QUADS)
-  # normal3f(1.0, 1.0, 1.0)
-  color3f(1.0, 0.0, 0.0)
+  markObject(1)
+  selColor(1.0, 0.0, 0.0, 1)
   vertex3f(-w/2,  0,  -d/2)
   vertex3f( w/2,  0,  -d/2)
   vertex3f( w/2,  0.1,   d/2)
   vertex3f(-w/2,  0.1,   d/2)
+  markObject(-1)
   end()
   
   begin(GL_TRIANGLES)
-  color3f(1.0, 0.0, 0.0)
+  markObject(2)
+  selColor(1.0, 0.0, 0.0, 2)
   vertex3f(-0.2, -0.2, -1.0)
-  color3f(1.0, 1.0, 0.0)
+  selColor(1.0, 1.0, 0.0, 2)
   vertex3f(-0.8, -0.8, -1.0)
-  color3f(0.0, 0.0, 1.0)
+  selColor(0.0, 0.0, 1.0, 2)
   vertex3f(-0.15, -0.5, -1.0)
+  markObject(-1)
 
   color3f(1.0, 0.0, 0.0)
   vertex3f(0.2, -0.2, -1.0)
@@ -196,13 +207,14 @@ def ReSizeGLScene(width, height):
   glMatrixMode(GL_MODELVIEW)
   glLoadIdentity()
 
-def DrawGLScene():
+def DrawGLScene(redraw = True):
   global sceneChoice
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); # Clear The Screen And The Depth Buffer
   glClearColor(0.0, 0.0, 0.0, 0.0)
   
   # Draw the chosen scene
-  [scene_a, scene_b, scene_c, scene_d][sceneChoice]()
+  if redraw:
+    [scene_a, scene_b, scene_c, scene_d][sceneChoice]()
   
   if drawMode == 2:
     
@@ -250,6 +262,18 @@ def DrawGLScene():
   glFlush()
     
   glutSwapBuffers()
+
+def mouseUsed(button, state, x, y):
+  global object_buffer, selectedObject
+  if button == 0 and state == 0:
+    y = 480-y
+    setpixel(x, y)
+    selectedObject = getobject(x, y)
+    print "obj", selectedObject
+    if selectedObject >= 0:
+      DrawGLScene(True)
+    else:
+      DrawGLScene(False)
 
 # The function called whenever a key is pressed. Note the use of Python tuples to pass in: (key, x, y)  
 def keyPressed(*args):
@@ -344,6 +368,8 @@ def main():
   # Register the function called when the keyboard is pressed.  
   glutKeyboardFunc(keyPressed)
 
+  glutMouseFunc(mouseUsed)
+  
   # Initialize our window. 
   InitGL(640, 480)
 

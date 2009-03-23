@@ -3,10 +3,11 @@ from color import Color
 from normal import Normal
 
 class Point:
-  def __init__(self, x = 0.0, y = 0.0, z = 0.0, color = Color.white, n = Normal.default):
+  def __init__(self, x = 0.0, y = 0.0, z = 0.0, color = Color.white, n = Normal.default, o = 0):
     self.x, self.y, self.z = [x, y, z]
     self.color = color
     self.normal = n
+    self.object = o
   
   def vector(self):
     return array([self.x, self.y, self.z, 1.0])

@@ -26,10 +26,12 @@ RASTER_HEIGHT = 480
 RASTER_SIZE = RASTER_WIDTH * RASTER_HEIGHT * 3
 raster = array([ 0.0 for i in range(0, RASTER_SIZE) ], dtype='float32')
 depth_buffer = array([ 10000 for i in range(0, RASTER_WIDTH * RASTER_HEIGHT) ], dtype='float32')
+object_buffer = array([ -1 for i in range(0, RASTER_WIDTH * RASTER_HEIGHT) ])
 
 clear_color = Color.black
 curr_color = Color.white
 curr_normal = Normal.default
+curr_object = 0
 
 vport = Viewport(0, 0, 640, 480)
 identity_matrix = matrix(array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]], dtype='float32'))
@@ -83,6 +85,10 @@ def cullFace(fb):
   global cull_face
   glCullFace(fb)
   cull_face = fb
+
+def markObject(n):
+  global curr_object
+  curr_object = n
 
 def matrixMode(mode):
   global matrix_mode, projection_matrix_stack, modelview_matrix_stack
@@ -169,11 +175,11 @@ def matrix_of_normals(points):
 def colors_from_points(points):
   return [p.color for p in points]
 
-def reconstruct_points(vs, ns, cs):
+def reconstruct_points(vs, ns, cs, objs):
   def reconstruct(i):
     px, py, pz = vs[i,0], vs[i,1], vs[i,2]
     nx, ny, nz = ns[i,0], ns[i,1], ns[i,2]
-    return Point(px, py, pz, cs[i], Normal(nx, ny, nz))
+    return Point(px, py, pz, cs[i], Normal(nx, ny, nz), objs[i])
   return [reconstruct(i) for i in range(len(vs))]
 
 def modelview_transform(vertices, transposed = False):
@@ -236,7 +242,7 @@ def transformed(points, lights):
   
   view_vs = viewport_transform(proj_vs)
   
-  return reconstruct_points(view_vs, p_ns, p_cs)
+  return reconstruct_points(view_vs, p_ns, p_cs, [p.object for p in points])
 
 def should_cull(p1, p2, p3):
   global front_face, cull_face
@@ -256,6 +262,26 @@ def should_cull(p1, p2, p3):
   else:
     return False
 
+def setpixel(x, y, color = Color.white):
+  global raster
+  if x >= vport.xmin and x < vport.width and \
+     y >= vport.ymin and y < vport.height:
+    one_d = ( y * RASTER_WIDTH + x )
+    pos = one_d * 3
+    raster[pos+0] = color.r
+    raster[pos+1] = color.g
+    raster[pos+2] = color.b
+
+def getobject(x, y):
+  global object_buffer
+  if x >= vport.xmin and x < vport.width and \
+     y >= vport.ymin and y < vport.height:
+    one_d = ( y * RASTER_WIDTH + x )
+    # print "one_d", one_d
+    return object_buffer[one_d]
+  else:
+    return -1
+
 def _set_pixel(point):
   global raster, depth_buffer
   x = int(point.x)
@@ -267,9 +293,11 @@ def _set_pixel(point):
     pos = one_d * 3
     if z < depth_buffer[one_d] and z >= -1.0 and z <= 1.0:
       depth_buffer[one_d] = z
-      raster[pos+0] = point.color.r;
-      raster[pos+1] = point.color.g;
-      raster[pos+2] = point.color.b;
+      object_buffer[one_d] = point.object
+      # print "set object at", one_d, "is", point.object
+      raster[pos+0] = point.color.r
+      raster[pos+1] = point.color.g
+      raster[pos+2] = point.color.b
 
 def _end_points(vertices):
   global point_size
@@ -398,17 +426,17 @@ def lineWidth(w):
 def vertex2i(x, y):
   global vertices
   glVertex2i(x, y)
-  vertices.append( Point(x, y, 0, curr_color, curr_normal) )
+  vertices.append( Point(x, y, 0, curr_color, curr_normal, curr_object) )
 
 def vertex2f(x, y):
   global vertices
   glVertex2f(x, y)
-  vertices.append( Point(x, y, 0, curr_color, curr_normal) )
+  vertices.append( Point(x, y, 0, curr_color, curr_normal, curr_object) )
 
 def vertex3f(x, y, z):
   global vertices
   glVertex3f(x, y, z)
-  vertices.append( Point(x, y, z, curr_color, curr_normal) )
+  vertices.append( Point(x, y, z, curr_color, curr_normal, curr_object) )
 
 def light(light_id, gl_const, vec):
   global lights
@@ -433,8 +461,8 @@ def _point( point, size = 1, smooth = False ):
     if (smooth):
       _circle_filled( point, half, _set_pixel )
     else:
-      ul = Point( point.x - half, point.y + half, 0.0, point.color, point.normal )
-      lr = Point( point.x + half, point.y - half, 0.0, point.color, point.normal )
+      ul = Point( point.x - half, point.y + half, 0.0, point.color, point.normal, point.object )
+      lr = Point( point.x + half, point.y - half, 0.0, point.color, point.normal, point.object )
       _rect_filled( ul, lr, _set_pixel )
 
 def _circle(point, radius, fn):
@@ -447,14 +475,14 @@ def _circle(point, radius, fn):
     y = radius
     decision = 5.0/4 - radius
     while (x <= y):
-      fn( Point(point.x + x, point.y + y, 0.0, color, point.normal) )
-      fn( Point(point.x - x, point.y + y, 0.0, color, point.normal) )
-      fn( Point(point.x + x, point.y - y, 0.0, color, point.normal) )
-      fn( Point(point.x - x, point.y - y, 0.0, color, point.normal) )
-      fn( Point(point.x + y, point.y + x, 0.0, color, point.normal) )
-      fn( Point(point.x - y, point.y + x, 0.0, color, point.normal) )
-      fn( Point(point.x + y, point.y - x, 0.0, color, point.normal) )
-      fn( Point(point.x - y, point.y - x, 0.0, color, point.normal) )
+      fn( Point(point.x + x, point.y + y, 0.0, color, point.normal, point.object) )
+      fn( Point(point.x - x, point.y + y, 0.0, color, point.normal, point.object) )
+      fn( Point(point.x + x, point.y - y, 0.0, color, point.normal, point.object) )
+      fn( Point(point.x - x, point.y - y, 0.0, color, point.normal, point.object) )
+      fn( Point(point.x + y, point.y + x, 0.0, color, point.normal, point.object) )
+      fn( Point(point.x - y, point.y + x, 0.0, color, point.normal, point.object) )
+      fn( Point(point.x + y, point.y - x, 0.0, color, point.normal, point.object) )
+      fn( Point(point.x - y, point.y - x, 0.0, color, point.normal, point.object) )
       x = x + 1
       if (decision < 0):
         decision = decision + 2 * x + 1
@@ -476,13 +504,13 @@ def _circle_filled(point, radius, fn):
 def _rect(point1, point2, fn):
   min_x = min(point1.x, point2.x)
   for x in range(abs(int(point2.x - point1.x))):
-    fn( Point(min_x + x, point1.y, 0.0, color, point.normal) )
-    fn( Point(min_x + x, point2.y, 0.0, color, point.normal) )
+    fn( Point(min_x + x, point1.y, 0.0, color, point.normal, point.object) )
+    fn( Point(min_x + x, point2.y, 0.0, color, point.normal, point.object) )
 
   min_y = min(point1.y, point2.y)
   for y in range(abs(int(point2.y - point1.y))):
-    fn( Point(point1.x, min_y + y, 0.0, color, point.normal) )
-    fn( Point(point2.x, min_y + y, 0.0, color, point.normal) )
+    fn( Point(point1.x, min_y + y, 0.0, color, point.normal, point.object) )
+    fn( Point(point2.x, min_y + y, 0.0, color, point.normal, point.object) )
 
 def _rect_filled(point1, point2, fn):
   bucket = []
