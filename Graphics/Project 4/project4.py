@@ -16,9 +16,9 @@ from duanegl import *
 ESCAPE = '\033'
 window = 0
 drawMode = 2
-sceneChoice = 2
+sceneChoice = 0
 x = 0.0
-y = 0.05
+y = 0.01
 z = -2.5
 w = 0.1
 d = 1.0
@@ -50,22 +50,34 @@ def scene_a():
   global x, y, z, w, d
   scene_clear()  
   
-  # glTranslatef(x, y, z)
-  # glBegin(GL_QUADS)
-  # glColor3f(1.0, 0.0, 0.0)
-  # glVertex3f(-w/2,  0,  -d/2)
-  # glVertex3f( w/2,  0,  -d/2)
-  # glVertex3f( w/2,  0.1,   d/2)
-  # glVertex3f(-w/2,  0.1,   d/2)
-  # glEnd()
+  enable(GL_CULL_FACE)
+  frontFace(GL_CCW)
+  cullFace(GL_BACK)
   
   translate(x, y, z)
   begin(GL_QUADS)
+  # normal3f(1.0, 1.0, 1.0)
   color3f(1.0, 0.0, 0.0)
   vertex3f(-w/2,  0,  -d/2)
   vertex3f( w/2,  0,  -d/2)
   vertex3f( w/2,  0.1,   d/2)
   vertex3f(-w/2,  0.1,   d/2)
+  end()
+  
+  begin(GL_TRIANGLES)
+  color3f(1.0, 0.0, 0.0)
+  vertex3f(-0.2, -0.2, -1.0)
+  color3f(1.0, 1.0, 0.0)
+  vertex3f(-0.8, -0.8, -1.0)
+  color3f(0.0, 0.0, 1.0)
+  vertex3f(-0.15, -0.5, -1.0)
+
+  color3f(1.0, 0.0, 0.0)
+  vertex3f(0.2, -0.2, -1.0)
+  color3f(1.0, 1.0, 0.0)
+  vertex3f(0.8, -0.8, -1.0)
+  color3f(0.0, 0.0, 1.0)
+  vertex3f(0.15, -0.5, -1.0)
   end()
 
 def scene_b():

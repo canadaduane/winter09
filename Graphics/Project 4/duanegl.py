@@ -38,6 +38,8 @@ matrix_mode = GL_PROJECTION
 vertices = []
 projection_matrix_stack = [copy(identity_matrix)]
 modelview_matrix_stack = [copy(identity_matrix)]
+front_face = GL_CCW
+cull_face = GL_BACK
 
 point_size = 1
 line_width = 1
@@ -71,6 +73,16 @@ def clear(mode):
     raster = [clear_color.index(i % 3) for i in range(0, RASTER_SIZE)]
   if ((mode & GL_DEPTH_BUFFER_BIT) != 0):
     depth_buffer = array([ 10000 for i in range(0, RASTER_WIDTH * RASTER_HEIGHT) ], dtype='float32')
+
+def frontFace(wise):
+  global front_face
+  glFrontFace(wise)
+  front_face = wise
+
+def cullFace(fb):
+  global cull_face
+  glCullFace(fb)
+  cull_face = fb
 
 def matrixMode(mode):
   global matrix_mode, projection_matrix_stack, modelview_matrix_stack
@@ -209,11 +221,12 @@ def transformed(points, lights):
   p_vs = modelview_transform(matrix_of_points(points))
   p_ns = modelview_transform(matrix_of_normals(points), True)
   p_cs = colors_from_points(points)
-  l_vs = modelview_transform(matrix_of_points([lights[i].point for i in lights]))
-  l_as = [lights[i].ambient.vector() for i in lights]
-  l_ds = [lights[i].diffuse.vector() for i in lights]
-  if (isEnabled(GL_LIGHTING)):
-    p_cs = lightcolor_transform(p_vs, p_ns, p_cs, l_vs, l_as, l_ds)
+  if len(lights) > 0:
+    l_vs = modelview_transform(matrix_of_points([lights[i].point for i in lights]))
+    l_as = [lights[i].ambient.vector() for i in lights]
+    l_ds = [lights[i].diffuse.vector() for i in lights]
+    if (isEnabled(GL_LIGHTING)):
+      p_cs = lightcolor_transform(p_vs, p_ns, p_cs, l_vs, l_as, l_ds)
   
   proj_vs = projection_transform(p_vs)
   
@@ -224,6 +237,24 @@ def transformed(points, lights):
   view_vs = viewport_transform(proj_vs)
   
   return reconstruct_points(view_vs, p_ns, p_cs)
+
+def should_cull(p1, p2, p3):
+  global front_face, cull_face
+  if isEnabled(GL_CULL_FACE):
+    v = array([p2.x - p1.x, p2.y - p1.y, p2.z - p1.z])
+    w = array([p2.x - p3.x, p2.y - p3.y, p2.z - p3.z])
+    c = cross(v, w.transpose())
+    # Determine facing direction of plane
+    if c[2] < 0: wise = GL_CW
+    else:        wise = GL_CCW
+    if cull_face == GL_BACK:
+      return (wise == front_face)
+    elif cull_face == GL_FRONT:
+      return (wise != front_face)
+    else:
+      return True
+  else:
+    return False
 
 def _set_pixel(point):
   global raster, depth_buffer
@@ -299,7 +330,7 @@ def _end_triangle_fan(vertices):
 def _end_quads(vertices):
   for p1, p2, p3, p4 in n_at_a_time( vertices, 4 ):
     _triangle( p1, p2, p3, _set_pixel )
-    _triangle( p3, p1, p4, _set_pixel )
+    _triangle( p4, p1, p3, _set_pixel )
   
 
 def _end_quad_strip(vertices):
@@ -552,6 +583,8 @@ def _bresenham_line(p1, p2, fn):
 def _triangle(v1, v2, v3, fn = _set_pixel):
   """Draws a shaded triangle from v1 to v2 to v3"""
   global lights
+  
+  if should_cull(v1, v2, v3): return
   
   bucket = []
   
