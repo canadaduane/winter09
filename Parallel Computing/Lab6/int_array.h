@@ -6,4 +6,6 @@ typedef struct INT_ARRAY {
     int size;
 } IntArray;
 
+IntArray ia_alloc2(int x, int y);
+
 #endif

@@ -4,18 +4,22 @@
 #include <math.h>
 #include <mpi.h>
 
+#include "int_array.h"
 #include "misc.h"
-#include "parallel_mandelbrot.h"
+#include "mandelbrot_omp.h"
 
 int nproc, iproc;
 
 int main( int argc, char** argv )
 {
-    int x = shell_arg_int(argc, argv, "-x", 0);
-    int y = shell_arg_int(argc, argv, "-y", 0);
-    int w = shell_arg_int(argc, argv, "-w", 500);
-    int h = shell_arg_int(argc, argv, "-h", 500);
     double mag = shell_arg_float(argc, argv, "-m", 2.0);
+    
+    // Configure global variables for mandelbrot size
+    int width  = shell_arg_int(argc, argv, "-w", 500);
+    int height = shell_arg_int(argc, argv, "-h", 500);
+    
+    mandelbrot_width  = (double)width;
+    mandelbrot_height = (double)height;
     
     MPI_Init(&argc, &argv);
     
@@ -25,7 +29,6 @@ int main( int argc, char** argv )
     if (iproc == 0)
     {
         printf("Starting parallel mandelbrot calculation...");
-        printf("x: %d, y: %d, dimensions: %d x %d, magnification: %0.2f\n", x, y, w, h, mag);
     }
     
     {
@@ -35,13 +38,15 @@ int main( int argc, char** argv )
         
         start = when();
         {
-            int rem = w % nproc;
-            int my_w = w / nproc + (iproc < rem ? 1 : 0);
-            int my_x = w / nproc * iproc + (iproc < rem ? iproc : rem);
+            int rem  = width % nproc;
+            int my_w = width / nproc + (iproc < rem ? 1 : 0);
+            int my_x = width / nproc * iproc + (iproc < rem ? iproc : rem);
+            // Allocate space for result
+            IntArray result = ia_alloc2(my_w, height);
             
-            // fprintf(stderr, "%d -- my_w: %d, my_x: %d\n", iproc, my_w, my_x);
+            fprintf(stderr, "%d -- x: %d, y: 0, dim: %d x %d\n", iproc, my_x, my_w, height);
             
-            parallel_mandelbrot()
+            mandelbrot_omp(my_x, my_x + my_w, 0, mandelbrot_height, mag, result);
         }
         finish = when();
         
