@@ -5,13 +5,12 @@ module Silkworm.Game (startGame) where
   import Data.Map as M
   import Data.IORef (IORef, newIORef)
   import Control.Monad (forM, forM_, replicateM, replicateM_, foldM, foldM_, when)
-  
+  import System.Directory (getCurrentDirectory)
   
   -- Physics Modules
   import qualified Physics.Hipmunk as H
   
   -- Graphics Modules
-  import Graphics.Formats.Obj (ObjModel, objFromFile)
   import Graphics.UI.GLFW (
     Key(..), KeyButtonState(..), SpecialKey(..), getKey,
     BitmapFont(..), renderString,
