@@ -9,6 +9,7 @@
 #include "mandelbrot_omp.h"
 
 int nproc, iproc;
+void show_array(IntArray a, int w);
 
 int main( int argc, char** argv )
 {
@@ -47,6 +48,11 @@ int main( int argc, char** argv )
             fprintf(stderr, "%d -- x: %d, y: 0, dim: %d x %d\n", iproc, my_x, my_w, height);
             
             mandelbrot_omp(my_x, my_x + my_w, 0, mandelbrot_height, mag, result);
+            if (iproc == 1)
+            {
+                fprintf(stderr, "%d --\n", iproc);
+                show_array(result, my_w);
+            }
         }
         finish = when();
         
@@ -58,4 +64,14 @@ int main( int argc, char** argv )
     MPI_Finalize();
     
     return 0;
+}
+
+void show_array(IntArray a, int w)
+{
+    int i;
+    for (i = 0; i < a.size; i++)
+    {
+        fprintf(stderr, "%d ", a.ptr[i]);
+        if (i % w == w - 1) fprintf(stderr, "\n");
+    }
 }
