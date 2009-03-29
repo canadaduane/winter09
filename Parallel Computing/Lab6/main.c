@@ -8,19 +8,25 @@
 #include "misc.h"
 #include "mandelbrot_omp.h"
 
+const float Left   = -1.5;
+const float Right  =  1.5;
+const float Top    = -1.5;
+const float Bottom = -1.5;
+const float Width  = 3.0;
+const float Height = 3.0;
+
 int nproc, iproc;
+
 void show_array(IntArray a, int w);
 
 int main( int argc, char** argv )
 {
-    double mag = shell_arg_float(argc, argv, "-m", 2.0);
+    // double mag = shell_arg_float(argc, argv, "-m", 2.0);
     
     // Configure global variables for mandelbrot size
-    int width  = shell_arg_int(argc, argv, "-w", 500);
-    int height = shell_arg_int(argc, argv, "-h", 500);
-    
-    mandelbrot_width  = (double)width;
-    mandelbrot_height = (double)height;
+    int img_width  = shell_arg_int(argc, argv, "-w", 40);
+    int img_height = shell_arg_int(argc, argv, "-h", 40);
+    mandelbrot_iters = shell_arg_int(argc, argv, "-i", 1000);
     
     MPI_Init(&argc, &argv);
     
@@ -39,19 +45,28 @@ int main( int argc, char** argv )
         
         start = when();
         {
-            int rem  = width % nproc;
-            int my_w = width / nproc + (iproc < rem ? 1 : 0);
-            int my_x = width / nproc * iproc + (iproc < rem ? iproc : rem);
+            int rem  = img_width % nproc;
+            int my_img_w = img_width / nproc + (iproc < rem ? 1 : 0);
+            int my_img_x = img_width / nproc * iproc + (iproc < rem ? iproc : rem);
+            float my_mdb_x = Left + (Width / img_width) * my_img_x;
+            float my_mdb_w = (Width / img_width) * my_img_w;
             // Allocate space for result
-            IntArray result = ia_alloc2(my_w, height);
+            IntArray result = ia_alloc2(my_img_w, img_height);
             
-            fprintf(stderr, "%d -- x: %d, y: 0, dim: %d x %d\n", iproc, my_x, my_w, height);
+            fprintf(stderr, "%d -- x: %d, y: 0, dim: %d x %d\n", iproc, my_img_x, my_img_w, img_height);
             
-            mandelbrot_omp(my_x, my_x + my_w, 0, mandelbrot_height, mag, result);
-            if (iproc == 1)
+            mandelbrot_omp(my_img_x, my_img_w,     // Image coords
+                           0, img_height,
+                           
+                           my_mdb_x, my_mdb_w,     // Mandelbrot coords
+                           Top, Height,
+                           
+                           result);
+            
+            if (iproc == 0)
             {
                 fprintf(stderr, "%d --\n", iproc);
-                show_array(result, my_w);
+                show_array(result, my_img_w);
             }
         }
         finish = when();
