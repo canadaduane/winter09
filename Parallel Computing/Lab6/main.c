@@ -17,8 +17,7 @@ const float Height = 3.0;
 
 int nproc, iproc;
 
-void show_array(IntArray a, int w);
-void write_image(IntArray a, int w);
+void write_image(int* pixels, int* sizes, int w, int h);
 
 int main( int argc, char** argv )
 {
@@ -26,6 +25,7 @@ int main( int argc, char** argv )
     // double mag = shell_arg_float(argc, argv, "-m", 2.0);
     
     // Configure global variables for mandelbrot size
+    int write_to_file = shell_arg_int(argc, argv, "-f", 0);
     int img_width  = shell_arg_int(argc, argv, "-w", 40);
     int img_height = shell_arg_int(argc, argv, "-h", 40);
     mandelbrot_iters = shell_arg_int(argc, argv, "-i", 1000);
@@ -37,7 +37,7 @@ int main( int argc, char** argv )
     
     if (iproc == 0)
     {
-        printf("Starting parallel mandelbrot calculation...");
+        fprintf(stderr, "Starting parallel mandelbrot calculation...\n");
         final_result = malloc(img_width * img_height * sizeof(int));
     }
     
@@ -83,29 +83,20 @@ int main( int argc, char** argv )
                 int i;
                 offsets[0] = 0;
                 for (i = 0; i < nproc; i++)
-                {
                     offsets[i + 1] = offsets[i] + sizes[i];
-                }
             }
             MPI_Gatherv(result.ptr, result.size, MPI_INT,
                         final_result, sizes, offsets, MPI_INT,
                         0, MPI_COMM_WORLD);
             
-            if (iproc == 0)
-            {
-                int i;
-                IntArray a;
-                
-                a.ptr = final_result;
-                a.size = img_width * img_height;
-                
-                write_image(a, img_width);
-            }
         }
         finish = when();
         
         if (iproc == 0)
         {
+            if (write_to_file)
+                write_image(final_result, sizes, img_width, img_height);
+            
             free(final_result);
         }
         
@@ -119,26 +110,32 @@ int main( int argc, char** argv )
     return 0;
 }
 
-void show_array(IntArray a, int w)
+int get_pixel(int* pixels, int* sizes, int w, int h, int x, int y)
 {
-    int i;
-    for (i = 0; i < a.size; i++)
+    int i = 0;
+    int t_w = sizes[i] / h;
+    int t_off = 0;
+    int offset = 0;
+    
+    while (x >= t_off + t_w)
     {
-        fprintf(stderr, "%d ", a.ptr[i]);
-        if (i % w == w - 1) fprintf(stderr, "\n");
+        t_off += t_w;
+        offset += sizes[i];
+        t_w = sizes[++i] / h;
     }
+    return pixels[offset + y * t_w + (x - t_off)];
 }
 
-void write_image(IntArray a, int w)
+void write_image(int* pixels, int* sizes, int w, int h)
 {
-    int y, x, h = a.size / w;
+    int x, y;
     FILE* out = fopen("image.ppm", "w");
     fprintf(out, "P3 %d %d 255\n", w, h);
     for (y = 0; y < h; y++)
     {
         for (x = 0; x < w; x++)
         {
-            int c = a.ptr[y * w + x];
+            int c = get_pixel(pixels, sizes, w, h, x, y);
             fprintf(out, "%d\t%d\t%d\t\t", c, c, c);
         }
         fprintf(out, "\n");
