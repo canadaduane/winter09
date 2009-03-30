@@ -18,9 +18,11 @@ const float Height = 3.0;
 int nproc, iproc;
 
 void show_array(IntArray a, int w);
+void write_image(IntArray a, int w);
 
 int main( int argc, char** argv )
 {
+    int* final_result;
     // double mag = shell_arg_float(argc, argv, "-m", 2.0);
     
     // Configure global variables for mandelbrot size
@@ -36,10 +38,13 @@ int main( int argc, char** argv )
     if (iproc == 0)
     {
         printf("Starting parallel mandelbrot calculation...");
+        final_result = malloc(img_width * img_height * sizeof(int));
     }
     
     {
         float start, finish;
+        int* sizes;
+        int* offsets;
         
         fprintf(stderr, "Node %d started...\n", iproc);
         
@@ -62,14 +67,47 @@ int main( int argc, char** argv )
                            Top, Height,
                            
                            result);
+            // Allocate sizes array for root node
+            if (iproc == 0)
+            {
+                sizes   = malloc(nproc * sizeof(int));
+                offsets = malloc(nproc * sizeof(int));
+            }
+            // Let the root node know how big each result is
+            MPI_Gather(&result.size, 1, MPI_INT,
+                       sizes, 1, MPI_INT,
+                       0, MPI_COMM_WORLD);
             
             if (iproc == 0)
             {
-                fprintf(stderr, "%d --\n", iproc);
-                show_array(result, my_img_w);
+                int i;
+                offsets[0] = 0;
+                for (i = 0; i < nproc; i++)
+                {
+                    offsets[i + 1] = offsets[i] + sizes[i];
+                }
+            }
+            MPI_Gatherv(result.ptr, result.size, MPI_INT,
+                        final_result, sizes, offsets, MPI_INT,
+                        0, MPI_COMM_WORLD);
+            
+            if (iproc == 0)
+            {
+                int i;
+                IntArray a;
+                
+                a.ptr = final_result;
+                a.size = img_width * img_height;
+                
+                write_image(a, img_width);
             }
         }
         finish = when();
+        
+        if (iproc == 0)
+        {
+            free(final_result);
+        }
         
         // All nodes:
         fprintf(stderr, "Node %d completed in %f seconds.\n", iproc, finish - start);
@@ -88,5 +126,21 @@ void show_array(IntArray a, int w)
     {
         fprintf(stderr, "%d ", a.ptr[i]);
         if (i % w == w - 1) fprintf(stderr, "\n");
+    }
+}
+
+void write_image(IntArray a, int w)
+{
+    int y, x, h = a.size / w;
+    FILE* out = fopen("image.ppm", "w");
+    fprintf(out, "P3 %d %d 255\n", w, h);
+    for (y = 0; y < h; y++)
+    {
+        for (x = 0; x < w; x++)
+        {
+            int c = a.ptr[y * w + x];
+            fprintf(out, "%d\t%d\t%d\t\t", c, c, c);
+        }
+        fprintf(out, "\n");
     }
 }
