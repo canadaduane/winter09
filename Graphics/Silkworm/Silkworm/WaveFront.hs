@@ -1,4 +1,4 @@
-module Silkworm.WaveFront (readWaveFront) where
+module Silkworm.WaveFront (readWaveFront, Object3D(..)) where
   
   import Data.List (groupBy)
   
@@ -6,7 +6,7 @@ module Silkworm.WaveFront (readWaveFront) where
   type IndexTriple = (Int, Int, Int)
   type Face = [(Vector, Vector)]
   
-  data Object = Object String [Face]
+  data Object3D = Object3D String [Face]
     deriving Show
   
   data ObjData = MaterialFile String
@@ -28,11 +28,11 @@ module Silkworm.WaveFront (readWaveFront) where
   fromFaceIndex (FaceIndex d) = d
   
   -- Exported function, reads a WaveFront "obj" formatted file
-  readWaveFront :: String -> Object
+  readWaveFront :: String -> Object3D
   readWaveFront = reconstitute . parse
   
-  reconstitute :: [ObjData] -> Object
-  reconstitute ds = Object "obj" faces
+  reconstitute :: [ObjData] -> Object3D
+  reconstitute ds = Object3D "obj" faces
     where vertices         = map fromVertex    $ filter isVertex ds
           normals          = map fromNormal    $ filter isNormal ds
           faceIdxs         = map fromFaceIndex $ filter isFace   ds

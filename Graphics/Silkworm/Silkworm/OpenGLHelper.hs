@@ -12,9 +12,10 @@ module Silkworm.OpenGLHelper where
     -- pointSize   $= 3
     -- lineSmooth  $= Enabled
     -- lineWidth   $= 2.5
+    -- cullFace    $= Just Front
     blend       $= Enabled
     blendFunc   $= (SrcAlpha, OneMinusSrcAlpha)
-    shadeModel  $= Smooth
+    shadeModel  $= Flat -- Smooth
     normalize   $= Enabled
     polygonMode $= (Fill, Fill)
     
@@ -22,8 +23,10 @@ module Silkworm.OpenGLHelper where
     viewport    $= (Position 0 0, Size w h)
     matrixMode  $= Projection
     loadIdentity
-    ortho (-1) 1 (-1) 1 (-1) 1
-    perspective 90.0 (fw/2/(fh/2)) 0.0 20.0
+    -- frustum (-1.0) 1.0 (-1.0) 1.0 (0.1) (50.0)
+    -- ortho (-1) 1 (-1) 1 (-1) 1
+    perspective 60.0 (fw/fh) 0.1 5.0
+    rotate 10.0 (Vector3 1.0 0.0 0.0 :: Vector3 GLfloat)
     -- translate (Vector3 0.5 0.5 0 :: Vector3 GLfloat)
     flush
     
@@ -54,7 +57,8 @@ module Silkworm.OpenGLHelper where
     -- 
     -- lighting $= Enabled
     -- light (Light 0) $= Enabled
-    -- depthFunc $= Just Less
+    depthFunc $= Just Less
+    -- depthMask $= Enabled
     
     matrixMode $= Modelview 0
     loadIdentity

@@ -95,7 +95,7 @@ module Silkworm.Title where
   -- | Renders the current state.
   updateDisplay :: IORef TitleState -> IO ()
   updateDisplay stateVar = do
-    clear [ColorBuffer]
+    clear [ColorBuffer, DepthBuffer]
     drawTitle stateVar
     -- when (slowKey == Press) drawSlowMotion
     -- forM_ (M.assocs $ stShapes state) (fst . snd) -- Draw each one
@@ -104,7 +104,7 @@ module Silkworm.Title where
   
   drawText :: Float -> Float -> Float -> String -> IO ()
   drawText x y s str = preservingMatrix $ do
-    translate (Vector3 x y 0.1)
+    translate (Vector3 x y (-2))
     scale (1.0/800*s) (1.0/600*s) 1.0
     renderString Fixed8x16 str
   
@@ -115,6 +115,7 @@ module Silkworm.Title where
     -- stateVar $= state { tsAngle = ((tsAngle state) + 5.0) }
 
     preservingMatrix $ do
+      translate (Vector3 0 0 (-2) :: Vector3 Float)
       renderTexture 0 (-1) (-1) 2 2
       
       -- let font = (tsFont state)

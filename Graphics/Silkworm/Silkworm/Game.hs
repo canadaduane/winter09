@@ -36,8 +36,9 @@ module Silkworm.Game (startGame) where
   -- import Silkworm.Misc
   -- import Silkworm.WindowHelper (initWindow)
   -- import Silkworm.OpenGLHelper (initOpenGL)
+  import Silkworm.LevelGenerator (rasterizeLines)
   import Silkworm.HipmunkHelper (newSpaceWithGravity)
-  
+  import Silkworm.WaveFront (readWaveFront, Object3D(..))
   import Silkworm.Math (cross)
   
   -- rasterRect = ((0, 0), (200, 200))
@@ -68,7 +69,7 @@ module Silkworm.Game (startGame) where
   -- Special action that does nothing (used for default values and tests)
   inaction :: Action
   inaction = Action "Inaction" nothing
-    where nothing = do return ()
+    where nothing = return ()
   
   instance Show H.Shape where
     show s = "Shape"
@@ -83,9 +84,18 @@ module Silkworm.Game (startGame) where
     gRemove   :: Action
   } deriving Show
   
+  act :: Action -> IO ()
+  act (Action name fn) = do
+    -- putStrLn name
+    fn
+  
+  drawGameObject :: GameObject -> IO ()
+  drawGameObject obj = act (gDraw obj)
+  
   -- The Game State : Keep track of the Chipmunk engine state as well as our game
   -- objects, both active (on-screen) and inactive (off-screen)
   data GameState = GameState {
+    gsAngle     :: Float,
     gsSpace     :: H.Space,
     gsResources :: [FilePath],
     gsActives   :: [GameObject],
@@ -101,7 +111,8 @@ module Silkworm.Game (startGame) where
   newGameState = do
     space <- newSpaceWithGravity
     cwd <- getCurrentDirectory
-    return (GameState space [cwd] [] [])
+    sign <- createSign
+    return (GameState 0.0 space [cwd] [sign] [])
   
   generateRandomGround :: H.Space -> IO ()
   generateRandomGround space =
@@ -141,17 +152,29 @@ module Silkworm.Game (startGame) where
   updateDisplay :: IORef GameState -> KeyButtonState -> IO ()
   updateDisplay stateRef slowKey  = do
     state <- get stateRef
-    clear [ColorBuffer]
-    -- drawInstructions
+    clear [ColorBuffer, DepthBuffer]
+    -- let tunnel = rasterizeLines [((0, 0), (70, 70))] ((0, 0), (100, 100)) 15.0
+    -- drawTunnel tunnel 0.0
+
     -- when (slowKey == Press) drawSlowMotion
     -- forM_ (M.assocs $ stShapes state) (fst . snd) -- Draw each one
+    state <- get stateRef
+    angle <- return (gsAngle state)
+    preservingMatrix $ do
+      translate (Vector3 (0) (-2) (-3 :: GLfloat))
+      rotate angle (Vector3 0 1 0 :: Vector3 GLfloat)
+      -- scale 4.0 4.0 (4.0 :: Float)
+      forM_ (gsActives state) drawGameObject
+    stateRef $= state { gsAngle = angle + 1.0 }
     swapBuffers
-
+  
+  level1 = array ((0, 0), (1, 1)) [((0, 0), 0.0), ((0, 1), 5.0), ((1, 0), 10.0), ((1, 1), 20.0)] :: Array (Int, Int) Float
+  
   drawTunnel :: A.Array (Int, Int) Float -> Float -> IO ()
   drawTunnel t angle = preservingMatrix $ do
-    rotate angle $ Vector3 1 0.5 (0 :: GLfloat)
-    scale 2.0 2.0 (2.0 :: Float)
-    translate (Vector3 (-0.5) (-0.5) (0.0 :: GLfloat))
+    translate (Vector3 (-1) (-1) (-2 :: GLfloat))
+    rotate angle $ Vector3 0.5 1.0 (0.0 :: GLfloat)
+    scale 4.0 4.0 (4.0 :: Float)
     color $ Color3 0.5 0.5 (1.0 :: GLfloat) 
     let ((x1, y1), (x2, y2)) = bounds t
         rng = range ((x1, y1), (x2 - 1, y2 - 1))
@@ -169,14 +192,45 @@ module Silkworm.Game (startGame) where
         vertex $ Vertex3 x1 y1 z1
         vertex $ Vertex3 x3 y3 z3
         vertex $ Vertex3 x2 y2 z2
-
+  
+  drawObject :: Object3D -> IO ()
+  drawObject (Object3D name faces) = do
+    forM_ faces $ \face -> renderPrimitive Polygon $ do
+      forM_ face $ \((vx, vy, vz), (nx, ny, nz)) -> do
+        normal $ Normal3 nx ny nz
+        vertex $ Vertex3 vx vy vz
+  
   -- seed <- newStdGen
   -- let (s1, s2) = split seed
   --     bump1 = (randomBumpyRaster rasterRect 40 10.0 s1)
   --     bump2 = (randomBumpyRaster rasterRect 20 20.0 s2)
   --     composite = ((testTunnel #+ 1) #*# (bump1 #* 0.5) #*# (bump2 #* 0.5))
   --   in drawTunnel testTunnel
-
+  
+  createSign :: IO GameObject
+  createSign = do
+    -- let mass   = 20
+    --     radius = 20
+    --     t = H.Circle radius
+    -- b <- H.newBody mass $ H.momentForCircle mass (0, radius) 0
+    -- s <- H.newShape b t 0
+    -- H.setAngVel b angVel
+    -- H.setPosition b =<< getMousePos
+    -- H.setFriction s 0.5
+    -- H.setElasticity s 0.9
+    -- let add space = do
+    --       H.spaceAdd space b
+    --       H.spaceAdd space s
+    -- let draw = do
+    --       drawMyShape s t
+    -- let remove space = do
+    --       H.spaceRemove space b
+    --       H.spaceRemove space s
+    f <- readFile "sign.obj"
+    o <- return $ readWaveFront f
+    let draw = drawObject o
+    return GameObject { gDraw = Action "draw sign" draw }
+  
   ------------------------------------------------------------
   -- Simulation bookkeeping
   ------------------------------------------------------------

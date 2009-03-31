@@ -1,0 +1,11 @@
+Basic functionality
+  - Haskell + OpenGL
+  - Load VRML files
+  - Collision detection
+  - Keyboard control
+Features
+  - Tunnel / Level Generator (+15)
+  - 2D Physics Engine Cool Stuff (+5 each)
+  - Morphable Mesh (+30)
+  - Swinging Silkworm (+5)
+  

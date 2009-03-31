@@ -10,6 +10,7 @@ module Silkworm.WindowHelper (
   import Graphics.UI.GLFW (
     Key(..), KeyButtonState(..), getKey,
     WindowMode(..), initialize, openWindow,
+    DisplayBits(..),
     windowTitle, windowCloseCallback)
   import Graphics.Rendering.OpenGL (Size(..), ($=))
   import System.Exit (ExitCode(..), exitWith)
@@ -26,7 +27,7 @@ module Silkworm.WindowHelper (
     
     -- Create the UI Window
     assertTrue initialize "Failed to initialize GLFW"
-    assertTrue (openWindow size [] Window) "Failed to open a window"
+    assertTrue (openWindow size [DisplayDepthBits 16] Window) "Failed to open a window"
     
     -- Set Window Parameters
     windowTitle $= "Silkworm"

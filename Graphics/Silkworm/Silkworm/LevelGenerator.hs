@@ -99,7 +99,7 @@ module Silkworm.LevelGenerator (
     in
       -- Create an array of size (x_delta x y_delta), filling it with 
       array ((0, 0), (x_delta, y_delta))
-            [((x, y), depth (toEnum x, toEnum y)) | x <- [0..x_delta],
+            [((x, y), -depth (toEnum x, toEnum y)) | x <- [0..x_delta],
                                                     y <- [0..y_delta]]
     where
       distancesToLines :: Point -> [Line] -> [Float]
