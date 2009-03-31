@@ -104,7 +104,7 @@ module Silkworm.Title where
   
   drawText :: Float -> Float -> Float -> String -> IO ()
   drawText x y s str = preservingMatrix $ do
-    translate (Vector3 x y (-2))
+    translate (Vector3 x y (-1))
     scale (1.0/800*s) (1.0/600*s) 1.0
     renderString Fixed8x16 str
   
@@ -115,7 +115,7 @@ module Silkworm.Title where
     -- stateVar $= state { tsAngle = ((tsAngle state) + 5.0) }
 
     preservingMatrix $ do
-      translate (Vector3 0 0 (-2) :: Vector3 Float)
+      translate (Vector3 0 0 (-1.1) :: Vector3 Float)
       renderTexture 0 (-1) (-1) 2 2
       
       -- let font = (tsFont state)
@@ -124,15 +124,15 @@ module Silkworm.Title where
       -- renderFont font "Silkworm!" All
     
     color $ Color3 0.0 0.0 (0.0 :: GLfloat)
-    drawText (-0.2) (0.5) 6 "Silkworm!"
+    drawText (-0.2) (0.15) 9 "Silkworm!"
 
     color $ Color3 1.0 0.2 (0.2 :: GLfloat)
     drawText (-0.5) (-0.0) (selectionSize state StartGame) "Start Game"
-    drawText (-0.5) (-0.1) (selectionSize state QuitGame) "Quit"
+    drawText (-0.5) (-0.3) (selectionSize state QuitGame) "Quit"
     
     where
       selectionSize state s =
         if s == (tsHover state)
-          then 6
+          then 7
           else 5
     
