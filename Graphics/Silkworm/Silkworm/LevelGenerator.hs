@@ -8,45 +8,45 @@ module Silkworm.LevelGenerator (
   import Data.Array.IArray
   import System.Random (StdGen(..), newStdGen, random, split)
 
-  type Point = (Float, Float)
+  type Point = (Double, Double)
   type Line = (Point, Point)
   type Rect = (Point, Point)
   
-  type Point3D = (Float, Float, Float)
+  type Point3D = (Double, Double, Double)
   type Plane = (Point3D, Point3D, Point3D)
   
-  type Raster = Array (Int, Int) Float
+  type Raster = Array (Int, Int) Double
   
   data Failure = Failure
   
   -- Weights the distance between two 2D points by a multiple of x or y
-  weightedDistance :: Float -> Float -> Point -> Point -> Float
+  weightedDistance :: Double -> Double -> Point -> Point -> Double
   weightedDistance xWeight yWeight (x1, y1) (x2, y2) = sqrt (xWeight * sqDx + yWeight * sqDy)
     where dx    = x2 - x1
           sqDx  = dx ** 2
           dy    = y2 - y1
           sqDy  = dy ** 2
   
-  xWeightedDistance :: Float -> Point -> Point -> Float
+  xWeightedDistance :: Double -> Point -> Point -> Double
   xWeightedDistance xWeight p1 p2 = weightedDistance xWeight 1.0 p1 p2
   
-  yWeightedDistance :: Float -> Point -> Point -> Float
+  yWeightedDistance :: Double -> Point -> Point -> Double
   yWeightedDistance yWeight p1 p2 = weightedDistance 1.0 yWeight p1 p2
 
   -- Default x-weighted distance (x weight = 2.0)
-  xwDistance :: Point -> Point -> Float
+  xwDistance :: Point -> Point -> Double
   xwDistance p1 p2 = xWeightedDistance 2.0 p1 p2
   
   -- Default y-weighted distance (y weight = 2.0)
-  ywDistance :: Point -> Point -> Float
+  ywDistance :: Point -> Point -> Double
   ywDistance p1 p2 = yWeightedDistance 2.0 p1 p2
   
   -- Standard pythagorean distance between two 2D points
-  distance :: Point -> Point -> Float
+  distance :: Point -> Point -> Double
   distance p1 p2 = weightedDistance 1.0 1.0 p1 p2
   
   -- http://local.wasp.uwa.edu.au/~pbourke/geometry/pointline/
-  distanceToLine :: Point -> Line -> Float
+  distanceToLine :: Point -> Line -> Double
   distanceToLine p0@(x0, y0) (p1@(x1, y1), p2@(x2, y2)) = 
     let line_m      = distance p1 p2
         pt_dx       = x0 - x1
@@ -82,7 +82,7 @@ module Silkworm.LevelGenerator (
   rootSum :: (Floating a) => [a] -> a
   rootSum ns = sqrt $ foldl (+) 0 $ map (** 2) ns
   
-  rasterizeLines :: [Line] -> Rect -> Float -> Raster
+  rasterizeLines :: [Line] -> Rect -> Double -> Raster
   rasterizeLines lines ((x_min, y_min), (x_max, y_max)) size =
     let x_delta      = ceiling (x_max - x_min)
         y_delta      = ceiling (y_max - y_min)
@@ -102,11 +102,11 @@ module Silkworm.LevelGenerator (
             [((x, y), -depth (toEnum x, toEnum y)) | x <- [0..x_delta],
                                                     y <- [0..y_delta]]
     where
-      distancesToLines :: Point -> [Line] -> [Float]
+      distancesToLines :: Point -> [Line] -> [Double]
       distancesToLines p ls = map (distanceToLine p) ls
     
   -- | Combine two rasters by adding elements
-  rasterOp :: (Float -> Float -> Float) -> Raster -> Raster -> Raster
+  rasterOp :: (Double -> Double -> Double) -> Raster -> Raster -> Raster
   rasterOp op r1 r2 = array (bounds r1) $ map wrapOp $ zip (assocs r1) (assocs r2)
     where wrapOp (((x,y), a), ((_,_), b)) = ((x, y), a `op` b)
   -- rasterOp op r1 r2 = accumArray op 0 (bounds r1) ((assocs r1) ++ (assocs r2))
@@ -121,7 +121,7 @@ module Silkworm.LevelGenerator (
   randomlist :: Int -> StdGen -> [Int]
   randomlist n = take n . unfoldr (Just . random)
   
-  randomBumpyRaster :: Rect -> Int -> Float -> StdGen -> Raster
+  randomBumpyRaster :: Rect -> Int -> Double -> StdGen -> Raster
   randomBumpyRaster rect@((x_min, y_min), (x_max, y_max)) count size gen =
     let x_delta         = ceiling (x_max - x_min)
         y_delta         = ceiling (y_max - y_min)
@@ -136,5 +136,5 @@ module Silkworm.LevelGenerator (
   
   
   -- Test stuff
-  tA = array ((0, 0), (1, 1)) [((0, 0), 0.0), ((0, 1), 5.0), ((1, 0), 10.0), ((1, 1), 20.0)] :: Array (Int, Int) Float
-  tB = array ((0, 0), (1, 1)) [((0, 0), 0.0), ((0, 1), 1.0), ((1, 0), 0.0), ((1, 1), 1.0)] :: Array (Int, Int) Float
+  tA = array ((0, 0), (1, 1)) [((0, 0), 0.0), ((0, 1), 5.0), ((1, 0), 10.0), ((1, 1), 20.0)] :: Array (Int, Int) Double
+  tB = array ((0, 0), (1, 1)) [((0, 0), 0.0), ((0, 1), 1.0), ((1, 0), 0.0), ((1, 1), 1.0)] :: Array (Int, Int) Double

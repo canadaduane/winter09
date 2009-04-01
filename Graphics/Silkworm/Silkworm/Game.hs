@@ -1,8 +1,9 @@
-module Silkworm.Game (startGame) where
+module Silkworm.Game where
   
   -- General-purpose Modules
   import Data.Array as A
-  import Data.Map as M
+  import Data.Array ((!))
+  import qualified Data.Map as M
   import Data.IORef (IORef, newIORef)
   import Control.Monad (forM, forM_, replicateM, replicateM_, foldM, foldM_, when)
   import System.Directory (getCurrentDirectory)
@@ -98,10 +99,14 @@ module Silkworm.Game (startGame) where
   data GameState = GameState {
     gsAngle     :: Float,
     gsSpace     :: H.Space,
+    gsLevel     :: Object3D,
     gsResources :: [FilePath],
     gsActives   :: [GameObject],
     gsInactives :: [GameObject]
   } deriving Show
+  
+  -- level1 = array ((0, 0), (1, 1)) [((0, 0), 0.0), ((0, 1), 5.0), ((1, 0), 10.0), ((1, 1), 20.0)] :: Array (Int, Int) Double
+  level1 = rasterizeLines [((0, 8), (20, 12))] ((0, 0), (20, 20)) 5.0
   
   -------------------------------------------------------
   -- Game Functions
@@ -114,7 +119,8 @@ module Silkworm.Game (startGame) where
     cwd <- getCurrentDirectory
     ground <- newStaticLine space (H.Vector (-0.5) (-0.8)) (H.Vector (0.5) (-0.8))
     worm <- createWorm
-    return (GameState 0.0 space [cwd] [worm] [])
+    level <- return $ maskToObject3D level1
+    return (GameState 0.0 space level [cwd] [worm] [])
   
   generateRandomGround :: H.Space -> IO ()
   generateRandomGround space =
@@ -155,45 +161,75 @@ module Silkworm.Game (startGame) where
   updateDisplay stateRef slowKey  = do
     state <- get stateRef
     clear [ColorBuffer, DepthBuffer]
-    -- let tunnel = rasterizeLines [((0, 0), (70, 70))] ((0, 0), (100, 100)) 15.0
     -- drawTunnel tunnel 0.0
-
+    preservingMatrix $ do
+      translate (Vector3 (-2) (-2.4) (-4 :: GLfloat))
+      scale (0.2) (0.2) ((0.2) :: GLfloat)
+      drawObject $ gsLevel state
+      return ()
     -- when (slowKey == Press) drawSlowMotion
     -- forM_ (M.assocs $ stShapes state) (fst . snd) -- Draw each one
     state <- get stateRef
     angle <- return (gsAngle state)
     preservingMatrix $ do
-      translate (Vector3 (0) (0) (-3 :: GLfloat))
+      translate (Vector3 (-0.5) (-0.5) (-3 :: GLfloat))
       rotate angle (Vector3 0 1 0 :: Vector3 GLfloat)
       -- scale 4.0 4.0 (4.0 :: Float)
       forM_ (gsActives state) drawGameObject
     stateRef $= state { gsAngle = angle + 1.0 }
     swapBuffers
   
-  level1 = array ((0, 0), (1, 1)) [((0, 0), 0.0), ((0, 1), 5.0), ((1, 0), 10.0), ((1, 1), 20.0)] :: Array (Int, Int) Float
-  
-  drawTunnel :: A.Array (Int, Int) Float -> Float -> IO ()
-  drawTunnel t angle = preservingMatrix $ do
-    translate (Vector3 (-1) (-1) (-2 :: GLfloat))
-    rotate angle $ Vector3 0.5 1.0 (0.0 :: GLfloat)
-    scale 4.0 4.0 (4.0 :: Float)
-    color $ Color3 0.5 0.5 (1.0 :: GLfloat) 
-    let ((x1, y1), (x2, y2)) = bounds t
-        rng = range ((x1, y1), (x2 - 1, y2 - 1))
-        shrink n = (fromIntegral n) / 200
-        xyz x y = (shrink x, shrink y, (t A.! (x, y)) / 200.0)
-      in
-      forM_ rng $ \(x, y) -> renderPrimitive Quads $ do
-        let (x0, y0, z0) = xyz x y
-            (x1, y1, z1) = xyz (x + 1) y
-            (x2, y2, z2) = xyz x (y + 1)
-            (x3, y3, z3) = xyz (x + 1) (y + 1)
-            (nx, ny, nz) = cross (x1 - x0, y1 - y0, z1 - z0) (x2 - x0, y2 - y0, z2 - z0)
-        normal $ Normal3 nx ny nz
-        vertex $ Vertex3 x0 y0 z0
-        vertex $ Vertex3 x1 y1 z1
-        vertex $ Vertex3 x3 y3 z3
-        vertex $ Vertex3 x2 y2 z2
+
+  type DepthMask = A.Array (Int, Int) Double
+
+  innerBounds ary = ((a + 1, b + 1), (c - 1, d - 1))
+    where ((a, b), (c, d)) = bounds ary
+
+  maskToObject3D :: DepthMask -> Object3D
+  maskToObject3D a = Object3D "tunnel" (map face (range (innerBounds a)))
+    where
+      -- size = fromIntegral $ (snd . snd . bounds) a
+      boxpts      (x, y) = [(x, y), (x, y + 1), (x + 1, y + 1), (x + 1, y)]
+      orthogonals (x, y) = [(x, y - 1), (x - 1, y), (x, y + 1), (x + 1, y)]
+      point    i@(x, y) = (fromIntegral x, fromIntegral y, a ! i)
+      face     i@(x, y) = zip (map point (boxpts i))
+                              (map normal (boxpts i))
+      
+      normal   i@(x, y) | inRange (innerBounds a) i =
+                          let center = point i
+                              others = map ((center `minus`) . point) (orthogonals i)
+                          in (0, 0, 1) `plus` (average (map (cross center) others))
+                        | otherwise                         = (0, 0, -1)
+      -- Auxiliary
+      average [(a1, b1, c1), (a2, b2, c2), (a3, b3, c3), (a4, b4, c4)] =
+               ((a1 + a2 + a3 + a4) / 4, (b1 + b2 + b3 + b4) / 4, (c1 + c2 + c3 + c4) / 4)
+      average _ = error "expects 4 values in array"-- hack case for now
+      minus (a, b, c) (x, y, z) = (a - x, b - y, c - z)
+      plus (a, b, c) (x, y, z) = (a + x, b + y, c + z)
+      -- shrink n = (fromIntegral n) / size
+          
+  -- drawTunnel :: A.Array (Int, Int) Double -> Double -> IO ()
+  -- drawTunnel t angle = preservingMatrix $ do
+  --   translate (Vector3 (-1) (-1) (-4 :: GLfloat))
+  --   rotate angle $ Vector3 0.5 1.0 (0.0 :: GLfloat)
+  --   scale 4.0 4.0 (4.0 :: Double)
+  --   color $ Color3 0.5 0.5 (1.0 :: GLfloat) 
+  --   let ((x1, y1), (x2, y2)) = bounds t
+  --       rng = range ((x1, y1), (x2 - 1, y2 - 1))
+  --       shrink n = (fromIntegral n) / 200
+  --       xyz x y = (shrink x, shrink y, (t A.! (x, y)) / 200.0)
+  --     in
+  --     forM_ rng $ \(x, y) -> renderPrimitive Quads $ do
+  --       let (x0, y0, z0) = xyz x y
+  --           (x1, y1, z1) = xyz (x + 1) y
+  --           (x2, y2, z2) = xyz x (y + 1)
+  --           (x3, y3, z3) = xyz (x + 1) (y + 1)
+  --           (nx, ny, nz) = cross (x1 - x0, y1 - y0, z1 - z0) (x2 - x0, y2 - y0, z2 - z0)
+  --       normal $ Normal3 nx ny nz
+  --       vertex $ Vertex3 x0 y0 z0
+  --       vertex $ Vertex3 x1 y1 z1
+  --       vertex $ Vertex3 x3 y3 z3
+  --       vertex $ Vertex3 x2 y2 z2
   
   drawObject :: Object3D -> IO ()
   drawObject (Object3D name faces) = do

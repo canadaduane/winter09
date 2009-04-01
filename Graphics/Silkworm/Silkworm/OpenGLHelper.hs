@@ -15,8 +15,8 @@ module Silkworm.OpenGLHelper where
     -- cullFace    $= Just Front
     blend       $= Enabled
     blendFunc   $= (SrcAlpha, OneMinusSrcAlpha)
-    -- shadeModel  $= Flat 
-    shadeModel  $= Smooth
+    shadeModel  $= Flat 
+    -- shadeModel  $= Smooth
     normalize   $= Enabled
     polygonMode $= (Fill, Fill)
     
@@ -26,7 +26,7 @@ module Silkworm.OpenGLHelper where
     loadIdentity
     -- frustum (-1.0) 1.0 (-1.0) 1.0 (0.1) (50.0)
     -- ortho (-1) 1 (-1) 1 (-1) 1
-    perspective 60.0 (fw/fh) 0.1 5.0
+    perspective 60.0 (fw/fh) 0.1 20.0
     rotate 10.0 (Vector3 1.0 0.0 0.0 :: Vector3 GLfloat)
     -- translate (Vector3 0.5 0.5 0 :: Vector3 GLfloat)
     flush

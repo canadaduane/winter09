@@ -1,7 +1,7 @@
 module Silkworm.Math (cross, distance3d) where
   
   -- | Cross product of two 3-dimensional tuples
-  cross :: (Float, Float, Float) -> (Float, Float, Float) -> (Float, Float, Float)
+  cross :: (Floating a) => (a, a, a) -> (a, a, a) -> (a, a, a)
   cross (a1, a2, a3) (b1, b2, b3) = ((a2*b3 - a3*b2), (a3*b1 - a1*b3), (a1*b2 - a2*b1))
   
   distance3d :: (Floating a) => (a, a, a) -> (a, a, a) -> a
