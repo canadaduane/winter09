@@ -6,7 +6,7 @@ CFLAGS = -Wall -O3 $(DEBUG) -c
 LFLAGS = -Wall -O3 $(DEBUG)
 
 mandelbrot: $(OBJS) main.c
-	$(MPICC) $(LFLAGS) $(OBJS) main.c -o mandelbrot
+	$(MPICC) -cc=gcc-4.2 -fopenmp $(LFLAGS) $(OBJS) main.c -o mandelbrot
 
 mandelbrot_omp.o: mandelbrot_omp.h mandelbrot_omp.c
 	$(CC) -fopenmp $(CFLAGS) mandelbrot_omp.c

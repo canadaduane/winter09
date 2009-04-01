@@ -15,7 +15,8 @@ module Silkworm.OpenGLHelper where
     -- cullFace    $= Just Front
     blend       $= Enabled
     blendFunc   $= (SrcAlpha, OneMinusSrcAlpha)
-    shadeModel  $= Flat -- Smooth
+    -- shadeModel  $= Flat 
+    shadeModel  $= Smooth
     normalize   $= Enabled
     polygonMode $= (Fill, Fill)
     
@@ -35,7 +36,7 @@ module Silkworm.OpenGLHelper where
     -- ambient  (Light 0) $= Color4  0.5 0.5 0.5 1.0
     -- light    (Light 0) $= Enabled 
     
-    position (Light 1) $= Vertex4 0.0 0.0 (0.5) 0.0
+    position (Light 1) $= Vertex4 1.0 1.0 (1.0) 0.0
     ambient  (Light 1) $= Color4  0.2 0.2 0.2 1.0
     diffuse  (Light 1) $= Color4  1.0 1.0 1.0 1.0
     specular (Light 1) $= Color4  0.0 0.0 0.0 1.0

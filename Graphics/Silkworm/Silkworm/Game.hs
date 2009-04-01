@@ -37,8 +37,9 @@ module Silkworm.Game (startGame) where
   -- import Silkworm.WindowHelper (initWindow)
   -- import Silkworm.OpenGLHelper (initOpenGL)
   import Silkworm.LevelGenerator (rasterizeLines)
-  import Silkworm.HipmunkHelper (newSpaceWithGravity)
-  import Silkworm.WaveFront (readWaveFront, Object3D(..))
+  import Silkworm.HipmunkHelper (newSpaceWithGravity, newStaticLine)
+  import Silkworm.WaveFront (readWaveFront)
+  import Silkworm.Object3D (Object3D(..), deformation)
   import Silkworm.Math (cross)
   
   -- rasterRect = ((0, 0), (200, 200))
@@ -111,8 +112,9 @@ module Silkworm.Game (startGame) where
   newGameState = do
     space <- newSpaceWithGravity
     cwd <- getCurrentDirectory
-    sign <- createSign
-    return (GameState 0.0 space [cwd] [sign] [])
+    ground <- newStaticLine space (H.Vector (-0.5) (-0.8)) (H.Vector (0.5) (-0.8))
+    worm <- createWorm
+    return (GameState 0.0 space [cwd] [worm] [])
   
   generateRandomGround :: H.Space -> IO ()
   generateRandomGround space =
@@ -161,7 +163,7 @@ module Silkworm.Game (startGame) where
     state <- get stateRef
     angle <- return (gsAngle state)
     preservingMatrix $ do
-      translate (Vector3 (0) (-2) (-3 :: GLfloat))
+      translate (Vector3 (0) (0) (-3 :: GLfloat))
       rotate angle (Vector3 0 1 0 :: Vector3 GLfloat)
       -- scale 4.0 4.0 (4.0 :: Float)
       forM_ (gsActives state) drawGameObject
@@ -230,6 +232,13 @@ module Silkworm.Game (startGame) where
     o <- return $ readWaveFront f
     let draw = drawObject o
     return GameObject { gDraw = Action "draw sign" draw }
+  
+  createWorm :: IO GameObject
+  createWorm = do
+    f <- readFile "silkworm.obj"
+    o <- return $ readWaveFront f
+    let draw = drawObject o
+    return GameObject { gDraw = Action "draw silkworm" draw }
   
   ------------------------------------------------------------
   -- Simulation bookkeeping

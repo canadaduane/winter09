@@ -16,7 +16,7 @@ from duanegl import *
 ESCAPE = '\033'
 window = 0
 drawMode = 2
-sceneChoice = 0
+sceneChoice = 2
 selectedObject = -1
 x = 0.0
 y = 0.01
@@ -59,8 +59,8 @@ def scene_a():
   scene_clear()  
   
   enable(GL_CULL_FACE)
-  frontFace(GL_CCW)
-  cullFace(GL_BACK)
+  frontFace(GL_CW)
+  cullFace(GL_FRONT)
   
   translate(x, y, z)
   begin(GL_QUADS)
@@ -122,6 +122,7 @@ def scene_c():
   
   enable(GL_NORMALIZE)
   enable(GL_LIGHTING)
+  # enable(GL_COLOR_MATERIAL)
   enable(GL_LIGHT0)
   light(GL_LIGHT0, GL_DIFFUSE, [0.5, 0.0, 0.0, 1.0])
   light(GL_LIGHT0, GL_AMBIENT, [0.1, 0.1, 0.1, 1.0])
@@ -139,7 +140,8 @@ def scene_c():
   begin(GL_QUADS)
   for theta in frange(0, 2*math.pi, dp):
     for phi in frange(0, math.pi, dp):
-      # color3f(1.0, 0.0, 0.0)
+      color3f(0.4, 1.0, 0.4)
+      # color3f(1.0, 1.0, 1.0)
       normal3f(math.cos(theta)   *math.sin(phi)*2,    math.cos(phi)*2,    math.sin(theta)   *math.sin(phi)*2)
       vertex3f(math.cos(theta)   *math.sin(phi),    math.cos(phi),    math.sin(theta)   *math.sin(phi))
       # color3f(0.0, 1.0, 0.0)

@@ -18,17 +18,20 @@ Clipping & Clipping Region
 	- It's best to clip after getting the viewing coordinates, because we can compose the transformation from master coords to world coords with the transformation from world coords to viewing coords.
 	- Clipping points is easy, e.g. reject the point if x < xmin or x > xmax or y < ymin or y > ymax
 	- Clipping lines is a little more complex, e.g.
-		- Cohen-Sutherland algorithm with bitcodes:
-			
-			0101 | 0001 | 1001
-			-----+------+-----
-			0100 | 0000 | 1000
-			-----+------+-----
-			0110 | 0010 | 1010
-			
-			RLBT = Right, Left, Bottom, Top
-			
-			Assign each pair of points in a line one of the 9 bitcodes, depending on the point's location inside or outside of the viewport.
+
+	Cohen-Sutherland algorithm with bitcodes:
+		
+		0101 | 0001 | 1001
+		-----+------+-----
+		0100 | 0000 | 1000
+		-----+------+-----
+		0110 | 0010 | 1010
+		
+		RLBT = Right, Left, Bottom, Top
+		
+		Assign each pair of points in a line one of the 9 bitcodes, depending on the point's location inside or outside of the viewport.
+		AND the codes together : non-zero is rejectable
+		OR the codes to get crossed boundaries
 
 
 	Liang & Barsky
@@ -45,3 +48,28 @@ Clipping & Clipping Region
 	
 	It's possible that when clipping areas, we end up with MORE areas than when we started
 		- not so for lines and points
+
+Where does the transformation from 3d to 2d take place?
+Why is either diagonal of a bounding box sufficient for trivial rejection?
+	- 
+Review Liang & Barsky
+	- 
+Area Clipping
+	Sutherland-Hodgman
+	Weiler-Atherton
+
+What is "blanking" with reference to clipping algorithms?
+Questions from Quizzes
+	Visible element determination in 2D almost always is temporal: the younger you are, the more likely you are to be visible.
+	Darker/thicker lines always are perceived to be closer than lighter/thinner lines. (false)
+	Orthogonal and oblique projections are kinds of ________ projections. (parallel and/or perspective)
+	A general rule for a clipping algorithm is, “points in, points out,” “lines in, lines out,” and “polygons in, polygons out.” (true)
+	How many (“principal plane”) rotations are required to align an arbitrary Cartesian coordinate frame with another arbitrary Cartesian coordinate frame? (three) What about 4+ dimensions?
+	Extreme intensity cuing provides a form of (hidden element removal)
+	Where is the viewpoint for a parallel projection? (far far away) What is meant by "viewpoint"?
+	A parallel projection is _____ the projection plane. (sometimes perpendicular to)
+axonometric vs. isometric
+cavalier vs. cabinet
+near and far planes
+oblique projection
+What does it mean to normalize a view volume?

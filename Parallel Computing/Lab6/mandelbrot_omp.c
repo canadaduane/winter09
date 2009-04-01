@@ -26,20 +26,25 @@ void mandelbrot_omp(int   img_x,   int   img_w,
                     int   img_y,   int   img_h,
                     float mdb_x,   float mdb_w,
                     float mdb_y,   float mdb_h,
-                    IntArray arr)
+                    IntArray arr,
+                    int procs)
 {
     int x, y;
     float mx, my = mdb_y;
     float xi = mdb_w / img_w, yi = mdb_h / img_h;
-    
+    omp_set_num_threads(procs);
+    #pragma omp parallel for \
+        private(x, y, mx, my) \
+        firstprivate(xi, yi, mdb_x, mdb_y, img_h, img_w) \
+        shared(arr)
     for (y = 0; y < img_h; y++)
     {
         mx = mdb_x;
+        my = mdb_y + y * yi;
         for (x = 0; x < img_w; x++)
         {
             arr.ptr[y * img_w + x] = mandelbrot(mx, my);
             mx += xi;
         }
-        my += yi;
     }
 }

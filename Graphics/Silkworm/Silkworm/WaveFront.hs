@@ -1,27 +1,23 @@
 module Silkworm.WaveFront (readWaveFront, Object3D(..)) where
   
   import Data.List (groupBy)
+  import Silkworm.Object3D
   
-  type Vector = (Double, Double, Double)
   type IndexTriple = (Int, Int, Int)
-  type Face = [(Vector, Vector)]
-  
-  data Object3D = Object3D String [Face]
-    deriving Show
   
   data ObjData = MaterialFile String
                | ObjName String
                | GrpName String
-               | Vertex Vector
-               | Normal Vector
+               | Vertex VectorTriple
+               | Normal VectorTriple
                | FaceIndex [IndexTriple]
                | NoData
     deriving Show
   
-  fromVertex :: ObjData -> Vector
+  fromVertex :: ObjData -> VectorTriple
   fromVertex (Vertex d) = d
 
-  fromNormal :: ObjData -> Vector
+  fromNormal :: ObjData -> VectorTriple
   fromNormal (Normal d) = d
 
   fromFaceIndex :: ObjData -> [IndexTriple]

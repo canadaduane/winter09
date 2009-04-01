@@ -208,20 +208,21 @@ def incident_light(pv, norm, lv):
   return max(0, dot(norm, _normalize(lv - pv).transpose())[0,0])
 
 def lightcolor_transform(p_vs, p_ns, p_cs, l_vs, l_as, l_ds):
-  if (isEnabled(GL_COLOR_MATERIAL)):
-    # skip for now
-    return p_cs
-  else:
-    colors = []
-    for j in range(len(p_vs)):
-      p_v, p_n, p_c = p_vs[j], p_ns[j], p_cs[j]
-      c = array([0.0, 0.0, 0.0, 1.0])
-      for i in range(len(l_vs)):
-        l_v, l_a, l_d = l_vs[i], l_as[i], l_ds[i]
-        il = incident_light(p_v, p_n, l_v)
+  colors = []
+  for j in range(len(p_vs)):
+    p_v, p_n, p_c = p_vs[j], p_ns[j], p_cs[j]
+    c = array([0.0, 0.0, 0.0, 1.0])
+    for i in range(len(l_vs)):
+      l_v, l_a, l_d = l_vs[i], l_as[i], l_ds[i]
+      il = incident_light(p_v, p_n, l_v)
+      if isEnabled(GL_COLOR_MATERIAL):
+        mat = array([p_c.r, p_c.g, p_c.b, 1.0])
+        # print l_d, mat, (l_d * mat)
+        c += (l_a + l_d * il) * (mat + [0.2, 0.2, 0.2, 0.0]) * 2
+      else:
         c += l_a + l_d * il
-      colors.append(Color(c[0], c[1], c[2], 1.0))
-    return colors
+    colors.append(Color(c[0], c[1], c[2], 1.0))
+  return colors
 
 def transformed(points, lights):
   p_vs = modelview_transform(matrix_of_points(points))

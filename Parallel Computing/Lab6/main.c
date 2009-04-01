@@ -25,6 +25,7 @@ int main( int argc, char** argv )
     // double mag = shell_arg_float(argc, argv, "-m", 2.0);
     
     // Configure global variables for mandelbrot size
+    int omp_procs = shell_arg_int(argc, argv, "--procs", 1);
     int write_to_file = shell_arg_int(argc, argv, "-f", 0);
     int img_width  = shell_arg_int(argc, argv, "-w", 40);
     int img_height = shell_arg_int(argc, argv, "-h", 40);
@@ -66,7 +67,8 @@ int main( int argc, char** argv )
                            my_mdb_x, my_mdb_w,     // Mandelbrot coords
                            Top, Height,
                            
-                           result);
+                           result,
+                           omp_procs);
             // Allocate sizes array for root node
             if (iproc == 0)
             {
