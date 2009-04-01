@@ -4,14 +4,10 @@ module Main (main) where
   import Silkworm.WindowHelper (initWindow)
   import Silkworm.OpenGLHelper (initOpenGL)
   import Silkworm.Title (showTitleScreen)
-  import Graphics.UI.GLFW
-  import Graphics.Rendering.OpenGL
   
   main :: IO ()
   main = do
     initializeSilkworm
-    v <- get (windowParam DepthBits)
-    putStrLn $ show v
     showTitleScreen
   
   initializeSilkworm :: IO ()

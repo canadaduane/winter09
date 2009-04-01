@@ -1,6 +1,6 @@
 Basic functionality
   - Haskell + OpenGL
-  - Load VRML files
+  - Load WaveFront files
   - Collision detection
   - Keyboard control
 Features

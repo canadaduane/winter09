@@ -15,6 +15,7 @@ module Silkworm.Game where
   import Graphics.UI.GLFW (
     Key(..), KeyButtonState(..), SpecialKey(..), getKey,
     BitmapFont(..), renderString,
+    mousePos, windowSize,
     time, sleep, swapBuffers)
   
   import Graphics.Rendering.OpenGL (
@@ -26,6 +27,7 @@ module Silkworm.Game where
     Normal3(..), normal,
     PrimitiveMode(..), renderPrimitive,
     MatrixMode(..), matrixMode, loadIdentity,
+    Position(..), Size(..),
     preservingMatrix,
     ($=))
   
@@ -129,6 +131,7 @@ module Silkworm.Game where
   startGame :: IO ()
   startGame = do
     stateRef <- newGameState >>= newIORef
+    -- mouseButtonCallback   $= processMouseInput stateRef
     now      <- get time
     gameLoop stateRef now
   
@@ -139,7 +142,7 @@ module Silkworm.Game where
     slowKey  <- getKey (SpecialKey ENTER)
     quitKey  <- getKey (SpecialKey ESC)
     clearKey <- getKey (SpecialKey DEL)
-  
+    
     -- Quit?
     -- when (quitKey == Press) (terminate >> exitWith ExitSuccess)
   
@@ -162,20 +165,27 @@ module Silkworm.Game where
     state <- get stateRef
     clear [ColorBuffer, DepthBuffer]
     -- drawTunnel tunnel 0.0
+    Position cx cy <- get mousePos
+    Size w h <- get windowSize
+    -- putStrLn ((show cx) ++ " " ++ (show cy) ++ " " ++ (show w) ++ " " ++ (show h))
     preservingMatrix $ do
-      translate (Vector3 (-2) (-2.4) (-4 :: GLfloat))
-      scale (0.2) (0.2) ((0.2) :: GLfloat)
-      drawObject $ gsLevel state
-      return ()
-    -- when (slowKey == Press) drawSlowMotion
-    -- forM_ (M.assocs $ stShapes state) (fst . snd) -- Draw each one
-    state <- get stateRef
+      translate (Vector3 (1.5 -(fromIntegral cx) / (fromIntegral w) * 4)
+                         (-1.5 +(fromIntegral cy) / (fromIntegral h) * 4) (0 :: GLfloat))
+      preservingMatrix $ do
+        translate (Vector3 (-2) (-2.4) (-4 :: GLfloat))
+        -- translate (Vector3 (0) (0) (-4 :: GLfloat))
+        scale (0.4) (0.4) ((0.4) :: GLfloat)
+        drawObject $ gsLevel state
+        return ()
+      -- when (slowKey == Press) drawSlowMotion
+      -- forM_ (M.assocs $ stShapes state) (fst . snd) -- Draw each one
+      state <- get stateRef
+      preservingMatrix $ do
+        translate (Vector3 (-0.5) (-0.5) (-3 :: GLfloat))
+        rotate (gsAngle state) (Vector3 0 1 0 :: Vector3 GLfloat)
+        -- scale 4.0 4.0 (4.0 :: Float)
+        forM_ (gsActives state) drawGameObject
     angle <- return (gsAngle state)
-    preservingMatrix $ do
-      translate (Vector3 (-0.5) (-0.5) (-3 :: GLfloat))
-      rotate angle (Vector3 0 1 0 :: Vector3 GLfloat)
-      -- scale 4.0 4.0 (4.0 :: Float)
-      forM_ (gsActives state) drawGameObject
     stateRef $= state { gsAngle = angle + 1.0 }
     swapBuffers
   
@@ -275,6 +285,25 @@ module Silkworm.Game where
     o <- return $ readWaveFront f
     let draw = drawObject o
     return GameObject { gDraw = Action "draw silkworm" draw }
+  
+  -- processMouseInput :: IORef State -> MouseButton -> KeyButtonState -> IO ()
+  -- processMouseInput _        _   Press   =
+  -- processMouseInput stateVar btn Release = do
+  --   rotateKeyCCW <- getKey (SpecialKey LSHIFT)
+  --   rotateKeyCW  <- getKey (SpecialKey RSHIFT)
+  --   let angVel = case (rotateKeyCCW, rotateKeyCW) of
+  --                  (Press,   Release) -> 50
+  --                  (Release, Press)   -> (-50)
+  --                  _                  -> 0
+  --   (shape,add,draw,remove) <- (case btn of
+  --     ButtonLeft  -> createCircle
+  --     ButtonRight -> createSquare
+  --     _           -> createTriPendulum) angVel
+  -- 
+  --   state <- get stateVar
+  --   let space = stSpace state
+  --   add space >> stateVar $= state {
+  --     stShapes = M.insert shape (draw, remove space) $ stShapes state}
   
   ------------------------------------------------------------
   -- Simulation bookkeeping
