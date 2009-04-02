@@ -65,3 +65,34 @@ int floor_log2(unsigned int n) {
   if (n >= 1<< 1) {           pos +=  1; }
   return ((n == 0) ? (-1) : pos);
 }
+
+// Source: http://www.dreamincode.net/code/snippet2997.htm
+/* 
+    Returns NULL to indicate EOF ... or the address of a NEW C string.
+    REMEMBER to FREE the memory when done with this string.
+*/
+char* readline(FILE* f)
+{
+    static int c = 0; /* static ... to remember if a previous call set EOF */
+    static int lineCount = 0; /* to handle the empty file ... */
+    int bufSize = 255, i = 0; /* adjust 255 to whatever is 'right' for your data */
+    
+    if( c == EOF ) { c = 0; return NULL; } /* reset c so can rewind and read again */
+    
+    char* line = (char*) calloc(bufSize, sizeof(char));
+    
+    while ( (c = fgetc(f)) != EOF && c != '\n' )
+    {
+        if( i >= bufSize )
+        {
+            bufSize += 256; /* adjust 256 to whatever is 'right' for your data */
+            line = (char*) realloc(line, bufSize * sizeof(char));
+        }
+        line[i++] = c;
+    }
+    /* handle special case of empty file ...*/
+    if( lineCount++ == 0 && c == EOF ) { free(line); return NULL; }
+    
+    line[i] = '\0'; /* confirm terminal 0 */
+    return realloc( line, i+1 ); /* total len =  last index i ... + 1 more */
+}

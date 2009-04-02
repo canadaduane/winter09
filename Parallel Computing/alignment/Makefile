@@ -5,10 +5,10 @@ DEBUG = --device-emulation
 CFLAGS = -O3 $(DEBUG) -c
 LFLAGS = -O3 $(DEBUG)
 
-align: $(OBJS) alignment.cu
+alignment: $(OBJS) alignment.cu
 	$(NVCC) $(LFLAGS) $(OBJS) alignment.cu -o alignment
 
-misc.o: misc.c
+misc.o: misc.c misc.h
 	$(NVCC) $(CFLAGS) misc.c
 
 clean:
