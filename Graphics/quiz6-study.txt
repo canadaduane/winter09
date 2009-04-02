@@ -1,0 +1,50 @@
+How is diffuse reflection produced by ambient light (in addition to point source light)?
+Why does the angle of illumination (as opposed to the angle of viewing) help distinguish chrome from silver?
+
+12.  Texture is LEAST appropriately achieved by (A)
+       1. micropolygonization of the surface
+       2. applying surface patterns
+       3. altering surface normals
+       4. altering reflection coefficients
+
+What does it mean to "provide" shadows?
+Why does it make no difference whether shadows are provided in world or viewing coords?
+
+18..19.  Suppose a pixel actually consists of a 3 x 3 array of subpixels, each of which consists of a red, green, and blue component which either is on or off.  What is the maximum number of ways in which a color could be achieved? (D)
+        1.  just one
+        2. 8 or 9
+        3. more than 9, but less than 1000
+        4. 1000 or more
+
+Dithering is not characterized best as "making slight shifts in vertex positions to achieve surface planarity".  Supposing that statement were true, what does it mean?
+
+21.  Constant intensity for a surface (sometimes achieved by treating incoming light rays as being parallel) is a computational convenience, but never produces a result which appears realistic. (False)
+       1. true
+       2. false
+
+How is ray tracing compatible with antialiasing (surface boundaries)?
+
+Why does the sun often appear to be yellow?
+
+Why would you say that the colors used in screen phosphors do not represent “extremes” of the chromaticity diagram?
+
+Are there an infinite set of "primary colors"?  Or just RGB + CMY?
+
+What is halftoning?
+
+How many colors can a 3x3 grid of pixels, each with the possibility of being RGB or off, produce?
+
+When does a constant surface intensity produce realistic shading? ("sometimes")
+
+10. Generally, ray tracing deals with _______ and radiosity deals with _______. (B)
+       1. specular intensities, specular intensities
+       2. specular intensities, diffuse interreflection
+       3. diffuse interreflection, specular intensities
+       4. diffuse interreflection, diffuse interreflection
+       5. specular intensities and diffuse interreflection, specular intensities and diffuse interreflection
+
+How many "discrete" colors does the EM spectrum contain?
+
+27. In general, the greater the number of different colors, the “richer” (in information content) the visual presentation. (False)
+       1. true
+       2. false
