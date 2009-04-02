@@ -9,7 +9,7 @@ align: $(OBJS) alignment.cu
 	$(NVCC) $(LFLAGS) $(OBJS) alignment.cu -o alignment
 
 misc.o: misc.c
-	$(CC) $(CFLAGS) template_gold.c
+	$(NVCC) $(CFLAGS) misc.c
 
 clean:
 	\rm -f *.o *~ align

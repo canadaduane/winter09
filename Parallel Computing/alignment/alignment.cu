@@ -10,7 +10,7 @@ typedef struct GRID
     int h;
 } Grid;
 
-typedef enum MEMORY_Type
+typedef enum MEMORY_TYPE
 {
     mem_device,
     mem_host
@@ -21,17 +21,11 @@ Grid gridAlloc( int w, int h, MemType l )
     Grid g;
     g.w = w;
     g.h = h;
-    if( l == mem_device )
+    switch( l )
     {
-        cudaMalloc( (void**)& g.box, w * h * sizeof( float ));
-    }
-    else if ( l == mem_host )
-    {
-        g.box = (float *)malloc( w * h * sizeof( float ) );
-    }
-    else
-    {
-        exit(254);
+        case mem_device: cudaMalloc( (void**)& g.box, w * h * sizeof( float )); break;
+        case mem_host:   g.box = (float *)malloc( w * h * sizeof( float ) ); break;
+        default: exit(254);
     }
     return g;
 }
