@@ -1,0 +1,75 @@
+<html>
+<head>
+    <title>Partitioning</title>
+</head>
+<body>
+    <h1>Parallel Processing Algorithms: PCAM</h1>
+    <ul>
+        <li>Partitioning is often the most difficult step in determining an algorithmic approach to a parallel program, and often determines the other steps.</li>
+        <li>Communication &amp; Agglomeration are not usually as flexible and are often dictated by Partitioning</li>
+        <li>Mapping is a difficult problem.</li>
+    </ul>
+    <h2>How to partition:</h2>
+    <p>The "right" way is often the way that can be accomplished most easily, especially if this results in the fastest computation of the problem. In addition. However, one thing to remember when considering "the fastest way" is that we don't always know the size of the partitions beforehand, and what seems to indicate fast computation may result in poor load balancing.</p>
+    <h3>There are 2 basic divisions:</h3>
+    <h4>Coarse Grained</h4>
+    <ul>
+        <li>Larger tasks</li>
+        <li>May result in fewer (but possibly larger) messages sent/received</li>
+    </ul>
+    <h4>Fine Grained</h4>
+    <ul>
+        <li>Smaller tasks</li>
+        <li>May result in increased message sending/receiving</li>
+    </ul>
+    <h2>Task Dependencies and Decomposition</h2>
+    <p>Task dependencies form a directed graph, where a dependency means one task depends on the result or completion of another.  An example of this is the hot plate problem, where all nodes or processes involved in computation are dependent on their neighboors' results from the previous iteration.</p>
+
+    <h2>Degree of Concurrency</h2>
+    <p>The degree of concurrency is the number of tasks in a job that can be executed in parallel.</p>
+    <p>Mandelbrot set is an example of an algorithm that could be split up into several tasks (segments of an image, for example), but you could try to break it up even further by making each instruction in the program a task. The problem is that these very fine grain tasks will have to be serialized, which shows that the degree of concurrency remains the same, even though we tried to make more tasks. Therefore, just because there are more concurrent tasks, doesn't mean that there is a greater degree of concurrency</p>
+    <p>There is a distinct difference between the maximum degree of concurrency (the absolute most tasks that can ever happen simultaneously) and the average degree of concurrency (the average number of concurrent tasks over the execution/lifetime of the program).</p>
+    
+    <h2>Critical Path</h2>
+    <p>The critical path is the longest path in the dependency graph, or the most tasks in a sequence that have dependencies on previous tasks.</p>
+    <p>This path can be be viewed as a weighted grapvh by considering the size of the individual tasks, or the length of time it will take for each to complete.</p>
+    
+    <h2>Bounds on Concurrency</h2>
+    <p>Often there are bounds placed on the amount of concurrency in a program that are a result of the algorithm itself.  For example, an n by n matrix can have at most n^2 tasks.</p>
+    <p>Other bounds are placed on the program by the tradeoff between computation and communication.  If individual tasks are too small (fine grained decomposition) the advantages in smaller computational units may be overwhelmed by the increased overhead of communication.</p>
+    <p>The tradeoffs between computation time and communication overhead must be considered when considering a partitioning scheme for a parallel program.</p>
+
+<h2>Partitioning Techniques</h2>
+<p>There is no single method that works for every problem, and often a combination of multiple methods provides the best result.  We will cover <i>Recursive Decomposition</i> and <i>Data Decomposition</i>:</p>
+
+<h3>Recursive Decomposition</h3>
+<p>When we talk about Recursive Decomposition, this is not the same as serial recursion.  Rather, it is a way of recursively dividing up the tasks to do so that the problem can be parallelized.</p>
+<p>For example, "divide and conquer" algorithms tend to lend themselves well to this type of decomposition--they can be subdivided for concurrency.  Note, however, that in the degenerate case of of dividing the work into "1 piece" and "the rest of the pieces", it is not a parallelizable algorithm.</p>
+<p>In order to use Recursive Decomposition in the optimal way, we need to try to split the work into the largest equal-sized pieces as possible.  E.g. quicksort is a problem that can benefit from this technique since each successive iteration divides the problem in half.</p>
+<p>Once it is determined the problem is suitable for Recursive Decomposition, itcan often be mapped to a hypercube algorithm which makes it blindingly fast.  This speedup can only be achieved if the task of dividing the problem up is "worth it" in comparison to the work to be done.</p>
+
+<h2>Data Decomposition</h2>
+<p>This approach is the most common approach since it involves identifying the data and then partitioning it across several tasks.  There are a handful of ways we can approach this kind of decomposition:</p>
+
+<h3>Output Data Decomposition</h3>
+
+<p>In order to gain insight into the problem and the possible ways we can parallelize it, this approach looks at the output and asks "what's the answer?" and then breaks up the problem that way.  It often decomposes the problem naturally, i.e. on problems known to be "embarassingly parallel," where no communication is required.</p>
+<p>On supercomputers today, most people have single processor applications that divide up a task.  This cannot always be done, but Output Data Decomposition may lend insights here.  For example, matrix multiplication is a clear candidate for parallelization due to the kind of output it yields.</p>
+
+<h3>Input Data Decomposition</h3>
+<p>When it doesn't make sense to look at output, we can instead look at the input.  For example, if we were to ask "what is the minimum value in this list?", the answer has only one output, but we can consider parallelizing the inputs to this question.</p>
+
+<h3>Combine Input & Output Data Decomposition</h3>
+<p>When there are candidates for decomposition in both the input and the output, we may combine the approaches to find new ways to decompose the problem.</p>
+
+<h3>Domain Decomposition</h3>
+<p>Domain Decomposition is similar to Input Data Decomposition, but often we have to think about how to make the domain into many pieces, rather than just figuring out how to assign the many pieces of data to tasks.  We can think of this kind of decomposition as a superset of Input Data Decomposition.  An example of <i>Domain Decomposition</i> is the evaluating a definite integral: there are no "parts" to assign, but we can choose to divide the domain up into arbitrarily small chunks which can then be assigned.</p>
+
+<h2>Is overhead decreasing for parallel processing?</h2>
+<p>The relative increases in power in communication and computation are about on par.  Over the years, ethernet networks gave huge computation increases (Beowolf), but they did not significantly improve communication speeds.</p>
+<p>Today's architectures work at about 3GHz cycle times, taking about 5 microseconds for communication latency (i.e. nanoseconds vs. microseconds).  Processing will always be faster: i.e. multiple order of magnitude higher than the overhead for communication.</p>
+<p>There is a theoretical architecture used when discussing limits of communication and computation called "PRAM" (Parallel Ram).  The idea is there is no delay between ram and processor, and there is no limit to how many nodes can be connected to it.</p>
+
+</body>
+</html>
+
