@@ -4,7 +4,7 @@
 #include <sys/time.h>
 
 /* Look for a command-line switch and get the next integer value */
-int shell_arg_int( int argc, char* argv[], char* arg_switch, int default_value)
+int shell_arg_int( int argc, char* argv[], char* arg_switch, int default_value )
 {
     int i;
     for ( i = 0; i < argc - 1; i++ )
@@ -18,7 +18,7 @@ int shell_arg_int( int argc, char* argv[], char* arg_switch, int default_value)
 }
 
 /* Look for a command-line switch and get the next double value */
-float shell_arg_float( int argc, char* argv[], char* arg_switch, float default_value)
+float shell_arg_float( int argc, char* argv[], char* arg_switch, float default_value )
 {
     int i;
     for ( i = 0; i < argc - 1; i++ )
@@ -26,6 +26,19 @@ float shell_arg_float( int argc, char* argv[], char* arg_switch, float default_v
         if ( strcmp( argv[ i ], arg_switch ) == 0 )
         {
             return atof( argv[ i + 1 ] );
+        }
+    }
+    return default_value;
+}
+
+char* shell_arg_string( int argc, char* argv[], char* arg_switch, char* default_value )
+{
+    int i;
+    for ( i = 0; i < argc - 1; i++ )
+    {
+        if ( strcmp( argv[ i ], arg_switch ) == 0 )
+        {
+            return argv[ i + 1 ];
         }
     }
     return default_value;
