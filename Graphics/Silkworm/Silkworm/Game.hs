@@ -171,15 +171,8 @@ module Silkworm.Game where
     preservingMatrix $ do
       translate (Vector3 (1.5 -(fromIntegral cx) / (fromIntegral w) * 4)
                          (-1.5 +(fromIntegral cy) / (fromIntegral h) * 4) (0 :: GLfloat))
-      preservingMatrix $ do
-        translate (Vector3 (-2) (-2.4) (-4 :: GLfloat))
-        -- translate (Vector3 (0) (0) (-4 :: GLfloat))
-        scale (0.4) (0.4) ((0.4) :: GLfloat)
-        drawObject $ gsLevel state
-        return ()
-      -- when (slowKey == Press) drawSlowMotion
-      -- forM_ (M.assocs $ stShapes state) (fst . snd) -- Draw each one
-      state <- get stateRef
+      drawLevel (gsLevel state)
+        
       preservingMatrix $ do
         translate (Vector3 (-0.5) (-0.5) (-3 :: GLfloat))
         rotate (gsAngle state) (Vector3 0 1 0 :: Vector3 GLfloat)
@@ -241,6 +234,15 @@ module Silkworm.Game where
   --       vertex $ Vertex3 x3 y3 z3
   --       vertex $ Vertex3 x2 y2 z2
   
+  drawLevel :: Object3D -> IO ()
+  drawLevel level = do
+    preservingMatrix $ do
+      translate (Vector3 (-2) (-2.4) (-4 :: GLfloat))
+      -- translate (Vector3 (0) (0) (-4 :: GLfloat))
+      scale (0.4) (0.4) ((0.4) :: GLfloat)
+      drawObject $ level
+      return ()
+    
   drawObject :: Object3D -> IO ()
   drawObject (Object3D name faces) = do
     forM_ faces $ \face -> renderPrimitive Polygon $ do
