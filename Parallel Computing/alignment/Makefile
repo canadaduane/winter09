@@ -1,7 +1,7 @@
 OBJS = misc.o
 CC = gcc
 NVCC = nvcc
-DEBUG = --device-emulation
+DEBUG = --device-emulation --debug
 CFLAGS = -O3 $(DEBUG) -c
 LFLAGS = -O3 $(DEBUG)
 

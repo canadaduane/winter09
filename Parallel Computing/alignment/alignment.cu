@@ -96,7 +96,6 @@ Grid* grid_init_file( Grid* g, char* filename )
                     }
                 }
             }
-            // printf("%d: %s\n", i, line);
             free( line );
         }
         // Be nice and add a trailing null char so sequences can be printed
@@ -191,9 +190,10 @@ Grid* grid_copy_from_device( Grid* g )
     cudaMemcpy( grid_h, g, sizeof( Grid ), cudaMemcpyDeviceToHost);
     
     // Copy the box data from the device
-    int size = sizeof( Grid ) * grid_h->w * grid_h->h;
-    grid_h->box = (int*)malloc( size );
-    cudaMemcpy( grid_h->box, g->box, size, cudaMemcpyDeviceToHost);
+    int size = sizeof( int ) * grid_h->w * grid_h->h;
+    int* box = (int*)malloc( size );
+    cudaMemcpy( box, grid_h->box, size, cudaMemcpyDeviceToHost);
+    grid_h->box = box;
     
     // Return the HOST pointer
     return grid_h;
@@ -224,6 +224,7 @@ Grid* grid_set_seq_col( Grid* g, char* seq, int h )
 // Show small grids as text output.  NOTE: Will not work for values > 48
 Grid* grid_show( Grid* g )
 {
+    printf( "Show Grid: %d x %d\n", g->w, g->h );
     int i, j;
     for( i = 0; i < g->h; i++ )
     {
@@ -235,7 +236,7 @@ Grid* grid_show( Grid* g )
                 if( c == 0) printf( "    " );
                 else printf("  %c ", c);
             }
-            else                   printf("%3d ", c);
+            else printf("%3d ", c);
         }
         printf("\n");
     }
@@ -304,27 +305,30 @@ Grid* grid_alignment( Grid* g )
     return g;
 }
 
+__global__ void cuda_grid_alignment( Grid* g )
+{
+    int idx = blockDim.x * blockIdx.x + threadIdx.x;
+    printf("idx: %d\n", idx);
+    printf("cuda dim: %d x %d\n", g->w, g->h);
+    g->box[36] = 111;
+}
+
 int main( int argc, char** argv )
 {
     char* filename = shell_arg_string( argc, argv, "-f", "small.fasta" );
     
     Grid* grid_h = grid_new();
-    // Grid* grid_d;
     
     // grid_init( grid_h, 4, 4 );
     grid_init_file( grid_h, filename );
-    printf("g->w: %d, g->h: %d\n", grid_h->w, grid_h->h);
+    printf("Grid Size: %d x %d\n", grid_h->w, grid_h->h);
+
+    Grid* grid_d = grid_copy_to_device( grid_h );
     
-    // grid_set_seq_row( grid_h, "test", 4 );
-    // grid_set_seq_col( grid_h, "four", 4 );
-    grid_alignment( grid_h );
-    grid_show( grid_h );
+    cuda_grid_alignment<<< 1, 1, 1 >>>( grid_d );
     
-    // grid_load_seq( grid_h, filename );
-    // grid_alloc_for_seq( grid_h, mem_host );
-    // grid_alloc_for_grid( grid_d, grid_h, mem_device );
+    Grid* grid_result = grid_copy_from_device( grid_d );
     
-    // grid_copy( grid_h, grid_d );
-    
-    
+    // grid_alignment( grid_h );
+    grid_show( grid_result );
 }
