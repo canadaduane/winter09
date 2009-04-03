@@ -230,9 +230,12 @@ Grid* grid_show( Grid* g )
         for( j = 0; j < g->w; j++ )
         {
             int c = g->box[ i * g->w + j ];
-                 if( c == 0 )           printf("    ");
-            else if( i == 0 || j == 0 ) printf("  %c ", c);
-            else                        printf("%3d ", c);
+            if( i == 0 || j == 0 )
+            {
+                if( c == 0) printf( "    " );
+                else printf("  %c ", c);
+            }
+            else                   printf("%3d ", c);
         }
         printf("\n");
     }
@@ -241,10 +244,6 @@ Grid* grid_show( Grid* g )
 
 Grid* grid_alignment( Grid* g )
 {
-    int* x;
-    int* y;
-    int i = 0;
-    
     // Costs
     int indel = 3;
     int subst = 1;
@@ -254,16 +253,53 @@ Grid* grid_alignment( Grid* g )
     g->box[1 * g->w + 1] = 0;
     
     // Prepare first horizontal line
-    for( i = 2; i < g->w; i++ )
+    for( int i = 2; i < g->w; i++ )
         g->box[1 * g->w + i] = (i - 1) * indel; 
     
     // Prepare first vertical line
-    for( i = 2; i < g->h; i++ )
+    for( int i = 2; i < g->h; i++ )
         g->box[i * g->w + 1] = (i - 1) * indel; 
     
-    // Now go crazy
-    i = 2 * g->w + 2;
+    // Setup for diagonal alignment solution
+    int min = min2(g->w, g->h) - 2;
+    int max = max2(g->w, g->h) - 2;
+    int col = 1, row = g->w;
     
+    // Increase diagonally
+    for( int k = 0; k < min; k++ )
+    {
+        for( int i = 0; i <= k; i++ )
+        {
+            int x = (2 + k - i);
+            int y = (2 + i) * row;
+            int diag = g->box[(y - row) + (x - col)];
+            int vert = g->box[(y - row) + (x)];
+            int horz = g->box[(y) + (x - col)];
+            int c1 = diag + (g->box[x] == g->box[y] ? match : subst);
+            int c2 = vert + indel;
+            int c3 = horz + indel;
+            g->box[x + y] = min3(c1, c2, c3);
+        }
+    }
+    
+    // Translate (skip this for now, assume symmetry)
+    
+    // Decrease diagonally
+    for( int k = 0; k < max - 1; k++ )
+    {
+        for( int i = 0; i < (max - k - 1); i++ )
+        {
+            int x = (1 + max - i);
+            int y = (3 + k + i) * row;
+            int diag = g->box[(y - row) + (x - col)];
+            int vert = g->box[(y - row) + (x)];
+            int horz = g->box[(y) + (x - col)];
+            int c1 = diag + (g->box[x] == g->box[y] ? match : subst);
+            int c2 = vert + indel;
+            int c3 = horz + indel;
+            g->box[x + y] = min3(c1, c2, c3);
+        }
+    }
     
     return g;
 }
