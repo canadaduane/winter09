@@ -27,6 +27,7 @@ Grid* grid_copy_from_device( Grid* g );
 Grid* grid_set_seq_row( Grid* g, char* seq, int w );
 Grid* grid_set_seq_col( Grid* g, char* seq, int h );
 Grid* grid_show( Grid* g );
+Grid* grid_alignment( Grid* g );
 
 Grid* grid_new()
 {
@@ -103,11 +104,9 @@ Grid* grid_init_file( Grid* g, char* filename )
         seq[1][ seq_size[1] ] = '\0';
         
         // Grid sequences point to newly loaded sequences
-        grid_init( g, seq_size[0] + 2, seq_size[1] + 2 );
+        grid_init( g, seq_size[0], seq_size[1] );
         grid_set_seq_row( g, seq[0], seq_size[0] );
         grid_set_seq_col( g, seq[1], seq_size[1] );
-        
-        printf("seq size 0: %d, len: %d, w: %d\n", seq_size[0], strlen(seq[0]), g->w);
         
         fclose( input );
     }
@@ -222,6 +221,7 @@ Grid* grid_set_seq_col( Grid* g, char* seq, int h )
     return g;
 }
 
+// Show small grids as text output.  NOTE: Will not work for values > 48
 Grid* grid_show( Grid* g )
 {
     int i, j;
@@ -230,27 +230,58 @@ Grid* grid_show( Grid* g )
         for( j = 0; j < g->w; j++ )
         {
             int c = g->box[ i * g->w + j ];
-                 if( c == 0 ) printf("    ");
-            else if( c > '9') printf("  %c ", c);
-            else              printf("%3d ", c);
+                 if( c == 0 )           printf("    ");
+            else if( i == 0 || j == 0 ) printf("  %c ", c);
+            else                        printf("%3d ", c);
         }
-        printf("\n\n");
+        printf("\n");
     }
+    return g;
+}
+
+Grid* grid_alignment( Grid* g )
+{
+    int* x;
+    int* y;
+    int i = 0;
+    
+    // Costs
+    int indel = 3;
+    int subst = 1;
+    int match = 0;
+    
+    // Initialize corner
+    g->box[1 * g->w + 1] = 0;
+    
+    // Prepare first horizontal line
+    for( i = 2; i < g->w; i++ )
+        g->box[1 * g->w + i] = (i - 1) * indel; 
+    
+    // Prepare first vertical line
+    for( i = 2; i < g->h; i++ )
+        g->box[i * g->w + 1] = (i - 1) * indel; 
+    
+    // Now go crazy
+    i = 2 * g->w + 2;
+    
+    
     return g;
 }
 
 int main( int argc, char** argv )
 {
-    char* filename = shell_arg_string( argc, argv, "-f", "default.fasta" );
+    char* filename = shell_arg_string( argc, argv, "-f", "small.fasta" );
     
     Grid* grid_h = grid_new();
     // Grid* grid_d;
     
-    grid_init( grid_h, 4, 4 );
+    // grid_init( grid_h, 4, 4 );
+    grid_init_file( grid_h, filename );
     printf("g->w: %d, g->h: %d\n", grid_h->w, grid_h->h);
     
-    grid_set_seq_row( grid_h, "test", 4 );
-    grid_set_seq_col( grid_h, "four", 4 );
+    // grid_set_seq_row( grid_h, "test", 4 );
+    // grid_set_seq_col( grid_h, "four", 4 );
+    grid_alignment( grid_h );
     grid_show( grid_h );
     
     // grid_load_seq( grid_h, filename );
