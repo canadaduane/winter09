@@ -243,13 +243,8 @@ Grid* grid_show( Grid* g )
     return g;
 }
 
-Grid* grid_alignment( Grid* g )
+Grid* grid_align_setup( Grid* g, int indel )
 {
-    // Costs
-    int indel = 3;
-    int subst = 1;
-    int match = 0;
-    
     // Initialize corner
     g->box[1 * g->w + 1] = 0;
     
@@ -260,6 +255,18 @@ Grid* grid_alignment( Grid* g )
     // Prepare first vertical line
     for( int i = 2; i < g->h; i++ )
         g->box[i * g->w + 1] = (i - 1) * indel; 
+    
+    return g;
+}
+
+Grid* grid_alignment( Grid* g )
+{
+    // Costs
+    int indel = 3;
+    int subst = 1;
+    int match = 0;
+    
+    grid_align_setup( g, indel );
     
     // Setup for diagonal alignment solution
     int min = min2(g->w, g->h) - 2;
@@ -305,12 +312,65 @@ Grid* grid_alignment( Grid* g )
     return g;
 }
 
+__device__ Grid* cuda_grid_align_setup( Grid* g, int indel )
+{
+    // Initialize corner
+    g->box[1 * g->w + 1] = 0;
+    
+    // Prepare first horizontal line
+    for( int i = 2; i < g->w; i++ )
+        g->box[1 * g->w + i] = (i - 1) * indel; 
+    
+    // Prepare first vertical line
+    for( int i = 2; i < g->h; i++ )
+        g->box[i * g->w + 1] = (i - 1) * indel; 
+    
+    return g;
+}
+
+// Zero-based alignment of 32x32 square area (x and y should be >= 2)
+__device__ Grid* cuda_grid_align_32( Grid* g, int x, int y )
+{
+    // assert( x >= 2 && y >= 2 );
+    int row = g->w;
+    
+    // Costs
+    int indel = 3;
+    int subst = 1;
+    int match = 0;
+    
+    cuda_grid_align_setup( g, indel );
+    
+    int* char_y = g->box + (row * y);
+    for( int i = 0; i < 16; i++ )
+    {
+        int* char_x = g->box + x;
+        int pos_y = (y + i) * row;
+        for( int j = 0; j < 16; j++ )
+        {
+            int pos_x = (x + j);
+            int diag = g->box[(pos_y - row) + (pos_x - 1)];
+            int vert = g->box[(pos_y - row) + (pos_x)];
+            int horz = g->box[(pos_y) + (pos_x - 1)];
+            int c1 = diag + (*char_x == *char_y ? match : subst);
+            int c2 = vert + indel;
+            int c3 = horz + indel;
+            g->box[pos_x + pos_y] = min3(c1, c2, c3);
+            
+            char_x ++;
+        }
+        char_y += row;
+    }
+    
+    return g;
+}
+
 __global__ void cuda_grid_alignment( Grid* g )
 {
     int idx = blockDim.x * blockIdx.x + threadIdx.x;
-    printf("idx: %d\n", idx);
+    printf("blockDim: %d, blockIdx: %d, threadIdx: %d, idx: %d\n", blockDim.x, blockIdx.x, threadIdx.x, idx);
     printf("cuda dim: %d x %d\n", g->w, g->h);
-    g->box[36] = 111;
+    // cuda_grid_align_32( g, 2, 2 );
 }
 
 int main( int argc, char** argv )
@@ -323,12 +383,13 @@ int main( int argc, char** argv )
     grid_init_file( grid_h, filename );
     printf("Grid Size: %d x %d\n", grid_h->w, grid_h->h);
 
-    Grid* grid_d = grid_copy_to_device( grid_h );
+    // Grid* grid_d = grid_copy_to_device( grid_h );
+    // 
+    // cuda_grid_alignment<<< 2, 2 >>>( grid_d );
+    // 
+    // Grid* grid_result = grid_copy_from_device( grid_d );
+    // grid_show( grid_result );
     
-    cuda_grid_alignment<<< 1, 1, 1 >>>( grid_d );
-    
-    Grid* grid_result = grid_copy_from_device( grid_d );
-    
-    // grid_alignment( grid_h );
-    grid_show( grid_result );
+    grid_alignment( grid_h );
+    grid_show( grid_h );
 }
