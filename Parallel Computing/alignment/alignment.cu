@@ -259,7 +259,7 @@ Grid* grid_align_setup( Grid* g, int indel )
     return g;
 }
 
-Grid* grid_alignment( Grid* g )
+Grid* grid_align_diagonal( Grid* g )
 {
     // Costs
     int indel = 3;
@@ -269,36 +269,26 @@ Grid* grid_alignment( Grid* g )
     grid_align_setup( g, indel );
     
     // Setup for diagonal alignment solution
-    int min = min2(g->w, g->h) - 2;
-    int max = max2(g->w, g->h) - 2;
+    int width = g->w - 2;
     int col = 1, row = g->w;
     
     // Increase diagonally
-    for( int k = 0; k < min; k++ )
+    for( int k = 0; k < 2 * width; k++ )
     {
-        for( int i = 0; i <= k; i++ )
+        int i_max = (k < width ? k : 2 * width - k - 2);
+        for( int i = 0; i <= i_max; i++ )
         {
-            int x = (2 + k - i);
-            int y = (2 + i) * row;
-            int diag = g->box[(y - row) + (x - col)];
-            int vert = g->box[(y - row) + (x)];
-            int horz = g->box[(y) + (x - col)];
-            int c1 = diag + (g->box[x] == g->box[y] ? match : subst);
-            int c2 = vert + indel;
-            int c3 = horz + indel;
-            g->box[x + y] = min3(c1, c2, c3);
-        }
-    }
-    
-    // Translate (skip this for now, assume symmetry)
-    
-    // Decrease diagonally
-    for( int k = 0; k < max - 1; k++ )
-    {
-        for( int i = 0; i < (max - k - 1); i++ )
-        {
-            int x = (1 + max - i);
-            int y = (3 + k + i) * row;
+            int x, y;
+            if( k < width )
+            {
+                x = (2 + k - i);
+                y = (2 + i) * row;
+            }
+            else
+            {
+                x = (1 + width - i);
+                y = (3 + k - width + i) * row;
+            }
             int diag = g->box[(y - row) + (x - col)];
             int vert = g->box[(y - row) + (x)];
             int horz = g->box[(y) + (x - col)];
@@ -390,6 +380,6 @@ int main( int argc, char** argv )
     // Grid* grid_result = grid_copy_from_device( grid_d );
     // grid_show( grid_result );
     
-    grid_alignment( grid_h );
+    grid_align_diagonal( grid_h );
     grid_show( grid_h );
 }
