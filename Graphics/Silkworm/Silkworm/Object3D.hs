@@ -10,10 +10,18 @@ module Silkworm.Object3D where
   type Face = [(VectorTriple, VectorTriple)]
   
   -- A 3D object is a named object and a corresponding list of Faces
-  data Object3D = Object3D String [Face]
+  data Object3D = Object3D String [VectorTriple]   -- points
+                                  [VectorTriple]   -- normals
+                                  [[(Int, Int, Int)]] -- face indices
     deriving Show
   
   type Influence = [[Double]]
+  
+  faces (Object3D name vs ns fss) = map (map vnPair) fss
+    where vnPair (v, t, n) = (vs !! (v - 1), ns  !! (n - 1))
+  
+  facePoints fs  = map fst fs
+  faceNormals fs = map snd fs
   
   -- Define some operators on VectorTriples
   times n (x, y, z) = (n*x, n*y, n*z)
@@ -21,13 +29,27 @@ module Silkworm.Object3D where
   minus (x1, y1, z1) (x2, y2, z2) = (x1-x2, y1-y2, z1-z2)
   plus  (x1, y1, z1) (x2, y2, z2) = (x1+x2, y1+y2, z1+z2)
   
+  -- deform :: Object3D -> (Double, Double) ->
+  --           VectorTriple -> VectorTriple -> VectorTriple -> VectorTriple ->
+  --           Object3D
+  deform obj (minx, maxx) pts = trace
+    where width = maxx - minx
+          -- pts = [c1, c2, c3, c4]
+          kb t = kochanekBartel t 1 pts 1 1 1
+          step = 0.1
+          trace = map kb [0,step..1]
   
-  deformation :: Object3D -> [VectorTriple] -> [Influence]
-  deformation (Object3D name faces) controls = map fInfluence faces
-    where
-      invSq d           = 1/d**2
-      fInfluence points = map pInfluence points
-      pInfluence (p, n) = map (invSq . distance3d p) controls
+  spline
+  
+  splineQuad step pts = map kb [0, step..1]
+    where kb t = kochanekBartel t 1 pts 1 1 1
+  
+  -- deformation :: Object3D -> [VectorTriple] -> [Influence]
+  -- deformation (Object3D name faces) controls = map fInfluence faces
+  --   where
+  --     invSq d           = 1/d**2
+  --     fInfluence points = map pInfluence points
+  --     pInfluence (p, n) = map (invSq . distance3d p) controls
   
   -- deform :: Object3D -> [Influence] -> [VectorTriple] -> Object3D
   -- deform (Object3D name faces) infs controls = Object3D name newFaces
@@ -105,9 +127,14 @@ module Silkworm.Object3D where
   -- Test stuff
   testPoints = [(0.0, 0.0, 0.0), (5.0, 7.0, 0.0), (10.0, 0.0, 0.0), (15.0, 0.0, 0.0)]
   testControls = [(0.0, 0.0, 0.0), (0.1, 0.1, 0.0)]
-  testObject = Object3D "testObject" [[((-0.1, -0.1, 0.0), (0.0, 0.0, 1.0)),
-                                       (( 0.1, -0.1, 0.0), (0.0, 0.0, 1.0)),
-                                       (( 0.1,  0.1, 0.0), (0.0, 0.0, 1.0)),
-                                       ((-0.1,  0.1, 0.0), (0.0, 0.0, 1.0))]]
+  testObject = Object3D "testObject" [(-0.1, -0.1,  0.0)
+                                     ,( 0.1, -0.1,  0.0)
+                                     ,( 0.1,  0.1,  0.0)
+                                     ,(-0.1,  0.1,  0.0)]
+                                     [( 0.0,  0.0,  1.0)
+                                     ,( 0.0,  0.0,  1.0)
+                                     ,( 0.0,  0.0,  1.0)
+                                     ,( 0.0,  0.0,  1.0)]
+                                     [[(1,1,1),(2,2,2),(3,3,3),(4,4,4)]]
   
   

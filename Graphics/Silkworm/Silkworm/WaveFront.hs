@@ -28,12 +28,10 @@ module Silkworm.WaveFront (readWaveFront, Object3D(..)) where
   readWaveFront = reconstitute . parse
   
   reconstitute :: [ObjData] -> Object3D
-  reconstitute ds = Object3D "obj" faces
+  reconstitute ds = Object3D "obj" vertices normals faceIdxs
     where vertices         = map fromVertex    $ filter isVertex ds
           normals          = map fromNormal    $ filter isNormal ds
           faceIdxs         = map fromFaceIndex $ filter isFace   ds
-          faces            = map (map vnPair) faceIdxs
-          vnPair (v, t, n) = (vertices !! (v - 1), normals  !! (n - 1))
           -- Filters for ObjData types
           isVertex (Vertex d)    = True
           isVertex _             = False

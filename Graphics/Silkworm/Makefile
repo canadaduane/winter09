@@ -1,10 +1,12 @@
+GHC_OPTIONS=--make -framework Accelerate
+
 # Compile and link the game executable
 Build:
-	ghc -o SilkwormGame --make Main.hs
+	ghc -o SilkwormGame $(GHC_OPTIONS) Main.hs
 
 # Make the SilkwormGame.app application for Mac OS X
 MacSilkwormGame:
-	ghc -o SilkwormGame --make Main.hs
+	ghc -o SilkwormGame $(GHC_OPTIONS) Main.hs
 	utils/macosx-app SilkwormGame
 	cp -r Resources/ SilkwormGame.app/Contents/Resources/
 
@@ -18,7 +20,7 @@ MacPlayground: Playground
 	utils/macosx-app Playground
 
 Playground: Playground.hs
-	ghc --make Playground.hs
+	ghc $(GHC_OPTIONS) Playground.hs
 
 RunPlayground: MacPlayground
 	open Playground.app
