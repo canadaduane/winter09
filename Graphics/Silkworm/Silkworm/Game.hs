@@ -187,16 +187,18 @@ module Silkworm.Game where
 
   innerBounds ary = ((a + 1, b + 1), (c - 1, d - 1))
     where ((a, b), (c, d)) = bounds ary
-
+  
+  
+  
   maskToObject3D :: DepthMask -> Object3D
   maskToObject3D a = Object3D "tunnel" (map face (range (innerBounds a)))
     where
       -- size = fromIntegral $ (snd . snd . bounds) a
       boxpts      (x, y) = [(x, y), (x, y + 1), (x + 1, y + 1), (x + 1, y)]
       orthogonals (x, y) = [(x, y - 1), (x - 1, y), (x, y + 1), (x + 1, y)]
-      point    i@(x, y) = (fromIntegral x, fromIntegral y, a ! i)
-      face     i@(x, y) = zip (map point (boxpts i))
-                              (map normal (boxpts i))
+      point     i@(x, y) = (fromIntegral x, fromIntegral y, a ! i)
+      face      i@(x, y) = zip (map point (boxpts i))
+                               (map normal (boxpts i))
       
       normal   i@(x, y) | inRange (innerBounds a) i =
                           let center = point i

@@ -1,6 +1,7 @@
 module Silkworm.Object3D where
   
-  import Silkworm.Math (distance3d)
+  import Silkworm.Math (cross, dot, distance3d)
+  import Numeric.LinearAlgebra hiding (dot)
   
   -- VectorTriple is used for Points, Normals etc.
   type VectorTriple = (Double, Double, Double)
@@ -14,6 +15,13 @@ module Silkworm.Object3D where
   
   type Influence = [[Double]]
   
+  -- Define some operators on VectorTriples
+  times n (x, y, z) = (n*x, n*y, n*z)
+  divideby vt n = times (1/n) vt
+  minus (x1, y1, z1) (x2, y2, z2) = (x1-x2, y1-y2, z1-z2)
+  plus  (x1, y1, z1) (x2, y2, z2) = (x1+x2, y1+y2, z1+z2)
+  
+  
   deformation :: Object3D -> [VectorTriple] -> [Influence]
   deformation (Object3D name faces) controls = map fInfluence faces
     where
@@ -26,6 +34,48 @@ module Silkworm.Object3D where
   --   where
   --     newFaces = 
   
+  points2matrix pts = trans m
+    where l (x, y, z) = [x, y, z, 1]
+          s = foldr1 (++) (map l pts)
+          m = ((length pts) >< 4) s
+  
+  matrix2points m = map tup lists
+    where lists = toLists . trans $ m
+          tup x = (x !! 0, x !! 1, x !! 2)
+  
+  rotatePoints i1 i2 f1 f2 pts = map (plus i1) (matrix2points rotated)
+    where rotated = rotateVectors (i2 `minus` i1) (f2 `minus` f1) (points2matrix pts)
+  
+  -- Rotate a matrix of vectors by the difference between two vectors (initial 'i' and final 'f')
+  rotateVectors :: VectorTriple -> VectorTriple -> Matrix Double -> Matrix Double
+  rotateVectors i f pts = (inv rx)
+                      <> (inv ry)
+                      <> rz
+                      <> ry
+                      <> rx
+                      <> pts
+    where origin    = (0, 0, 0)
+          v         = i `cross` f
+          v_len     = distance3d origin v
+          i_len     = distance3d origin i
+          f_len     = distance3d origin f
+          (a, b, c) = v `divideby` v_len
+          d         = (sqrt $ b**2 + c**2 )
+          cs        = (i `dot` f) / (i_len * f_len)
+          sn        = v_len / (i_len * f_len)
+          rx = (4 >< 4) [    1,    0,     0,    0
+                        ,    0,  c/d,  -b/d,    0
+                        ,    0,  b/d,   c/d,    0
+                        ,    0,    0,     0,    1 ]
+          ry = (4 >< 4) [    d,    0,    -a,    0
+                        ,    0,    1,     0,    0
+                        ,    a,    0,     d,    0
+                        ,    0,    0,     0,    1 ]
+          rz = (4 >< 4) [   cs,  -sn,     0,    0
+                        ,   sn,   cs,     0,    0
+                        ,    0,    0,     1,    0
+                        ,    0,    0,     0,    1 ]
+  
   kochanekBartel :: (Floating t) =>
                     t -> Int -> [(t, t, t)] -> t -> t -> t -> (t, t, t)
   kochanekBartel t i points tension bias continuity =
@@ -33,10 +83,7 @@ module Silkworm.Object3D where
       `plus` ((h1 t) `times` (startTangent i))
       `plus` ((h2 t) `times` (points !! (i + 1)))
       `plus` ((h3 t) `times` (endTangent i))
-    where -- Define some operators on VectorTriples
-          times n (x, y, z) = (n*x, n*y, n*z)
-          minus (x1, y1, z1) (x2, y2, z2) = (x1-x2, y1-y2, z1-z2)
-          plus  (x1, y1, z1) (x2, y2, z2) = (x1+x2, y1+y2, z1+z2)
+    where
           -- Define Hermite basis functions
           h0 t = (1 + 2 * t) * (1 - t) ** 2
           h1 t = (t) * (1 - t) ** 2
