@@ -1,6 +1,8 @@
-module Silkworm.Math (cross, dot, distance3d) where
+{-# OPTIONS_GHC -XBangPatterns #-}
+
+module Silkworm.Math (cross, dot, distance3d, average) where
   
-  import Data.List (transpose)
+  import Data.List (transpose, foldl')
   
   -- | Cross product of two 3-dimensional tuples
   cross :: (Floating a) => (a, a, a) -> (a, a, a) -> (a, a, a)
@@ -8,6 +10,10 @@ module Silkworm.Math (cross, dot, distance3d) where
   
   dot :: (Floating a) => (a, a, a) -> (a, a, a) -> a
   dot (a1, a2, a3) (b1, b2, b3) = a1*b1 + a2*b2 + a3*b3
+  
+  -- | Numerically stable mean from Math.Statistics
+  average :: Floating a => [a] -> a
+  average x = fst $ foldl' (\(!m, !n) x -> (m+(x-m)/(n+1),n+1)) (0,0) x
   
   distance3d :: (Floating a) => (a, a, a) -> (a, a, a) -> a
   distance3d (ax, ay, az) (bx, by, bz) = sqrt(dx ** 2 + dy ** 2 + dz ** 2)

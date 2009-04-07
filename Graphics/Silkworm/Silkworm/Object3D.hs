@@ -2,7 +2,7 @@ module Silkworm.Object3D where
   
   import Data.Function (on)
   import Data.List (zip4, groupBy, findIndices)
-  import Silkworm.Math (cross, dot, distance3d)
+  import Silkworm.Math (cross, dot, distance3d, average)
   import Numeric.LinearAlgebra hiding (dot)
   
   -- VectorTriple is used for Points, Normals etc.
@@ -12,19 +12,27 @@ module Silkworm.Object3D where
   type Face = [(VectorTriple, VectorTriple)]
   
   -- A 3D object is a named object and a corresponding list of Faces
-  data Object3D = Object3D String [VectorTriple]   -- points
-                                  [VectorTriple]   -- normals
-                                  [[(Int, Int, Int)]] -- face indices
+  data Object3D = Object3D
+                  { objName     :: String              -- Name of the object
+                  , objCenter   :: VectorTriple        -- Center of the object
+                  , objVertices :: [VectorTriple]      -- Vertices
+                  , objNormals  :: [VectorTriple]      -- Normals
+                  , objFaceIx   :: [[(Int, Int, Int)]] -- Face indices
+                  }
     deriving Show
   
-  type Influence = [[Double]]
-  
-  data Morph = Morph
-               Object3D -- The original unmorphed object
-               [[Int]]  -- The lists of indices within each slice
+  data Morph =    Morph
+                  { mphObject   :: Object3D           -- Original unmorphed object
+                  , mphCenter   :: VectorTriple       -- Center of the master control points
+                  , mphControls :: [VectorTriple]     -- Master control points
+                  , mphSlices   :: [[Int]]            -- List of slices; each slice is a list of indices to points
+                  }
     deriving Show
   
-  faces (Object3D name vs ns fss) = map (map vnPair) fss
+  faces Object3D { objVertices = vs
+                 , objNormals  = ns
+                 , objFaceIx   = fss
+                 } = map (map vnPair) fss
     where vnPair (v, t, n) = (vs !! (v - 1), ns  !! (n - 1))
   
   facePoints fs  = map fst fs
@@ -36,23 +44,47 @@ module Silkworm.Object3D where
   minus (x1, y1, z1) (x2, y2, z2) = (x1-x2, y1-y2, z1-z2)
   plus  (x1, y1, z1) (x2, y2, z2) = (x1+x2, y1+y2, z1+z2)
   
+  -- | The center of an object
+  objectAvgCenter :: Object3D -> (Double, Double, Double)
+  objectAvgCenter Object3D { objVertices = vs } = center vs
+  
+  -- | The center of a list of points
+  center :: (Floating a, Floating b, Floating c) => [(a, b, c)] -> (a, b, c)
+  center ps = (average xs, average ys, average zs)
+    where (xs, ys, zs) = unzip3 ps
+  
+  
+  blockMorph m@(Morph { mphObject   = Object3D { objVertices = vs }
+                      , mphCenter   = m_center
+                      , mphControls = ctrls
+                      , mphSlices   = slices
+                      })
+    | (length slices) == (length cPts) = Object3D
+    where 
+      -- obj_c = center oPts
+      pts_c = center cPts
+      -- delta = obj_c `minus` pts_c
+      pairs = zip slices cPts
+  
   -- morph :: Morph -> [VectorTriple] -> Object3D
-  morph m@(Morph obj slices) cps
-    | (cpsLen >= 5) && (cpsLen `mod` 2 == 1) = range
-    | otherwise          = error "Need odd number of control points and at least 5 of them"
-    where cpsLen         = (length cps)
-          splineStep     = (fromIntegral ((length cps) - 2)) /
-                           (fromIntegral (length slices))
-          splinePoints   = spline splineStep cps
-          centerPointIdx = (length splinePoints) / 2 + 1
-          allPoints      = [head cps] ++ splinePoints ++ [last cps]
-          range          = [1..(length splinePoints)]
-          
-          rotatedSlice n = 
+  -- morph m@(Morph obj slices) cps
+  --   | (cpsLen >= 5) && (cpsLen `mod` 2 == 1) = range
+  --   | otherwise          = error "Need odd number of control points and at least 5 of them"
+  --   where cpsLen         = (length cps)
+  --         splineStep     = (fromIntegral ((length cps) - 2)) /
+  --                          (fromIntegral (length slices))
+  --         splinePoints   = spline splineStep cps
+  --         allPoints      = [head cps] ++ splinePoints ++ [last cps]
+  --         range          = [1..(length splinePoints)]
+  --         (cx, cy, cz)   = splinePoints !! centerPointIdx
+  --         centerPointIdx = (length splinePoints) `div` 2
+  --         rotatedSlice n = 
   
   mkMorph :: Object3D -> Int -> Morph
-  mkMorph obj@(Object3D name points normals faces) sliceCount =
-    Morph obj (equalParts xAxis sliceCount points)
+  mkMorph obj@(Object3D { objVertices = vs }) sliceCount =
+    Morph { mphObject = obj
+          , mphSlices = (equalParts xAxis sliceCount vs)
+          }
   
   xAxis (x, y, z) = x
   yAxis (x, y, z) = y
@@ -63,7 +95,7 @@ module Silkworm.Object3D where
   equalParts :: (Ord a1, Enum a1, Fractional a1, Integral a2) =>
                 (a -> a1) -> a2 -> [a] -> [[Int]]
   equalParts axisFn n points =
-      [ findIndices (pointInPartition p) points | p <- partitions ]
+      [ findIndices (pointInPartition partPair) points | partPair <- partitions ]
     where
       pointInPartition pair pt = between (axisFn pt) pair
       between a (a_min, a_max)  = a >= a_min && a < a_max
@@ -177,30 +209,30 @@ module Silkworm.Object3D where
                ,(12.0, 5.0, 0.0)
                ,(15.0, 5.0, 0.0)]
   
-  testObject = Object3D "testObject"
-               [(-5.0, -1.0,  0.0)
-               ,(-5.0,  1.0,  0.0)
-               ,(-2.5,  1.0,  0.0)
-               ,(-2.5, -1.0,  0.0)
-               ,( 0.0, -1.0,  0.0)
-               ,( 0.0,  1.0,  0.0)
-               ,( 2.5,  1.0,  0.0)
-               ,( 2.5, -1.0,  0.0)
-               ,( 5.0, -1.0,  0.0)
-               ,( 5.0,  1.0,  0.0)]
-               [( 0.0,  0.0,  1.0)
-               ,( 0.0,  0.0,  1.0)
-               ,( 0.0,  0.0,  1.0)
-               ,( 0.0,  0.0,  1.0)
-               ,( 0.0,  0.0,  1.0)
-               ,( 0.0,  0.0,  1.0)
-               ,( 0.0,  0.0,  1.0)
-               ,( 0.0,  0.0,  1.0)
-               ,( 0.0,  0.0,  1.0)
-               ,( 0.0,  0.0,  1.0)]
-               [[(1,1,1),(2,2,2),(3,3,3),(4,4,4)]
-               ,[(3,3,3),(4,4,4),(5,5,5),(6,6,6)]
-               ,[(5,5,5),(6,6,6),(7,7,7),(8,8,8)]
-               ,[(7,7,7),(8,8,8),(9,9,9),(10,10,10)]]
-
-  
+  testObject = Object3D { objName = "testObject" }
+               -- [(-5.0, -1.0,  0.0)
+               -- ,(-5.0,  1.0,  0.0)
+               -- ,(-2.5,  1.0,  0.0)
+               -- ,(-2.5, -1.0,  0.0)
+               -- ,( 0.0, -1.0,  0.0)
+               -- ,( 0.0,  1.0,  0.0)
+               -- ,( 2.5,  1.0,  0.0)
+               -- ,( 2.5, -1.0,  0.0)
+               -- ,( 5.0, -1.0,  0.0)
+               -- ,( 5.0,  1.0,  0.0)]
+               -- [( 0.0,  0.0,  1.0)
+               -- ,( 0.0,  0.0,  1.0)
+               -- ,( 0.0,  0.0,  1.0)
+               -- ,( 0.0,  0.0,  1.0)
+               -- ,( 0.0,  0.0,  1.0)
+               -- ,( 0.0,  0.0,  1.0)
+               -- ,( 0.0,  0.0,  1.0)
+               -- ,( 0.0,  0.0,  1.0)
+               -- ,( 0.0,  0.0,  1.0)
+               -- ,( 0.0,  0.0,  1.0)]
+               -- [[(1,1,1),(2,2,2),(3,3,3),(4,4,4)]
+               -- ,[(3,3,3),(4,4,4),(5,5,5),(6,6,6)]
+               -- ,[(5,5,5),(6,6,6),(7,7,7),(8,8,8)]
+               -- ,[(7,7,7),(8,8,8),(9,9,9),(10,10,10)]]
+               -- 
+               --   
