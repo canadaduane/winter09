@@ -1,5 +1,7 @@
 module Silkworm.Object3D where
   
+  import Data.Function (on)
+  import Data.List (zip4, groupBy, findIndices)
   import Silkworm.Math (cross, dot, distance3d)
   import Numeric.LinearAlgebra hiding (dot)
   
@@ -32,17 +34,15 @@ module Silkworm.Object3D where
   -- deform :: Object3D -> (Double, Double) ->
   --           VectorTriple -> VectorTriple -> VectorTriple -> VectorTriple ->
   --           Object3D
-  deform obj (minx, maxx) pts = trace
-    where width = maxx - minx
-          -- pts = [c1, c2, c3, c4]
-          kb t = kochanekBartel t 1 pts 1 1 1
-          step = 0.1
-          trace = map kb [0,step..1]
+  -- deform obj (minx, maxx) pts = trace
+  --   where width = maxx - minx
+  --         -- pts = [c1, c2, c3, c4]
+  --         kb t = kochanekBartel t 1 pts 1 1 1
+  --         step = 0.1
+  --         trace = map kb [0,step..1]
   
-  spline
-  
-  splineQuad step pts = map kb [0, step..1]
-    where kb t = kochanekBartel t 1 pts 1 1 1
+  -- splineQuad step pts = map kb [0, step..1]
+  --   where kb t = kochanekBartel t 1 pts 1 1 1
   
   -- deformation :: Object3D -> [VectorTriple] -> [Influence]
   -- deformation (Object3D name faces) controls = map fInfluence faces
@@ -55,6 +55,23 @@ module Silkworm.Object3D where
   -- deform (Object3D name faces) infs controls = Object3D name newFaces
   --   where
   --     newFaces = 
+  
+  xAxis (x, y, z) = x
+  yAxis (x, y, z) = y
+  zAxis (x, y, z) = z
+  equalParts :: (Ord a1, Enum a1, Fractional a1, Integral a2) =>
+                (a -> a1) -> a2 -> [a] -> [[Int]]
+  equalParts axisFn parts points =
+      [ findIndices (pointInPartition p) points | p <- partitions ]
+    where
+      pointInPartition pair pt = between (axisFn pt) pair
+      between a (m, n)  = a >= m && a <= n
+      partitions = zip (drop 0 range) (drop 1 range)
+      range      = [minima, (minima+inc)..maxima]
+      minima     = minimum (map axisFn points)
+      maxima     = maximum (map axisFn points)
+      ubound     = (length points) - 1
+      inc        = (maxima - minima) / (fromIntegral parts)
   
   points2matrix pts = trans m
     where l (x, y, z) = [x, y, z, 1]
@@ -71,11 +88,11 @@ module Silkworm.Object3D where
   -- Rotate a matrix of vectors by the difference between two vectors (initial 'i' and final 'f')
   rotateVectors :: VectorTriple -> VectorTriple -> Matrix Double -> Matrix Double
   rotateVectors i f pts = (inv rx)
-                      <> (inv ry)
-                      <> rz
-                      <> ry
-                      <> rx
-                      <> pts
+                       <> (inv ry)
+                       <> rz
+                       <> ry
+                       <> rx
+                       <> pts
     where origin    = (0, 0, 0)
           v         = i `cross` f
           v_len     = distance3d origin v
@@ -98,34 +115,56 @@ module Silkworm.Object3D where
                         ,    0,    0,     1,    0
                         ,    0,    0,     0,    1 ]
   
-  kochanekBartel :: (Floating t) =>
-                    t -> Int -> [(t, t, t)] -> t -> t -> t -> (t, t, t)
-  kochanekBartel t i points tension bias continuity =
-             ((h0 t) `times` (points !! i))
-      `plus` ((h1 t) `times` (startTangent i))
-      `plus` ((h2 t) `times` (points !! (i + 1)))
-      `plus` ((h3 t) `times` (endTangent i))
+  -- We'll use the catmull-rom spline as a simple default spline
+  spline = crSpline
+  
+  crSpline :: (Enum t, Floating t) => t -> [(t, t, t)] -> [(t, t, t)]
+  crSpline step pts = concatMap (flip map $ time) controlFns
     where
-          -- Define Hermite basis functions
-          h0 t = (1 + 2 * t) * (1 - t) ** 2
-          h1 t = (t) * (1 - t) ** 2
-          h2 t = (t) ** 2 * (3 - 2 * t)
-          h3 t = (t) ** 2 * (t - 1)
-          -- Simplify the tension / bias / continuity tangent equations
-          mpp = (1 - tension) * (1 + bias) * (1 + continuity)
-          mmm = (1 - tension) * (1 - bias) * (1 - continuity)
-          mpm = (1 - tension) * (1 + bias) * (1 - continuity)
-          mmp = (1 - tension) * (1 - bias) * (1 + continuity)
-          tangent i v1 v2 = let p_i  = points !! i
-                                p_im = points !! (i - 1)
-                                p_ip = points !! (i + 1)
-                            in 0.5 `times` ((v1 `times` (p_i  `minus` p_im)) `plus`
-                                            (v2 `times` (p_ip `minus` p_i)))
-          startTangent i = tangent i mpp mmm
-          endTangent   i = tangent i mpm mmp
+      time = [0, step..1]
+      controlPoints = zip4 (drop 0 pts) (drop 1 pts) (drop 2 pts) (drop 3 pts)
+      controlFns = map catmullRom controlPoints
+  
+  catmullRom :: (Floating t) =>
+                ((t, t, t), (t, t, t), (t, t, t), (t, t, t)) -> t -> (t, t, t)
+  catmullRom (p0, p1, p2, p3) t = hermite (p1, p2) (m1, m2) t
+    where
+      m1 = (p2 `minus` p0) `divideby` 2.0
+      m2 = (p3 `minus` p1) `divideby` 2.0
+  
+  kochanekBartel :: (Floating t) =>
+                    ((t, t, t), (t, t, t), (t, t, t)) ->
+                    t -> t -> t -> t -> (t, t, t)
+  kochanekBartel (p0, p1, p2) tens bias cont t = hermite (p1, p2) (m1, m2) t
+    where
+      m1 = tangent mpp mmm
+      m2 = tangent mpm mmp
+      mpp = (1 - tens) * (1 + bias) * (1 + cont)
+      mmm = (1 - tens) * (1 - bias) * (1 - cont)
+      mpm = (1 - tens) * (1 + bias) * (1 - cont)
+      mmp = (1 - tens) * (1 - bias) * (1 + cont)
+      tangent v1 v2 = ( (v2 `times` (p1 `minus` p0)) `plus` (v1 `times` (p2 `minus` p1)) ) `divideby` 2.0
+  
+  -- Foundational spline function
+  -- (p0, p1) : Two points to connect
+  -- (m0, m1) : Corresponding rates of change at those points
+  -- t        : An interpolation value within [0,1]
+  hermite :: Floating t => ((t, t, t), (t, t, t)) ->
+                           ((t, t, t), (t, t, t)) -> t ->
+                           (t, t, t)
+  hermite (p0, p1) (m0, m1) t = (h00 `times` p0)
+                         `plus` (h01 `times` m0)
+                         `plus` (h10 `times` p1)
+                         `plus` (h11 `times` m1)
+    where h00 = (1 + 2 * t) * (1 - t) ** 2
+          h01 = (t) * (1 - t) ** 2
+          h10 = (t) ** 2 * (3 - 2 * t)
+          h11 = (t) ** 2 * (t - 1)
   
   -- Test stuff
-  testPoints = [(0.0, 0.0, 0.0), (5.0, 7.0, 0.0), (10.0, 0.0, 0.0), (15.0, 0.0, 0.0)]
+  test3Points = ((5.0, 5.0, 0.0), (5.0, 10.0, 0.0), (10.0, 10.0, 0.0))
+  testPoints = [(25.0, 0.0, 0.0), (0.0, 0.0, 0.0), (5.0, 7.0, 0.0), (10.0, 0.0, 0.0),
+                (12.0, 5.0, 0.0), (15.0, 5.0, 0.0)]
   testControls = [(0.0, 0.0, 0.0), (0.1, 0.1, 0.0)]
   testObject = Object3D "testObject" [(-0.1, -0.1,  0.0)
                                      ,( 0.1, -0.1,  0.0)
