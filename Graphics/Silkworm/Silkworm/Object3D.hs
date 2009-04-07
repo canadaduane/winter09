@@ -19,6 +19,11 @@ module Silkworm.Object3D where
   
   type Influence = [[Double]]
   
+  data Morph = Morph
+               Object3D -- The original unmorphed object
+               [[Int]]  -- The lists of indices within each slice
+    deriving Show
+  
   faces (Object3D name vs ns fss) = map (map vnPair) fss
     where vnPair (v, t, n) = (vs !! (v - 1), ns  !! (n - 1))
   
@@ -31,47 +36,43 @@ module Silkworm.Object3D where
   minus (x1, y1, z1) (x2, y2, z2) = (x1-x2, y1-y2, z1-z2)
   plus  (x1, y1, z1) (x2, y2, z2) = (x1+x2, y1+y2, z1+z2)
   
-  -- deform :: Object3D -> (Double, Double) ->
-  --           VectorTriple -> VectorTriple -> VectorTriple -> VectorTriple ->
-  --           Object3D
-  -- deform obj (minx, maxx) pts = trace
-  --   where width = maxx - minx
-  --         -- pts = [c1, c2, c3, c4]
-  --         kb t = kochanekBartel t 1 pts 1 1 1
-  --         step = 0.1
-  --         trace = map kb [0,step..1]
+  -- morph :: Morph -> [VectorTriple] -> Object3D
+  morph m@(Morph obj slices) cps
+    | (cpsLen >= 5) && (cpsLen `mod` 2 == 1) = range
+    | otherwise          = error "Need odd number of control points and at least 5 of them"
+    where cpsLen         = (length cps)
+          splineStep     = (fromIntegral ((length cps) - 2)) /
+                           (fromIntegral (length slices))
+          splinePoints   = spline splineStep cps
+          centerPointIdx = (length splinePoints) / 2 + 1
+          allPoints      = [head cps] ++ splinePoints ++ [last cps]
+          range          = [1..(length splinePoints)]
+          
+          rotatedSlice n = 
   
-  -- splineQuad step pts = map kb [0, step..1]
-  --   where kb t = kochanekBartel t 1 pts 1 1 1
-  
-  -- deformation :: Object3D -> [VectorTriple] -> [Influence]
-  -- deformation (Object3D name faces) controls = map fInfluence faces
-  --   where
-  --     invSq d           = 1/d**2
-  --     fInfluence points = map pInfluence points
-  --     pInfluence (p, n) = map (invSq . distance3d p) controls
-  
-  -- deform :: Object3D -> [Influence] -> [VectorTriple] -> Object3D
-  -- deform (Object3D name faces) infs controls = Object3D name newFaces
-  --   where
-  --     newFaces = 
+  mkMorph :: Object3D -> Int -> Morph
+  mkMorph obj@(Object3D name points normals faces) sliceCount =
+    Morph obj (equalParts xAxis sliceCount points)
   
   xAxis (x, y, z) = x
   yAxis (x, y, z) = y
   zAxis (x, y, z) = z
+  
+  -- | Slices a list of points into n parts and returns a list of lists of indices
+  -- | that maps back to the original list of points.
   equalParts :: (Ord a1, Enum a1, Fractional a1, Integral a2) =>
                 (a -> a1) -> a2 -> [a] -> [[Int]]
-  equalParts axisFn parts points =
+  equalParts axisFn n points =
       [ findIndices (pointInPartition p) points | p <- partitions ]
     where
       pointInPartition pair pt = between (axisFn pt) pair
-      between a (m, n)  = a >= m && a <= n
+      between a (a_min, a_max)  = a >= a_min && a < a_max
       partitions = zip (drop 0 range) (drop 1 range)
-      range      = [minima, (minima+inc)..maxima]
-      minima     = minimum (map axisFn points)
-      maxima     = maximum (map axisFn points)
+      range      = [min, (min + inc)..max]
+      inc        = (max - min) / (fromIntegral n)
+      min        = minimum (map axisFn points) - 0.00001
+      max        = maximum (map axisFn points) + 0.00001
       ubound     = (length points) - 1
-      inc        = (maxima - minima) / (fromIntegral parts)
   
   points2matrix pts = trans m
     where l (x, y, z) = [x, y, z, 1]
@@ -118,12 +119,16 @@ module Silkworm.Object3D where
   -- We'll use the catmull-rom spline as a simple default spline
   spline = crSpline
   
-  crSpline :: (Enum t, Floating t) => t -> [(t, t, t)] -> [(t, t, t)]
-  crSpline step pts = concatMap (flip map $ time) controlFns
+  crSpline :: Double -> [VectorTriple]
+              -> [VectorTriple]
+  crSpline step pts = map splinePoint time
     where
-      time = [0, step..1]
+      splinePoint t = let f = min (floor t) ((length controlPoints) - 1)
+                          i = t - (toEnum f)
+                      in catmullRom (controlPoints !! f) i
       controlPoints = zip4 (drop 0 pts) (drop 1 pts) (drop 2 pts) (drop 3 pts)
-      controlFns = map catmullRom controlPoints
+      time          = [0, step .. ubound] :: [Double]
+      ubound        = fromIntegral $ length controlPoints
   
   catmullRom :: (Floating t) =>
                 ((t, t, t), (t, t, t), (t, t, t), (t, t, t)) -> t -> (t, t, t)
@@ -162,18 +167,40 @@ module Silkworm.Object3D where
           h11 = (t) ** 2 * (t - 1)
   
   -- Test stuff
-  test3Points = ((5.0, 5.0, 0.0), (5.0, 10.0, 0.0), (10.0, 10.0, 0.0))
-  testPoints = [(25.0, 0.0, 0.0), (0.0, 0.0, 0.0), (5.0, 7.0, 0.0), (10.0, 0.0, 0.0),
-                (12.0, 5.0, 0.0), (15.0, 5.0, 0.0)]
-  testControls = [(0.0, 0.0, 0.0), (0.1, 0.1, 0.0)]
-  testObject = Object3D "testObject" [(-0.1, -0.1,  0.0)
-                                     ,( 0.1, -0.1,  0.0)
-                                     ,( 0.1,  0.1,  0.0)
-                                     ,(-0.1,  0.1,  0.0)]
-                                     [( 0.0,  0.0,  1.0)
-                                     ,( 0.0,  0.0,  1.0)
-                                     ,( 0.0,  0.0,  1.0)
-                                     ,( 0.0,  0.0,  1.0)]
-                                     [[(1,1,1),(2,2,2),(3,3,3),(4,4,4)]]
+  test3Points = ((5.0, 5.0, 0.0)
+                ,(5.0, 10.0, 0.0)
+                ,(10.0, 10.0, 0.0))
   
+  testPoints = [(0.0, 0.0, 0.0)
+               ,(5.0, 7.0, 0.0)
+               ,(10.0, 0.0, 0.0)
+               ,(12.0, 5.0, 0.0)
+               ,(15.0, 5.0, 0.0)]
+  
+  testObject = Object3D "testObject"
+               [(-5.0, -1.0,  0.0)
+               ,(-5.0,  1.0,  0.0)
+               ,(-2.5,  1.0,  0.0)
+               ,(-2.5, -1.0,  0.0)
+               ,( 0.0, -1.0,  0.0)
+               ,( 0.0,  1.0,  0.0)
+               ,( 2.5,  1.0,  0.0)
+               ,( 2.5, -1.0,  0.0)
+               ,( 5.0, -1.0,  0.0)
+               ,( 5.0,  1.0,  0.0)]
+               [( 0.0,  0.0,  1.0)
+               ,( 0.0,  0.0,  1.0)
+               ,( 0.0,  0.0,  1.0)
+               ,( 0.0,  0.0,  1.0)
+               ,( 0.0,  0.0,  1.0)
+               ,( 0.0,  0.0,  1.0)
+               ,( 0.0,  0.0,  1.0)
+               ,( 0.0,  0.0,  1.0)
+               ,( 0.0,  0.0,  1.0)
+               ,( 0.0,  0.0,  1.0)]
+               [[(1,1,1),(2,2,2),(3,3,3),(4,4,4)]
+               ,[(3,3,3),(4,4,4),(5,5,5),(6,6,6)]
+               ,[(5,5,5),(6,6,6),(7,7,7),(8,8,8)]
+               ,[(7,7,7),(8,8,8),(9,9,9),(10,10,10)]]
+
   
