@@ -7,7 +7,7 @@
 int shell_arg_int( int argc, char* argv[], char* arg_switch, int default_value )
 {
     int i;
-    for ( i = 0; i < argc - 1; i++ )
+    for ( i = 1; i < argc - 1; i++ )
     {
         if ( strcmp( argv[ i ], arg_switch ) == 0 )
         {
@@ -20,7 +20,7 @@ int shell_arg_int( int argc, char* argv[], char* arg_switch, int default_value )
 int shell_arg_present( int argc, char* argv[], char* arg_switch )
 {
     int i;
-    for ( i = 0; i < argc - 1; i++ )
+    for ( i = 1; i < argc; i++ )
     {
         if ( strcmp( argv[ i ], arg_switch ) == 0 )
         {
@@ -34,7 +34,7 @@ int shell_arg_present( int argc, char* argv[], char* arg_switch )
 float shell_arg_float( int argc, char* argv[], char* arg_switch, float default_value )
 {
     int i;
-    for ( i = 0; i < argc - 1; i++ )
+    for ( i = 1; i < argc - 1; i++ )
     {
         if ( strcmp( argv[ i ], arg_switch ) == 0 )
         {
@@ -47,7 +47,7 @@ float shell_arg_float( int argc, char* argv[], char* arg_switch, float default_v
 char* shell_arg_string( int argc, char* argv[], char* arg_switch, char* default_value )
 {
     int i;
-    for ( i = 0; i < argc - 1; i++ )
+    for ( i = 1; i < argc - 1; i++ )
     {
         if ( strcmp( argv[ i ], arg_switch ) == 0 )
         {
@@ -115,10 +115,10 @@ int min2( int a, int b )
     return (a < b ? a : b);
 }
 
-int min3( int a, int b, int c )
-{
-    return (a < b ? (a < c ? a : (b < c ? b : c)) : (b < c ? b : c));
-}
+// int min3( int a, int b, int c )
+// {
+//     return (a < b ? (a < c ? a : (b < c ? b : c)) : (b < c ? b : c));
+// }
 
 int max2( int a, int b )
 {

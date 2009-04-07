@@ -255,6 +255,11 @@ Grid* grid_save( FILE* f, Grid* g )
     return g;
 }
 
+__host__ __device__ int min3( int a, int b, int c )
+{
+    return (a < b ? (a < c ? a : (b < c ? b : c)) : (b < c ? b : c));
+}
+
 __host__ __device__ Grid* grid_align_setup( Grid* g )
 {
     // Initialize corner
@@ -381,36 +386,66 @@ int main( int argc, char** argv )
     char* output = shell_arg_string( argc, argv, "-o", "" );
     int show_alignment = shell_arg_present( argc, argv, "--show" );
     int align_serial = shell_arg_present( argc, argv, "--serial" );
-    int show_debug = shell_arg_present(argc, argv, "--debug" );
+    int show_debug = shell_arg_present( argc, argv, "--debug" );
+    int show_help = shell_arg_present( argc, argv, "-h" ) ||
+                    shell_arg_present( argc, argv, "--help" );
     
-    Grid* grid_h = grid_new();
-    Grid* grid_d;
-    Grid* grid_result;
-    
-    grid_init_file( grid_h, input );
-    printf("Size of Grid: %d x %d\n", grid_h->w - 2, grid_h->h - 2);
-    
-    grid_align_setup( grid_h );
-    
-    if( align_serial )
+    printf( "CUDA Needleman-Wunsch\n(c) 2009 Duane Johnson\n\n" );
+    printf( "Input FASTA: %s\n", input );
+    if( strlen( output ) > 0 )
+        printf( "Output Alignment: %s\n", output );
+    printf( "Show Alignment: %d\n", show_alignment );
+    printf( "Align in %s\n", (align_serial ? "Serial" : "Parallel") );
+    if( show_debug )
+        printf( "Debug Output ON\n" );
+    if( show_help )
     {
-        grid_result = grid_alignment_serial( grid_h );
+        printf( "\nOptions:\n" );
+        printf( "  -f <default.fasta>      FASTA input file.\n");
+        printf( "  -o <default.align>      Table output file.\n");
+        printf( "  --show                  Show table output in standard output.\n");
+        printf( "  --serial                Do the alignment in serial (rather than parallel).\n");
+        printf( "  --debug                 Show some debug output.\n");
+        printf( "  --help                  This help message.\n");
     }
     else
     {
-        grid_d = grid_copy_to_device( grid_h );
-        grid_alignment_parallel( grid_d, grid_h->w, show_debug );
-        grid_result = grid_copy_from_device( grid_d );
+        Grid* grid_h = grid_new();
+        Grid* grid_d;
+        Grid* grid_result;
+        
+        grid_init_file( grid_h, input );
+        printf("Size of Grid: %d x %d\n", grid_h->w - 2, grid_h->h - 2);
+        
+        if( (grid_h->w - 2) % BLOCK_SIZE != 0 ||
+            (grid_h->h - 2) % BLOCK_SIZE != 0)
+        {
+            printf( "Aborted. Sequence must be a multiple of %d.\n", BLOCK_SIZE );
+        }
+        else
+        {
+            grid_align_setup( grid_h );
+            
+            if( align_serial )
+            {
+                grid_result = grid_alignment_serial( grid_h );
+            }
+            else
+            {
+                grid_d = grid_copy_to_device( grid_h );
+                grid_alignment_parallel( grid_d, grid_h->w, show_debug );
+                grid_result = grid_copy_from_device( grid_d );
+            }
+            
+            if( show_alignment )
+                grid_show( grid_result );
+            
+            if( strlen( output ) > 0 )
+            {
+                FILE* out = fopen( output, "w" );
+                grid_save( out, grid_result );
+                fclose( out );
+            }
+        }
     }
-    
-    if( show_alignment )
-        grid_show( grid_result );
-    
-    if( strlen( output ) > 0 )
-    {
-        FILE* out = fopen( output, "w" );
-        grid_save( out, grid_result );
-        fclose( out );
-    }
-    
 }

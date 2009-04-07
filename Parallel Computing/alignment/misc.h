@@ -9,7 +9,7 @@ extern "C" double when( void );
 extern "C" int    floor_log2( unsigned int n );
 extern "C" char*  readline( FILE* f );
 extern "C" int    min2( int a, int b );
-extern "C" int    min3( int a, int b, int c );
+// extern "C" int    min3( int a, int b, int c );
 extern "C" int    max2( int a, int b );
 extern "C" int    max3( int a, int b, int c );
 
