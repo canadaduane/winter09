@@ -15,8 +15,8 @@ module Silkworm.OpenGLHelper where
     -- cullFace    $= Just Front
     blend       $= Enabled
     blendFunc   $= (SrcAlpha, OneMinusSrcAlpha)
-    shadeModel  $= Flat 
-    -- shadeModel  $= Smooth
+    -- shadeModel  $= Flat 
+    shadeModel  $= Smooth
     normalize   $= Enabled
     polygonMode $= (Fill, Fill)
     
@@ -70,8 +70,3 @@ module Silkworm.OpenGLHelper where
     where
       (w, h) = windowDimensions
       (fw, fh) = (fromIntegral w, fromIntegral h) :: (GLdouble, GLdouble)
-      x1 = -fw / 2
-      x2 =  fw / 2
-      y1 = -fh / 2
-      y2 =  fh / 2
-  

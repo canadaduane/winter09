@@ -40,7 +40,7 @@ module Silkworm.Game where
   -- import Silkworm.WindowHelper (initWindow)
   -- import Silkworm.OpenGLHelper (initOpenGL)
   import Silkworm.LevelGenerator (rasterizeLines)
-  import Silkworm.HipmunkHelper (newSpaceWithGravity, newStaticLine)
+  import Silkworm.HipmunkHelper (newSpaceWithGravity, newStaticLine, midpoint)
   import Silkworm.WaveFront (readWaveFront)
   import Silkworm.Object3D (Object3D(..), faces,
     Morph(..), mkMorph, blockMorph, crSplineN, center)
@@ -132,8 +132,9 @@ module Silkworm.Game where
     cwd <- getCurrentDirectory
     ground <- createGround space
     worm <- createWorm space
+    sign <- createSign space
     -- level <- return $ maskToObject3D level1
-    return (GameState 0.0 space [cwd] [ground, worm] [])
+    return (GameState 0.0 space [cwd] [ground, sign, worm] [])
   
   generateRandomGround :: H.Space -> IO ()
   generateRandomGround space =
@@ -141,6 +142,12 @@ module Silkworm.Game where
   
   startGame :: IO ()
   startGame = do
+    -- matrixMode  $= Projection
+    -- loadIdentity
+    -- rotate 10.0 (Vector3 1.0 0.0 0.0 :: Vector3 GLfloat)
+    -- matrixMode $= Modelview 0
+    -- translate (Vector3 (-0.5) (-0.5) (2) :: Vector3 GLfloat)
+    
     stateRef <- newGameState >>= newIORef
     -- mouseButtonCallback   $= processMouseInput stateRef
     now      <- get time
@@ -180,12 +187,12 @@ module Silkworm.Game where
     Size w h <- get windowSize
     -- putStrLn ((show cx) ++ " " ++ (show cy) ++ " " ++ (show w) ++ " " ++ (show h))
     preservingMatrix $ do
-      translate (Vector3 (1.5 -(fromIntegral cx) / (fromIntegral w) * 4)
-                         (-1.5 +(fromIntegral cy) / (fromIntegral h) * 4) (0 :: GLfloat))
+      -- translate (Vector3 (1.5 -(fromIntegral cx) / (fromIntegral w) * 4)
+      --                    (-1.5 +(fromIntegral cy) / (fromIntegral h) * 4) (0 :: GLfloat))
       -- drawLevel (gsLevel state)
         
       preservingMatrix $ do
-        translate (Vector3 (-0.5) (-0.5) (-3 :: GLfloat))
+        translate (Vector3 (-0.5) (-3.5) (-10 :: GLfloat))
         -- rotate (gsAngle state) (Vector3 0 1 0 :: Vector3 GLfloat)
         -- scale 4.0 4.0 (4.0 :: Float)
         forM_ (gsActives state) drawGameObject
@@ -254,42 +261,72 @@ module Silkworm.Game where
     -- H.setFriction s 1.0
     return (b, s)
   
+  newSquare :: Float -> Float -> IO (H.Body, H.Shape)
+  newSquare mass radius = do
+    let r = radius
+        verts = map (uncurry H.Vector)
+                [(-r,-r), (-r,r), (r,r), (r,-r)]
+        t = H.Polygon verts
+    b <- H.newBody mass $ H.momentForPoly mass verts 0
+    s <- H.newShape b t 0
+    H.setElasticity s 0.3
+    return (b, s)
+  
   createGround :: H.Space -> IO GameObject
   createGround space = do
-    let (x1, y1) = (-6.0, -0.3)
-    let (x2, y2) = ( 6.0, -0.1)
+    let (x1, y1) = (-3.0, -0.3)
+    let (x2, y2) = ( 3.0, -0.1)
+    let (x3, y3) = (-2.0, -1.0)
+    let (x4, y4) = (-2.0,  1.0)
     let z = 0.0
+    let r = 2.0
+    let x = -1.0
+    let y = 1.5
     (b, s) <- newStaticLine space (H.Vector x1 y1) (H.Vector x2 y2)
+    (b, s) <- newStaticLine space (H.Vector x3 y3) (H.Vector x4 y4)
     let sm = 0.1
     let draw = do
           -- putStrLn "draw ground"
-          renderPrimitive Polygon $ do
+          renderPrimitive Quads $ do
             color  $ Color3 1.0 1.0 (1.0 :: GLfloat)
             normal $ Normal3 0 0 (1 :: GLfloat)
-            vertex $ Vertex3 x1 (y1-sm) z
-            vertex $ Vertex3 x1 (y1+sm) z
-            vertex $ Vertex3 x2 (y2+sm) z
-            vertex $ Vertex3 x2 (y2-sm) z
+            vertex $ Vertex3 (x1*r+x) ((y1-sm)*r+y) z
+            vertex $ Vertex3 (x1*r+x) ((y1+sm)*r+y) z
+            vertex $ Vertex3 (x2*r+x) ((y2+sm)*r+y) z
+            vertex $ Vertex3 (x2*r+x) ((y2-sm)*r+y) z
+            
+            vertex $ Vertex3 ((x3-sm)*r+x) (y3*r+y) z
+            vertex $ Vertex3 ((x3+sm)*r+x) (y3*r+y) z
+            vertex $ Vertex3 ((x4+sm)*r+x) (y4*r+y) z
+            vertex $ Vertex3 ((x4-sm)*r+x) (y4*r+y) z
     return $ (mkGameObject s) { gDraw = Action "draw ground" draw }
   
-  createSign :: IO GameObject
-  createSign = do
-    (b, s) <- newCircle 1 1
-    -- H.setAngVel b angVel
-    -- H.setPosition b =<< getMousePos
-    -- H.setFriction s 0.5
-    -- H.setElasticity s 0.9
-    -- let add space = do
-    --       H.spaceAdd space b
-    --       H.spaceAdd space s
-    -- let draw = do
-    --       drawMyShape s t
-    -- let remove space = do
-    --       H.spaceRemove space b
-    --       H.spaceRemove space s
-    f <- readFile "sign.obj"
-    o <- return $ readWaveFront f
-    let draw = drawObject o
+  createSign :: H.Space -> IO GameObject
+  createSign space = do
+    let (x, y, z) = (1, 1.5, 0)
+        r = 0.3
+        t = 2.0
+        xm = 0.5
+        ym = -0.8
+    (b, s) <- newSquare 1 r
+    H.spaceAdd space b
+    H.spaceAdd space s
+    H.setPosition b (H.Vector x y)
+    H.setFriction s 10.0
+    -- f <- readFile "sign.obj"
+    -- o <- return $ readWaveFront f
+    let draw = preservingMatrix $ do
+          -- scale 0.5 0.5 (0.5 :: GLfloat)
+          -- translate $ Vector3 (-1.0) (1.5) (0:: GLfloat)
+          orientationForShape s $ do
+            renderPrimitive Quads $ do
+              color  $ Color3 1.0 1.0 (1.0 :: GLfloat)
+              normal $ Normal3 0 0 (1 :: GLfloat)
+              vertex $ Vertex3 ((x)*t+xm) ((y)*t+ym) z
+              vertex $ Vertex3 ((x-r*2)*t+xm) ((y)*t+ym) z
+              vertex $ Vertex3 ((x-r*2)*t+xm) ((y-r*2)*t+ym) z
+              vertex $ Vertex3 ((x)*t+xm) ((y-r*2)*t+ym) z
+          
     return $ (mkGameObject s) { gDraw = Action "draw sign" draw }
   
   wormSegments = 10 :: Integer
@@ -308,9 +345,17 @@ module Silkworm.Game where
       (body, shape) <- newCircle 2.0 0.1
       H.spaceAdd space body
       H.spaceAdd space shape
-      H.setPosition body (H.Vector (realToFrac x) ((realToFrac y) + 1))
+      H.setPosition body (H.Vector ((realToFrac x) + 1.5) ((realToFrac y) + 2.5))
       H.setVelocity body (H.Vector 0 ((fromIntegral i)/10))
       return (body, shape)
+    
+    -- Create pivots between body parts
+    let pairs = zip (drop 0 parts) (drop 1 parts)
+    forM_ pairs $ \((b1,s1), (b2,s2)) -> do
+      p1 <- H.getPosition b1
+      p2 <- H.getPosition b2
+      j <- H.newJoint b1 b2 (H.Pivot (midpoint p1 p2))
+      H.spaceAdd space j
     
     -- putStrLn $ "Parts: " ++ (show parts)
     
@@ -322,7 +367,7 @@ module Silkworm.Game where
           
           preservingMatrix $ do
             let (x, y, z) = center ctrls
-            translate $ Vector3 x (y-0) z
+            translate $ Vector3 x (y-0) 0
             color  $ Color3 0.2 0.7 (0.2 :: GLfloat)
             drawObject (blockMorph morph ctrls)
     
