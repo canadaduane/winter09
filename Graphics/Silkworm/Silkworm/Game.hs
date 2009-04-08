@@ -275,57 +275,21 @@ module Silkworm.Game where
   
   createWorm :: IO GameObject
   createWorm = do
-    s <- newCircleShape 20 20
+    shape <- newCircleShape 20 20
     f <- readFile "silkworm.obj"
     o <- return $ readWaveFront f
-    let m = mkMorph o 7
-    let draw = drawObject o
-    return $ (mkGameObject s) { gDraw = Action "draw silkworm" draw }
-  
-  -- processMouseInput :: IORef State -> MouseButton -> KeyButtonState -> IO ()
-  -- processMouseInput _        _   Press   =
-  -- processMouseInput stateVar btn Release = do
-  --   rotateKeyCCW <- getKey (SpecialKey LSHIFT)
-  --   rotateKeyCW  <- getKey (SpecialKey RSHIFT)
-  --   let angVel = case (rotateKeyCCW, rotateKeyCW) of
-  --                  (Press,   Release) -> 50
-  --                  (Release, Press)   -> (-50)
-  --                  _                  -> 0
-  --   (shape,add,draw,remove) <- (case btn of
-  --     ButtonLeft  -> createCircle
-  --     ButtonRight -> createSquare
-  --     _           -> createTriPendulum) angVel
-  -- 
-  --   state <- get stateVar
-  --   let space = stSpace state
-  --   add space >> stateVar $= state {
-  --     stShapes = M.insert shape (draw, remove space) $ stShapes state}
+    let ctrls = [(-1,1,0),(0,0,0),(1,0,0),(2,0,0)]
+    let morph = mkMorph o 4
+    let draw = do
+                  pos   <- H.getPosition $ H.getBody shape
+                  angle <- H.getAngle    $ H.getBody shape
+                  drawObject (blockMorph morph ctrls)
+    return $ (mkGameObject shape) { gDraw = Action "draw silkworm" draw
+                                  , gMorph = morph }
   
   ------------------------------------------------------------
   -- Simulation bookkeeping
   ------------------------------------------------------------
-
-  -- | Advances the time in a certain number of steps.
-  advanceSimulTime :: IORef GameState -> Int -> IO ()
-  advanceSimulTime _        0     = return ()
-  advanceSimulTime stateRef steps = do
-    removeOutOfSight stateRef
-    state <- get stateRef
-    replicateM_ steps $ H.step (gsSpace state) frameDelta
-
-  -- | Removes all shapes that may be out of sight forever.
-  removeOutOfSight :: IORef GameState -> IO ()
-  removeOutOfSight stateRef = do
-    return ()
-    -- state   <- get stateRef
-    -- shapes' <- foldM f (gsShapes state) $ M.assocs (stShapes state)
-    -- stateRef $= state {gsShapes = shapes'}
-    --   where
-    --     f shapes (shape, (_,remove)) = do
-    --       H.Vector x y <- H.getPosition $ H.getBody shape
-    --       if y < (-350) || abs x > 800
-    --         then remove >> return (M.delete shape shapes)
-    --         else return shapes
 
   -- | Advances the time.
   advanceTime :: IORef GameState -> Double -> KeyButtonState -> IO Double
@@ -333,8 +297,8 @@ module Silkworm.Game where
     newTime <- get time
   
     -- Advance simulation
-    let slower = if slowKey == Press then slowdown else 1
-        mult   = frameSteps / (framePeriod * slower)
+    let slower         = if slowKey == Press then slowdown else 1
+        mult           = frameSteps / (framePeriod * slower)
         framesPassed   = truncate $ mult * (newTime - oldTime)
         simulNewTime   = oldTime + toEnum framesPassed / mult
     advanceSimulTime stateRef $ min maxSteps framesPassed
@@ -345,3 +309,11 @@ module Silkworm.Game where
         sleepTime = ((framePeriod * slower) - diff) / slower
     when (sleepTime > 0) $ sleep sleepTime
     return simulNewTime
+    where
+      -- | Advances the time in a certain number of steps.
+      advanceSimulTime :: IORef GameState -> Int -> IO ()
+      advanceSimulTime _        0     = return ()
+      advanceSimulTime stateRef steps = do
+        state <- get stateRef
+        replicateM_ steps $ H.step (gsSpace state) frameDelta
+      
