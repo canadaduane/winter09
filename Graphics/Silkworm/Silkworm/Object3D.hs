@@ -53,18 +53,33 @@ module Silkworm.Object3D where
   center ps = (average xs, average ys, average zs)
     where (xs, ys, zs) = unzip3 ps
   
+  -- | mergeIndexedVertices ["one", "two", "three", "four"] [0,3] ["Duane", "Kelty"]
+  -- | ==> ["Duane","two","three","Kelty"]
+  mergeIndexedVertices :: [a] -> [Int] -> [a] -> [a]
+  mergeIndexedVertices master indices vertices = map merge masterTable
+    where
+      masterTable  = zip [0..] master
+      mergeTable   = zip indices vertices
+      merge (i, v) = case (lookup i mergeTable) of
+                       Just w  -> w
+                       Nothing -> v
   
-  blockMorph m@(Morph { mphObject   = Object3D { objVertices = vs }
-                      , mphCenter   = m_center
-                      , mphControls = ctrls
-                      , mphSlices   = slices
-                      })
-    | (length slices) == (length cPts) = Object3D
+  
+  blockMorph :: Morph -> [VectorTriple] -> Object3D
+  blockMorph m@Morph { mphObject   = obj@Object3D { objVertices = o_vertices
+                                                  , objCenter   = o_center
+                                                  }
+                     , mphCenter   = m_center
+                     , mphControls = m_ctrls
+                     , mphSlices   = m_slices
+                     }
+             new_ctrls -- the new set of control points to morph the object around
+    |    (length m_slices)
+      == (length new_ctrls)    = obj { objVertices = new_vertices }
     where 
-      -- obj_c = center oPts
-      pts_c = center cPts
-      -- delta = obj_c `minus` pts_c
-      pairs = zip slices cPts
+      delta = o_center `minus` m_center
+      bound = zip3 m_slices m_ctrls new_ctrls
+      new_vertices = o_vertices
   
   -- morph :: Morph -> [VectorTriple] -> Object3D
   -- morph m@(Morph obj slices) cps
@@ -80,12 +95,31 @@ module Silkworm.Object3D where
   --         centerPointIdx = (length splinePoints) `div` 2
   --         rotatedSlice n = 
   
-  mkMorph :: Object3D -> Int -> Morph
-  mkMorph obj@(Object3D { objVertices = vs }) sliceCount =
-    Morph { mphObject = obj
-          , mphSlices = (equalParts xAxis sliceCount vs)
-          }
+  -- | Like boundsWithSmudge, but with a default smudge value of 0.0
+  bounds = boundsWithSmudge 0.0
   
+  -- | Return the minimum and maximum points on a given axis
+  boundsWithSmudge smudge axis points = (min - smudge, max + smudge)
+    where min = minimum (map axis points)
+          max = maximum (map axis points)
+  
+  mkMorph :: Object3D -> Int -> Morph
+  mkMorph obj@(Object3D { objVertices = o_vertices }) sliceCount =
+    Morph { mphObject   = obj
+          , mphCenter   = center controls
+          , mphControls = controls
+          , mphSlices   = slices
+          }
+    where slices       = (equalParts xAxis sliceCount o_vertices)
+          controls     = zip3 axisControls zeros zeros
+          axisControls = scanl (+) (min + inc/2) (replicate (sliceCount - 1) inc)
+          zeros        = (cycle [0.0] :: [Double])
+          (min, max)   = bounds xAxis o_vertices
+          inc          = (max - min) / (fromIntegral sliceCount)
+          
+  -- lookupPoints vertices ixs = 
+  --   where
+  -- 
   xAxis (x, y, z) = x
   yAxis (x, y, z) = y
   zAxis (x, y, z) = z
@@ -94,16 +128,15 @@ module Silkworm.Object3D where
   -- | that maps back to the original list of points.
   equalParts :: (Ord a1, Enum a1, Fractional a1, Integral a2) =>
                 (a -> a1) -> a2 -> [a] -> [[Int]]
-  equalParts axisFn n points =
+  equalParts axis n points =
       [ findIndices (pointInPartition partPair) points | partPair <- partitions ]
     where
-      pointInPartition pair pt = between (axisFn pt) pair
+      pointInPartition pair pt = between (axis pt) pair
       between a (a_min, a_max)  = a >= a_min && a < a_max
       partitions = zip (drop 0 range) (drop 1 range)
       range      = [min, (min + inc)..max]
+      (min, max) = boundsWithSmudge 0.00001 axis points
       inc        = (max - min) / (fromIntegral n)
-      min        = minimum (map axisFn points) - 0.00001
-      max        = maximum (map axisFn points) + 0.00001
       ubound     = (length points) - 1
   
   points2matrix pts = trans m
@@ -209,30 +242,31 @@ module Silkworm.Object3D where
                ,(12.0, 5.0, 0.0)
                ,(15.0, 5.0, 0.0)]
   
-  testObject = Object3D { objName = "testObject" }
-               -- [(-5.0, -1.0,  0.0)
-               -- ,(-5.0,  1.0,  0.0)
-               -- ,(-2.5,  1.0,  0.0)
-               -- ,(-2.5, -1.0,  0.0)
-               -- ,( 0.0, -1.0,  0.0)
-               -- ,( 0.0,  1.0,  0.0)
-               -- ,( 2.5,  1.0,  0.0)
-               -- ,( 2.5, -1.0,  0.0)
-               -- ,( 5.0, -1.0,  0.0)
-               -- ,( 5.0,  1.0,  0.0)]
-               -- [( 0.0,  0.0,  1.0)
-               -- ,( 0.0,  0.0,  1.0)
-               -- ,( 0.0,  0.0,  1.0)
-               -- ,( 0.0,  0.0,  1.0)
-               -- ,( 0.0,  0.0,  1.0)
-               -- ,( 0.0,  0.0,  1.0)
-               -- ,( 0.0,  0.0,  1.0)
-               -- ,( 0.0,  0.0,  1.0)
-               -- ,( 0.0,  0.0,  1.0)
-               -- ,( 0.0,  0.0,  1.0)]
-               -- [[(1,1,1),(2,2,2),(3,3,3),(4,4,4)]
-               -- ,[(3,3,3),(4,4,4),(5,5,5),(6,6,6)]
-               -- ,[(5,5,5),(6,6,6),(7,7,7),(8,8,8)]
-               -- ,[(7,7,7),(8,8,8),(9,9,9),(10,10,10)]]
-               -- 
-               --   
+  testObject = Object3D {objName = "testObject"
+                        ,objCenter = (0, 0, 0)
+                        ,objVertices = [(-5.0, -1.0,  0.0)
+                                       ,(-5.0,  1.0,  0.0)
+                                       ,(-2.5,  1.0,  0.0)
+                                       ,(-2.5, -1.0,  0.0)
+                                       ,( 0.0, -1.0,  0.0)
+                                       ,( 0.0,  1.0,  0.0)
+                                       ,( 2.5,  1.0,  0.0)
+                                       ,( 2.5, -1.0,  0.0)
+                                       ,( 5.0, -1.0,  0.0)
+                                       ,( 5.0,  1.0,  0.0)]
+                        ,objNormals  = [( 0.0,  0.0,  1.0)
+                                       ,( 0.0,  0.0,  1.0)
+                                       ,( 0.0,  0.0,  1.0)
+                                       ,( 0.0,  0.0,  1.0)
+                                       ,( 0.0,  0.0,  1.0)
+                                       ,( 0.0,  0.0,  1.0)
+                                       ,( 0.0,  0.0,  1.0)
+                                       ,( 0.0,  0.0,  1.0)
+                                       ,( 0.0,  0.0,  1.0)
+                                       ,( 0.0,  0.0,  1.0)]
+                        ,objFaceIx   = [[(1,1,1),(2,2,2),(3,3,3),(4,4,4)]
+                                       ,[(3,3,3),(4,4,4),(5,5,5),(6,6,6)]
+                                       ,[(5,5,5),(6,6,6),(7,7,7),(8,8,8)]
+                                       ,[(7,7,7),(8,8,8),(9,9,9),(10,10,10)]]
+                        }
+                 
