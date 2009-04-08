@@ -42,7 +42,8 @@ module Silkworm.Game where
   import Silkworm.LevelGenerator (rasterizeLines)
   import Silkworm.HipmunkHelper (newSpaceWithGravity, newStaticLine)
   import Silkworm.WaveFront (readWaveFront)
-  import Silkworm.Object3D (Object3D(..), deform, faces)
+  import Silkworm.Object3D (Object3D(..), faces,
+    Morph(..), mkMorph, blockMorph)
   import Silkworm.Math (cross)
   
   -- rasterRect = ((0, 0), (200, 200))
@@ -84,6 +85,7 @@ module Silkworm.Game where
   data GameObject = GameObject {
     gShape    :: H.Shape,
     gBehavior :: Behavior,
+    gMorph    :: Morph,
     gDraw     :: Action,
     gRemove   :: Action
   } deriving Show
@@ -95,6 +97,15 @@ module Silkworm.Game where
   
   drawGameObject :: GameObject -> IO ()
   drawGameObject obj = act (gDraw obj)
+  
+  mkGameObject :: H.Shape -> GameObject
+  mkGameObject shape =
+    GameObject {gShape    = shape
+               ,gBehavior = BeStationary
+               ,gMorph    = NoMorph
+               ,gDraw     = inaction
+               ,gRemove   = inaction
+               }
   
   -- The Game State : Keep track of the Chipmunk engine state as well as our game
   -- objects, both active (on-screen) and inactive (off-screen)
@@ -234,13 +245,17 @@ module Silkworm.Game where
   --     composite = ((testTunnel #+ 1) #*# (bump1 #* 0.5) #*# (bump2 #* 0.5))
   --   in drawTunnel testTunnel
   
+  newCircleShape :: Float -> Float -> IO H.Shape
+  newCircleShape mass radius = do
+    let t = H.Circle radius
+    b <- H.newBody mass $ H.momentForCircle mass (0, radius) 0
+    s <- H.newShape b t 0
+    return s
+  
+  
   createSign :: IO GameObject
   createSign = do
-    -- let mass   = 20
-    --     radius = 20
-    --     t = H.Circle radius
-    -- b <- H.newBody mass $ H.momentForCircle mass (0, radius) 0
-    -- s <- H.newShape b t 0
+    s <- newCircleShape 20 20
     -- H.setAngVel b angVel
     -- H.setPosition b =<< getMousePos
     -- H.setFriction s 0.5
@@ -256,14 +271,16 @@ module Silkworm.Game where
     f <- readFile "sign.obj"
     o <- return $ readWaveFront f
     let draw = drawObject o
-    return GameObject { gDraw = Action "draw sign" draw }
+    return $ (mkGameObject s) { gDraw = Action "draw sign" draw }
   
   createWorm :: IO GameObject
   createWorm = do
+    s <- newCircleShape 20 20
     f <- readFile "silkworm.obj"
     o <- return $ readWaveFront f
+    let m = mkMorph o 7
     let draw = drawObject o
-    return GameObject { gDraw = Action "draw silkworm" draw }
+    return $ (mkGameObject s) { gDraw = Action "draw silkworm" draw }
   
   -- processMouseInput :: IORef State -> MouseButton -> KeyButtonState -> IO ()
   -- processMouseInput _        _   Press   =

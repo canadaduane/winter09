@@ -27,6 +27,7 @@ module Silkworm.Object3D where
                   , mphControls :: [VectorTriple]     -- Master control points
                   , mphSlices   :: [[Int]]            -- List of slices; each slice is a list of indices to points
                   }
+    | NoMorph
     deriving Show
   
   faces Object3D { objVertices = vs
@@ -53,19 +54,18 @@ module Silkworm.Object3D where
   center ps = (average xs, average ys, average zs)
     where (xs, ys, zs) = unzip3 ps
   
-  -- | mergeIndexedVertices ["one", "two", "three", "four"] [0,3] ["Duane", "Kelty"]
+  -- | mergeAssocs ["one", "two", "three", "four"] [(0, "Duane"), (3, "Kelty")]
   -- | ==> ["Duane","two","three","Kelty"]
-  mergeIndexedVertices :: [a] -> [Int] -> [a] -> [a]
-  mergeIndexedVertices master indices vertices = map merge masterTable
+  mergeAssocs :: [a] -> [(Int, a)] -> [a]
+  mergeAssocs master mergeTable = map merge masterTable
     where
       masterTable  = zip [0..] master
-      mergeTable   = zip indices vertices
       merge (i, v) = case (lookup i mergeTable) of
                        Just w  -> w
                        Nothing -> v
   
   
-  blockMorph :: Morph -> [VectorTriple] -> Object3D
+  -- blockMorph :: Morph -> [VectorTriple] -> Object3D
   blockMorph m@Morph { mphObject   = obj@Object3D { objVertices = o_vertices
                                                   , objCenter   = o_center
                                                   }
@@ -78,8 +78,15 @@ module Silkworm.Object3D where
       == (length new_ctrls)    = obj { objVertices = new_vertices }
     where 
       delta = o_center `minus` m_center
-      bound = zip3 m_slices m_ctrls new_ctrls
-      new_vertices = o_vertices
+      masterTable = zip [0..] o_vertices
+      vertexAt i = case (lookup i masterTable) of
+                     Just v  -> v
+                     Nothing -> error "Lookup failed for masterTable"
+      translate v old_ctrl new_ctrl       = v `plus` (new_ctrl `minus` old_ctrl) `minus` delta
+      doBlock (slice, old_ctrl, new_ctrl) =
+          [(i, translate (vertexAt i) old_ctrl new_ctrl) | i <- slice]
+      blocks = map doBlock (zip3 m_slices m_ctrls new_ctrls)
+      new_vertices = foldl mergeAssocs o_vertices blocks
   
   -- morph :: Morph -> [VectorTriple] -> Object3D
   -- morph m@(Morph obj slices) cps

@@ -28,7 +28,7 @@ module Silkworm.WaveFront (readWaveFront, Object3D(..)) where
   readWaveFront = reconstitute . parse
   
   reconstitute :: [ObjData] -> Object3D
-  reconstitute ds = Object3D "obj" vertices normals faceIdxs
+  reconstitute ds = Object3D "obj" (0,0,0) vertices normals faceIdxs
     where vertices         = map fromVertex    $ filter isVertex ds
           normals          = map fromNormal    $ filter isNormal ds
           faceIdxs         = map fromFaceIndex $ filter isFace   ds
