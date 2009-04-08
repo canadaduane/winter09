@@ -6,9 +6,12 @@ module Silkworm.Constants where
   windowDimensions :: (Int32, Int32)
   windowDimensions = (800, 600)
   
+  elasticity :: Float
+  elasticity = 5.0
+  
   -- | Strength of the gravitational force
   gravity :: Vector
-  gravity = Vector 0 (-800)
+  gravity = Vector 0 (-5)
   
   -- | Desired (and maximum) frames per second.
   desiredFPS :: Double

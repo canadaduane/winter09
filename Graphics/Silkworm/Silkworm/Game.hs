@@ -43,7 +43,7 @@ module Silkworm.Game where
   import Silkworm.HipmunkHelper (newSpaceWithGravity, newStaticLine)
   import Silkworm.WaveFront (readWaveFront)
   import Silkworm.Object3D (Object3D(..), faces,
-    Morph(..), mkMorph, blockMorph)
+    Morph(..), mkMorph, blockMorph, crSplineN, center)
   import Silkworm.Math (cross)
   
   -- rasterRect = ((0, 0), (200, 200))
@@ -130,10 +130,10 @@ module Silkworm.Game where
   newGameState = do
     space <- newSpaceWithGravity
     cwd <- getCurrentDirectory
-    ground <- newStaticLine space (H.Vector (-0.5) (-0.8)) (H.Vector (0.5) (-0.8))
-    worm <- createWorm
+    ground <- createGround space
+    worm <- createWorm space
     -- level <- return $ maskToObject3D level1
-    return (GameState 0.0 space [cwd] [worm] [])
+    return (GameState 0.0 space [cwd] [ground, worm] [])
   
   generateRandomGround :: H.Space -> IO ()
   generateRandomGround space =
@@ -186,7 +186,7 @@ module Silkworm.Game where
         
       preservingMatrix $ do
         translate (Vector3 (-0.5) (-0.5) (-3 :: GLfloat))
-        rotate (gsAngle state) (Vector3 0 1 0 :: Vector3 GLfloat)
+        -- rotate (gsAngle state) (Vector3 0 1 0 :: Vector3 GLfloat)
         -- scale 4.0 4.0 (4.0 :: Float)
         forM_ (gsActives state) drawGameObject
     angle <- return (gsAngle state)
@@ -245,17 +245,36 @@ module Silkworm.Game where
   --     composite = ((testTunnel #+ 1) #*# (bump1 #* 0.5) #*# (bump2 #* 0.5))
   --   in drawTunnel testTunnel
   
-  newCircleShape :: Float -> Float -> IO H.Shape
-  newCircleShape mass radius = do
+  newCircle :: Float -> Float -> IO (H.Body, H.Shape)
+  newCircle mass radius = do
     let t = H.Circle radius
     b <- H.newBody mass $ H.momentForCircle mass (0, radius) 0
     s <- H.newShape b t 0
-    return s
+    H.setElasticity s 0.3
+    -- H.setFriction s 1.0
+    return (b, s)
   
+  createGround :: H.Space -> IO GameObject
+  createGround space = do
+    let (x1, y1) = (-6.0, -0.3)
+    let (x2, y2) = ( 6.0, -0.1)
+    let z = 0.0
+    (b, s) <- newStaticLine space (H.Vector x1 y1) (H.Vector x2 y2)
+    let sm = 0.1
+    let draw = do
+          -- putStrLn "draw ground"
+          renderPrimitive Polygon $ do
+            color  $ Color3 1.0 1.0 (1.0 :: GLfloat)
+            normal $ Normal3 0 0 (1 :: GLfloat)
+            vertex $ Vertex3 x1 (y1-sm) z
+            vertex $ Vertex3 x1 (y1+sm) z
+            vertex $ Vertex3 x2 (y2+sm) z
+            vertex $ Vertex3 x2 (y2-sm) z
+    return $ (mkGameObject s) { gDraw = Action "draw ground" draw }
   
   createSign :: IO GameObject
   createSign = do
-    s <- newCircleShape 20 20
+    (b, s) <- newCircle 1 1
     -- H.setAngVel b angVel
     -- H.setPosition b =<< getMousePos
     -- H.setFriction s 0.5
@@ -273,20 +292,55 @@ module Silkworm.Game where
     let draw = drawObject o
     return $ (mkGameObject s) { gDraw = Action "draw sign" draw }
   
-  createWorm :: IO GameObject
-  createWorm = do
-    shape <- newCircleShape 20 20
-    f <- readFile "silkworm.obj"
-    o <- return $ readWaveFront f
-    let ctrls = [(-1,1,0),(0,0,0),(1,0,0),(2,0,0)]
-    let morph = mkMorph o 4
+  wormSegments = 10 :: Integer
+  
+  createWorm :: H.Space -> IO GameObject
+  createWorm space = do
+    fileData <- readFile "silkworm.obj"
+    wormObj <- return $ readWaveFront fileData
+    
+    -- let ctrls = crSplineN wormSegments [(-2,0,0),(-1,0,0),(0,0.5,0),(1,0,0),(2,0,0)]
+    let morph@Morph{ mphControls = m_ctrls } = mkMorph wormObj wormSegments
+        segs = zip [0..] m_ctrls
+    
+    -- Generate the worm body parts
+    parts <- forM segs $ \(i, (x, y, z)) -> do
+      (body, shape) <- newCircle 2.0 0.1
+      H.spaceAdd space body
+      H.spaceAdd space shape
+      H.setPosition body (H.Vector (realToFrac x) ((realToFrac y) + 1))
+      H.setVelocity body (H.Vector 0 ((fromIntegral i)/10))
+      return (body, shape)
+    
+    -- putStrLn $ "Parts: " ++ (show parts)
+    
     let draw = do
-                  pos   <- H.getPosition $ H.getBody shape
-                  angle <- H.getAngle    $ H.getBody shape
-                  drawObject (blockMorph morph ctrls)
-    return $ (mkGameObject shape) { gDraw = Action "draw silkworm" draw
+          -- putStrLn "draw silkworm"
+          ctrls <- forM parts $ \(body, shape) -> do
+            (H.Vector x y) <- H.getPosition $ H.getBody shape
+            return ((realToFrac x), (realToFrac y), 0)
+          
+          preservingMatrix $ do
+            let (x, y, z) = center ctrls
+            translate $ Vector3 x (y-0) z
+            color  $ Color3 0.2 0.7 (0.2 :: GLfloat)
+            drawObject (blockMorph morph ctrls)
+    
+    (mainBody, mainShape) <- return (head parts)
+    return $ (mkGameObject mainShape) { gDraw = Action "draw silkworm" draw
                                   , gMorph = morph }
   
+  toDegrees rad = rad / pi * 180
+  
+  orientationForShape shape action = do
+    (H.Vector x y) <- H.getPosition $ H.getBody shape
+    angle          <- H.getAngle    $ H.getBody shape
+    -- putStrLn $ "x: " ++ (show x) ++ ", y: " ++ (show y)
+    preservingMatrix $ do
+      translate    $ Vector3 x y 0
+      rotate (toDegrees angle) $ Vector3 0 0 (1 :: GLfloat)
+      action
+    
   ------------------------------------------------------------
   -- Simulation bookkeeping
   ------------------------------------------------------------

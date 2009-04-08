@@ -110,7 +110,7 @@ module Silkworm.Object3D where
     where min = minimum (map axis points)
           max = maximum (map axis points)
   
-  mkMorph :: Object3D -> Int -> Morph
+  mkMorph :: Object3D -> Integer -> Morph
   mkMorph obj@(Object3D { objVertices = o_vertices }) sliceCount =
     Morph { mphObject   = obj
           , mphCenter   = center controls
@@ -119,7 +119,7 @@ module Silkworm.Object3D where
           }
     where slices       = (equalParts xAxis sliceCount o_vertices)
           controls     = zip3 axisControls zeros zeros
-          axisControls = scanl (+) (min + inc/2) (replicate (sliceCount - 1) inc)
+          axisControls = scanl (+) (min + inc/2) (replicate ((fromInteger sliceCount) - 1) inc)
           zeros        = (cycle [0.0] :: [Double])
           (min, max)   = bounds xAxis o_vertices
           inc          = (max - min) / (fromIntegral sliceCount)
@@ -190,6 +190,10 @@ module Silkworm.Object3D where
   
   -- We'll use the catmull-rom spline as a simple default spline
   spline = crSpline
+  
+  crSplineN :: Integer -> [VectorTriple] -> [VectorTriple]
+  crSplineN count pts = take (fromInteger count) $ crSpline step pts
+    where step = (fromIntegral ((length pts) - 3)) / (fromIntegral (count - 1))
   
   crSpline :: Double -> [VectorTriple]
               -> [VectorTriple]
