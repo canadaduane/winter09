@@ -23,7 +23,8 @@ module Silkworm.WindowHelper (
   -- | Open a window using GLFW to the dimensions set in Silkworm.Constants
   initWindow :: IO ()
   initWindow = do
-    let size = (uncurry Size) windowDimensions
+    let (w, h) = windowDimensions
+        size = Size (fromInteger w) (fromInteger h)
     
     -- Create the UI Window
     assertTrue initialize "Failed to initialize GLFW"

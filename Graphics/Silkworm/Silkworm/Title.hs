@@ -33,6 +33,12 @@ module Silkworm.Title where
     (#+), (#-), (#*),
     (#+#), (#-#), (#*#))
   import Silkworm.Game (startGame)
+  import Silkworm.OpenGLHelper (
+    PerspectiveType(..),
+    resizeWindow,
+    configureProjection,
+    lookingAt,
+    moveLight )
   
   type KeyMap = Map.Map Key Bool
   
@@ -65,6 +71,8 @@ module Silkworm.Title where
   showTitleScreen :: IO ()
   showTitleScreen = do
     loadResources
+    moveLight $ Vector3 0.5 0.5 (1)
+    configureProjection Orthogonal Nothing
     state <- newTitleState >>= newIORef
     titleScreenLoop state
   
@@ -113,22 +121,23 @@ module Silkworm.Title where
   drawTitle stateVar = do
     state <- get stateVar
     -- stateVar $= state { tsAngle = ((tsAngle state) + 5.0) }
-
-    preservingMatrix $ do
-      translate (Vector3 0 0 (-1.1) :: Vector3 Float)
-      renderTexture 0 (-1) (-1) 2 2
-      
-      -- let font = (tsFont state)
-      -- font <- createTextureFont "shrewsbury.ttf"
-      -- setFontFaceSize font 72 72
-      -- renderFont font "Silkworm!" All
     
-    color $ Color3 0.0 0.0 (0.0 :: GLfloat)
-    drawText (-0.2) (0.15) 9 "Silkworm!"
+    lookingAt (Vector3 0 0 1) (Vector3 0 0 0) (Vector3 0 1 0) $ do
+      preservingMatrix $ do
+        translate (Vector3 0 0 (-1.1) :: Vector3 Float)
+        renderTexture 0 (-1) (-1) 2 2
+      
+        -- let font = (tsFont state)
+        -- font <- createTextureFont "shrewsbury.ttf"
+        -- setFontFaceSize font 72 72
+        -- renderFont font "Silkworm!" All
+    
+      color $ Color3 0.0 0.0 (0.0 :: GLfloat)
+      drawText (-0.2) (0.15) 9 "Silkworm!"
 
-    color $ Color3 1.0 0.2 (0.2 :: GLfloat)
-    drawText (-0.5) (-0.0) (selectionSize state StartGame) "Start Game"
-    drawText (-0.5) (-0.3) (selectionSize state QuitGame) "Quit"
+      color $ Color3 1.0 0.2 (0.2 :: GLfloat)
+      drawText (-0.5) (-0.0) (selectionSize state StartGame) "Start Game"
+      drawText (-0.5) (-0.3) (selectionSize state QuitGame) "Quit"
     
     where
       selectionSize state s =

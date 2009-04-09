@@ -32,9 +32,9 @@ module Silkworm.ImageHelper (loadTexture, renderTexture) where
     renderPrimitive Quads $ do
       texCoord (TexCoord2 0 (0::GLfloat))
       vertex (Vertex2 x y)
-      texCoord (TexCoord2 1 (0::GLfloat))
-      vertex (Vertex2 (x+w) y)
+      texCoord (TexCoord2 0 (1::GLfloat))
+      vertex (Vertex2 (x) (y+h))
       texCoord (TexCoord2 1 (1::GLfloat))
       vertex (Vertex2 (x+w) (y+h))
-      texCoord (TexCoord2 0 (1::GLfloat))
-      vertex (Vertex2 x (y+h))
+      texCoord (TexCoord2 1 (0::GLfloat))
+      vertex (Vertex2 (x+w) (y))

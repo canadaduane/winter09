@@ -2,7 +2,7 @@ module Silkworm.Object3D where
   
   import Data.Function (on)
   import Data.List (zip4, groupBy, findIndices)
-  import Silkworm.Math (cross, dot, distance3d, average)
+  import Silkworm.Math (cross, dot, distance3d, average, minus, plus, times, divideby)
   import Numeric.LinearAlgebra hiding (dot)
   
   -- VectorTriple is used for Points, Normals etc.
@@ -38,12 +38,6 @@ module Silkworm.Object3D where
   
   facePoints fs  = map fst fs
   faceNormals fs = map snd fs
-  
-  -- Define some operators on VectorTriples
-  times n (x, y, z) = (n*x, n*y, n*z)
-  divideby vt n = times (1/n) vt
-  minus (x1, y1, z1) (x2, y2, z2) = (x1-x2, y1-y2, z1-z2)
-  plus  (x1, y1, z1) (x2, y2, z2) = (x1+x2, y1+y2, z1+z2)
   
   -- | The center of an object
   objectAvgCenter :: Object3D -> (Double, Double, Double)

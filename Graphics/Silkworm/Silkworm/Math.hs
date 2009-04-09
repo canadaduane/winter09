@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -XBangPatterns #-}
 
-module Silkworm.Math (cross, dot, distance3d, average) where
+module Silkworm.Math where
   
   import Data.List (transpose, foldl')
   
@@ -21,6 +21,11 @@ module Silkworm.Math (cross, dot, distance3d, average) where
           dy = by - ay
           dz = bz - az
   
+  times n (x, y, z) = (n*x, n*y, n*z)
+  divideby vt n = times (1/n) vt
+  minus (x1, y1, z1) (x2, y2, z2) = (x1-x2, y1-y2, z1-z2)
+  plus  (x1, y1, z1) (x2, y2, z2) = (x1+x2, y1+y2, z1+z2)
+
   -- newtype Matrix a = Matrix [[a]] deriving (Eq, Show)
   -- 
   -- instance Num a => Num (Matrix a) where

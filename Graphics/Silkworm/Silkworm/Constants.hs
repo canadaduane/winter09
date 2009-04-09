@@ -3,7 +3,7 @@ module Silkworm.Constants where
   import GHC.Int (Int32)
   import Physics.Hipmunk
   
-  windowDimensions :: (Int32, Int32)
+  windowDimensions :: (Integer, Integer)
   windowDimensions = (800, 600)
   
   elasticity :: Float

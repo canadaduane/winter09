@@ -1,72 +1,92 @@
-module Silkworm.OpenGLHelper where
+module Silkworm.OpenGLHelper
+  ( initOpenGL
+  , resizeWindow
+  , configureProjection
+  , lookingAt
+  , moveLight
+  , PerspectiveType(..)
+  ) where
   
   import Graphics.Rendering.OpenGL
+  import Graphics.UI.GLFW (windowSize)
   import Silkworm.Constants (windowDimensions)
+  import Silkworm.Math (dot, cross, distance3d, minus, plus, times, divideby)
+  
+  data PerspectiveType = Orthogonal
+                       | Perspective Double
   
   -- | Initialize OpenGL to some reasonable values for our game
   initOpenGL :: IO ()
   initOpenGL = do
     -- Use some defaults for drawing with antialiased edges
-    clearColor  $= Color4 0.3 0.3 0.3 0.0
-    -- pointSmooth $= Enabled
-    -- pointSize   $= 3
-    -- lineSmooth  $= Enabled
-    -- lineWidth   $= 2.5
-    -- cullFace    $= Just Front
-    blend       $= Enabled
-    blendFunc   $= (SrcAlpha, OneMinusSrcAlpha)
-    -- shadeModel  $= Flat 
-    shadeModel  $= Smooth
-    normalize   $= Enabled
-    polygonMode $= (Fill, Fill)
+    clearColor    $= Color4 0.0 0.0 0.0 0.0
+    pointSmooth   $= Enabled
+    pointSize     $= 3
+    lineSmooth    $= Enabled
+    lineWidth     $= 2.5
+    blend         $= Enabled
+    blendFunc     $= (SrcAlpha, OneMinusSrcAlpha)
+    polygonMode   $= (Fill, Fill)
     
-    -- Set up the viewport
-    viewport    $= (Position 0 0, Size w h)
-    matrixMode  $= Projection
-    loadIdentity
-    -- frustum (-1.0) 1.0 (-1.0) 1.0 (0.1) (50.0)
-    -- ortho (-1) 1 (-1) 1 (-1) 1
-    perspective 60.0 (fw/fh) 0.1 20.0
-    rotate 10.0 (Vector3 1.0 0.0 0.0 :: Vector3 GLfloat)
-    -- translate (Vector3 0.5 0.5 0 :: Vector3 GLfloat)
-    flush
-    
-    lighting           $= Enabled
-    -- position (Light 0) $= Vertex4 0.0 0.0 1.0 0.0
-    -- ambient  (Light 0) $= Color4  0.5 0.5 0.5 1.0
-    -- light    (Light 0) $= Enabled 
-    
-    position (Light 1) $= Vertex4 1.0 1.0 (1.0) 0.0
-    ambient  (Light 1) $= Color4  0.2 0.2 0.2 1.0
-    diffuse  (Light 1) $= Color4  1.0 1.0 1.0 1.0
-    specular (Light 1) $= Color4  0.0 0.0 0.0 1.0
-    light    (Light 1) $= Enabled
-    
-    -- materialSpecular  FrontAndBack $= Color4 1.0 1.0 1.0 1.0
-    -- materialEmission  FrontAndBack $= Color4 0.0 0.0 0.0 1.0
-    -- materialShininess FrontAndBack $= 70.0
+    -- Set up shading and lighting
+    lighting      $= Enabled
+    shadeModel    $= Smooth -- Flat 
+    normalize     $= Enabled
     colorMaterial $= Just (Front, Diffuse)
-    
-    -- matrixMode  $= Projection
-    -- loadIdentity
-    -- ortho (-1) 1 (-1) 1 (-1) 1
-    -- translate (Vector3 0.5 0.5 0 :: Vector3 GLfloat)
-    -- 
-    -- materialSpecular Front $= Color4 1 1 1 1
-    -- materialShininess Front $= 50
-    -- position (Light 0) $= Vertex4 1 1 0 1
-    -- 
-    -- lighting $= Enabled
-    -- light (Light 0) $= Enabled
-    depthFunc $= Just Less
-    -- depthMask $= Enabled
     
     matrixMode $= Modelview 0
     loadIdentity
-    flush
     
     return ()
+  
+  resizeWindow :: Size -> IO ()
+  resizeWindow size = do
+    configureProjection (Perspective 90.0) (Just size)
     
-    where
-      (w, h) = windowDimensions
-      (fw, fh) = (fromIntegral w, fromIntegral h) :: (GLdouble, GLdouble)
+  
+  configureProjection :: PerspectiveType -> Maybe Size -> IO ()
+  configureProjection pt explicitSize = do
+    matrixMode $= Projection
+    loadIdentity
+    
+    size@(Size w h) <- case explicitSize of
+                         Just  s -> return s
+                         Nothing -> get windowSize
+    viewport      $= (Position 0 0, size)
+    let ratio = ((fromIntegral w) / (fromIntegral h))
+    
+    case pt of
+      Orthogonal      -> ortho (-1) 1 (-1) 1 (0.1) 20.0
+      Perspective fov -> perspective fov ratio 0.1 20.0
+    
+    matrixMode $= Modelview 0
+    return ()
+  
+  lookingAt :: Vector3 Double -> Vector3 Double -> Vector3 Double -> IO () -> IO ()
+  lookingAt eye@(Vector3 ex ey ez)
+            ctr@(Vector3 cx cy cz)
+             up@(Vector3 ux uy uz)
+            action =
+    let f@(fx, fy, fz)     = (cx, cy, cz) `minus` (ex, ey, ez)
+        s@(sx, sy, sz)     = fnorm `cross` unorm
+        v@(vx, vy, vz)     = s `cross` fnorm
+        fnorm              = f `divideby` (distance3d zero f)
+        unorm              = (ux, uy, uz) `divideby` (distance3d zero (ux, uy, uz))
+        zero               = (0, 0, 0)
+    in do
+      m <- newMatrix RowMajor [  sx,  sy,  sz,   0
+                              ,  vx,  vy,  vz,   0
+                              , -fx, -fy, -fz,   0
+                              ,   0,   0,   0,   1] :: IO (GLmatrix GLdouble)
+      preservingMatrix $ do
+        multMatrix m
+        translate $ Vector3 (-ex) (-ey) (-ez)
+        action
+  
+  moveLight :: Vector3 Double -> IO ()
+  moveLight (Vector3 x y z) = do
+    position (Light 1) $= Vertex4 (realToFrac x) (realToFrac y) (realToFrac z) 0.0
+    diffuse  (Light 1) $= Color4  1.0 1.0 1.0 1.0
+    ambient  (Light 1) $= Color4  0.2 0.2 0.2 1.0
+    light    (Light 1) $= Enabled
+      
