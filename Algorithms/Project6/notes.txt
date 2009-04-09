@@ -1,0 +1,8 @@
+1. choose the non-basic variable whose coefficient in the objective function is largest
+2. choose the constraining equations whose (constant) slack variable would most be affected by increasing the non-basic variable from (1)
+  - i.e. divide slack variable by coefficient in front of the chosen non-basic variable
+  - pick the corresponding lowest basic variable
+  - value of non-basic variable = lowest
+3. pivot on the basic variable whose value is now zero
+
+z (the objective function) always consists of non-basic variables
