@@ -10,7 +10,7 @@ module Silkworm.GameObject
   , makeLineObject
   , makeStaticLineObject
   , makeWall
-  , makeCrate
+  , makeBox
   , drawGameObject
   , getHipShape
   , getHipShapeType
@@ -50,9 +50,10 @@ module Silkworm.GameObject
   makeObjectWithMass :: Float -> ShapeType -> Substance -> Vector -> IO GameObject
   makeObjectWithMass mass stype subst pos = do
       body  <- newBody mass moment
-      shape <- newShape body stype pos
+      shape <- newShape body stype (Vector 0 0)
       setElasticity shape elasticity
       setFriction shape friction
+      setPosition body pos
       let gameShape = GameShape shape stype
       return gameObject { gShape     = gameShape
                         , gSubstance = subst
@@ -88,8 +89,8 @@ module Silkworm.GameObject
   makeWall :: Vector -> Vector -> IO GameObject
   makeWall p1 p2 = makeStaticLineObject p1 p2 wood
   
-  makeCrate :: Float -> Vector -> IO GameObject
-  makeCrate size pos = makeSquareObject size wood pos
+  makeBox :: Float -> Vector -> IO GameObject
+  makeBox size pos = makeSquareObject size wood pos
   
   drawGameObject :: GameObject -> IO ()
   drawGameObject obj = act (gDraw obj)

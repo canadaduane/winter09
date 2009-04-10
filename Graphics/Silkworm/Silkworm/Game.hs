@@ -5,7 +5,7 @@ module Silkworm.Game where
   import Data.Array ((!))
   import qualified Data.Map as M
   import Data.IORef (IORef, newIORef)
-  import Control.Monad (forM, forM_, replicateM, replicateM_, foldM, foldM_, when)
+  import Control.Monad (mapM, forM, forM_, replicateM, replicateM_, foldM, foldM_, when)
   import System.Directory (getCurrentDirectory)
   
   -- Physics Modules
@@ -56,14 +56,19 @@ module Silkworm.Game where
   newGameState = do
     space <- newSpaceWithGravity gravity
     cwd <- getCurrentDirectory
-    ground <- makeWall (H.Vector (-1) (-0.5)) (H.Vector (1) (-0.5))
-    space `includes` ground
-    square <- makeCrate 0.4 (H.Vector 0 3)
-    space `includes` square
-    -- worm <- createWorm space
-    -- sign <- createSign space
-    -- level <- return $ maskToMesh level1
-    return (GameState (0.0) space [cwd] [ground, square] [])
+    let include o = do
+          obj <- o
+          space `includes` obj
+          return obj
+    objs <- mapM include [ makeWall (H.Vector (-3) (0)) (H.Vector (3) (0))
+                          , makeBox 0.4 (H.Vector 0 5)
+                          , makeBox 0.8 (H.Vector (-3) 4)
+                          , makeBox 0.7 (H.Vector (-2) 4.5)
+                          , makeBox 0.6 (H.Vector (1.5) 6)
+                          , makeBox 0.8 (H.Vector (2) 5)
+                          , makeBox 0.4 (H.Vector (4) 4)
+                          ]
+    return (GameState (0.0) space [cwd] objs [])
   
   generateRandomGround :: H.Space -> IO ()
   generateRandomGround space =
@@ -128,11 +133,10 @@ module Silkworm.Game where
   getMousePan = do
     Position cx cy <- get mousePos
     Size w h <- get windowSize
-    
-    let x = (fromIntegral (cx - (w `div` 2))) / (fromIntegral w) * (-1)
-        y = (fromIntegral (cy - (h `div` 2))) / (fromIntegral h) * (1)
-    
-    return (x, y)
+    let center p d = (fromIntegral (p - (d `div` 2))) / (fromIntegral d)
+    if cx == 0 && cy == 0 then
+      return ((center (w `div` 2) w) * (-1), center (h `div` 2) h)
+      else return ((center cx w) * (-1), center cy h)
   
   type DepthMask = A.Array (Int, Int) Double
 
