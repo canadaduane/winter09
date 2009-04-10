@@ -1,4 +1,11 @@
-module Silkworm.Object3D where
+module Silkworm.Mesh 
+  ( Mesh(..)
+  , Morph(..)
+  , VectorTriple
+  , faces
+  , blockMorph
+  , mkMorph
+  ) where
   
   import Data.Function (on)
   import Data.List (zip4, groupBy, findIndices)
@@ -12,7 +19,7 @@ module Silkworm.Object3D where
   type Face = [(VectorTriple, VectorTriple)]
   
   -- A 3D object is a named object and a corresponding list of Faces
-  data Object3D = Object3D
+  data Mesh = Mesh
                   { objName     :: String              -- Name of the object
                   , objCenter   :: VectorTriple        -- Center of the object
                   , objVertices :: [VectorTriple]      -- Vertices
@@ -21,8 +28,8 @@ module Silkworm.Object3D where
                   }
     deriving Show
   
-  data Morph =    Morph
-                  { mphObject   :: Object3D           -- Original unmorphed object
+  data Morph = Morph
+                  { mphObject   :: Mesh           -- Original unmorphed object
                   , mphCenter   :: VectorTriple       -- Center of the master control points
                   , mphControls :: [VectorTriple]     -- Master control points
                   , mphSlices   :: [[Int]]            -- List of slices; each slice is a list of indices to points
@@ -30,7 +37,7 @@ module Silkworm.Object3D where
     | NoMorph
     deriving Show
   
-  faces Object3D { objVertices = vs
+  faces Mesh { objVertices = vs
                  , objNormals  = ns
                  , objFaceIx   = fss
                  } = map (map vnPair) fss
@@ -40,8 +47,8 @@ module Silkworm.Object3D where
   faceNormals fs = map snd fs
   
   -- | The center of an object
-  objectAvgCenter :: Object3D -> (Double, Double, Double)
-  objectAvgCenter Object3D { objVertices = vs } = center vs
+  objectAvgCenter :: Mesh -> (Double, Double, Double)
+  objectAvgCenter Mesh { objVertices = vs } = center vs
   
   -- | The center of a list of points
   center :: (Floating a, Floating b, Floating c) => [(a, b, c)] -> (a, b, c)
@@ -59,8 +66,8 @@ module Silkworm.Object3D where
                        Nothing -> v
   
   
-  -- blockMorph :: Morph -> [VectorTriple] -> Object3D
-  blockMorph m@Morph { mphObject   = obj@Object3D { objVertices = o_vertices
+  -- blockMorph :: Morph -> [VectorTriple] -> Mesh
+  blockMorph m@Morph { mphObject   = obj@Mesh { objVertices = o_vertices
                                                   , objCenter   = o_center
                                                   }
                      , mphCenter   = m_center
@@ -82,7 +89,7 @@ module Silkworm.Object3D where
       blocks = map doBlock (zip3 m_slices m_ctrls new_ctrls)
       new_vertices = foldl mergeAssocs o_vertices blocks
   
-  -- morph :: Morph -> [VectorTriple] -> Object3D
+  -- morph :: Morph -> [VectorTriple] -> Mesh
   -- morph m@(Morph obj slices) cps
   --   | (cpsLen >= 5) && (cpsLen `mod` 2 == 1) = range
   --   | otherwise          = error "Need odd number of control points and at least 5 of them"
@@ -104,8 +111,8 @@ module Silkworm.Object3D where
     where min = minimum (map axis points)
           max = maximum (map axis points)
   
-  mkMorph :: Object3D -> Integer -> Morph
-  mkMorph obj@(Object3D { objVertices = o_vertices }) sliceCount =
+  mkMorph :: Mesh -> Integer -> Morph
+  mkMorph obj@(Mesh { objVertices = o_vertices }) sliceCount =
     Morph { mphObject   = obj
           , mphCenter   = center controls
           , mphControls = controls
@@ -247,7 +254,7 @@ module Silkworm.Object3D where
                ,(12.0, 5.0, 0.0)
                ,(15.0, 5.0, 0.0)]
   
-  testObject = Object3D {objName = "testObject"
+  testObject = Mesh {objName = "testObject"
                         ,objCenter = (0, 0, 0)
                         ,objVertices = [(-5.0, -1.0,  0.0)
                                        ,(-5.0,  1.0,  0.0)
