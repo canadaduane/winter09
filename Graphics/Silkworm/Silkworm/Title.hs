@@ -28,10 +28,6 @@ module Silkworm.Title where
     setFontFaceSize, renderFont, getFontError)
   import Silkworm.WindowHelper (getPressedKeys, keyIsPressed)
   import Silkworm.ImageHelper (loadTexture, renderTexture)
-  import Silkworm.LevelGenerator (
-    rasterizeLines, randomBumpyRaster,
-    (#+), (#-), (#*),
-    (#+#), (#-#), (#*#))
   import Silkworm.OpenGLHelper (
     PerspectiveType(..),
     resizeWindow,

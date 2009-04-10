@@ -5,6 +5,7 @@ module Silkworm.Mesh
   , faces
   , blockMorph
   , mkMorph
+  , center
   ) where
   
   import Data.Function (on)

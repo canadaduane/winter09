@@ -1,5 +1,5 @@
 module Silkworm.LevelGenerator (
-    rasterizeLines, randomBumpyRaster,
+    rasterizeLines, DepthMask,
     (#+), (#-), (#*),
     (#+#), (#-#), (#*#)
   ) where
@@ -15,7 +15,7 @@ module Silkworm.LevelGenerator (
   type Point3D = (Double, Double, Double)
   type Plane = (Point3D, Point3D, Point3D)
   
-  type Raster = Array (Int, Int) Double
+  type DepthMask = Array (Int, Int) Double
   
   data Failure = Failure
   
@@ -82,7 +82,7 @@ module Silkworm.LevelGenerator (
   rootSum :: (Floating a) => [a] -> a
   rootSum ns = sqrt $ foldl (+) 0 $ map (** 2) ns
   
-  rasterizeLines :: [Line] -> Rect -> Double -> Raster
+  rasterizeLines :: [Line] -> Rect -> Double -> DepthMask
   rasterizeLines lines ((x_min, y_min), (x_max, y_max)) size =
     let x_delta      = ceiling (x_max - x_min)
         y_delta      = ceiling (y_max - y_min)
@@ -106,7 +106,7 @@ module Silkworm.LevelGenerator (
       distancesToLines p ls = map (distanceToLine p) ls
     
   -- | Combine two rasters by adding elements
-  rasterOp :: (Double -> Double -> Double) -> Raster -> Raster -> Raster
+  rasterOp :: (Double -> Double -> Double) -> DepthMask -> DepthMask -> DepthMask
   rasterOp op r1 r2 = array (bounds r1) $ map wrapOp $ zip (assocs r1) (assocs r2)
     where wrapOp (((x,y), a), ((_,_), b)) = ((x, y), a `op` b)
   -- rasterOp op r1 r2 = accumArray op 0 (bounds r1) ((assocs r1) ++ (assocs r2))
@@ -121,8 +121,8 @@ module Silkworm.LevelGenerator (
   randomlist :: Int -> StdGen -> [Int]
   randomlist n = take n . unfoldr (Just . random)
   
-  randomBumpyRaster :: Rect -> Int -> Double -> StdGen -> Raster
-  randomBumpyRaster rect@((x_min, y_min), (x_max, y_max)) count size gen =
+  randomBumpyDepthMask :: Rect -> Int -> Double -> StdGen -> DepthMask
+  randomBumpyDepthMask rect@((x_min, y_min), (x_max, y_max)) count size gen =
     let x_delta         = ceiling (x_max - x_min)
         y_delta         = ceiling (y_max - y_min)
         lineFromPoint p = (p, p)

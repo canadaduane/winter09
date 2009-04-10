@@ -13,4 +13,5 @@ module Silkworm.Substance where
   wood             = Substance 0.3 0.8 0.5
   concrete         = Substance 0.1 0.8 0.8
   ice              = Substance 0.2 0.1 0.3
+  wormBody         = Substance 0.5 0.3 0.5
   

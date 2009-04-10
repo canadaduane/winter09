@@ -38,7 +38,7 @@ module Silkworm.Game where
   data GameState = GameState {
     gsAngle     :: Float,
     gsSpace     :: H.Space,
-    -- gsLevel     :: Mesh,
+    gsLevel     :: Mesh,
     gsResources :: [FilePath],
     gsActives   :: [GameObject],
     gsInactives :: [GameObject]
@@ -56,6 +56,8 @@ module Silkworm.Game where
   newGameState = do
     space <- newSpaceWithGravity gravity
     cwd <- getCurrentDirectory
+    
+    let level = maskToMesh level1
     
     let controllable obj = return (obj{ gBehavior = BeControllable })
     
@@ -80,9 +82,7 @@ module Silkworm.Game where
     
     -- Let each object add itself to the space
     forM_ objs $ (\ GameObject{ gAdd = add } -> act add )
-    -- forM_ objs $ (\ GameObject{ gPrim = prim } -> putStrLn (show prim) )
-    -- error "done"
-    return (GameState (0.0) space [cwd] objs [])
+    return (GameState (0.0) space level [cwd] objs [])
   
   startGame :: IO ()
   startGame = do
@@ -131,10 +131,10 @@ module Silkworm.Game where
       when (up    == Press) (movePlayerUp    body)
       when (down  == Press) (movePlayerDown  body)
     
-    where movePlayerRight body = H.setForce body (H.Vector 3 0)
-          movePlayerLeft  body = H.setForce body (H.Vector (-3) 0)
-          movePlayerUp    body = H.setForce body (H.Vector 0 (3))
-          movePlayerDown  body = H.setForce body (H.Vector 0 (-3))
+    where movePlayerRight body = H.setForce body (H.Vector 1.5 0)
+          movePlayerLeft  body = H.setForce body (H.Vector (-1.5) 0)
+          movePlayerUp    body = H.setForce body (H.Vector 0 (1.5))
+          movePlayerDown  body = H.setForce body (H.Vector 0 (-1.5))
     
   
   -- | Renders the current state.
@@ -154,7 +154,9 @@ module Silkworm.Game where
               (Vector3 px py 0)               -- Target
               (Vector3 0 1 0) $ do
       moveLight $ Vector3 0.5 0.5 (-0.8)
-      -- drawLevel (gsLevel state)
+      preservingMatrix $ do
+        translate $ Vector3 (-0.5) (-0.5) (6 :: GLfloat)
+        drawLevel (gsLevel state)
       forM_ (gsActives state) (act . gDraw)
     
     -- angle <- return (gsAngle state)
@@ -170,33 +172,32 @@ module Silkworm.Game where
       return ((center (w `div` 2) w) * (-1), center (h `div` 2) h)
       else return ((center cx w) * (-1), center cy h)
   
-  type DepthMask = A.Array (Int, Int) Double
-
-  innerBounds ary = ((a + 1, b + 1), (c - 1, d - 1))
+  innerBounds ary = ((a, b), (c - 1, d - 1))
     where ((a, b), (c, d)) = bounds ary
   
-  -- maskToMesh :: DepthMask -> Mesh
-  -- maskToMesh a = Mesh "tunnel" (map face (range (innerBounds a)))
-  --   where
-  --     -- size = fromIntegral $ (snd . snd . bounds) a
-  --     boxpts      (x, y) = [(x, y), (x, y + 1), (x + 1, y + 1), (x + 1, y)]
-  --     orthogonals (x, y) = [(x, y - 1), (x - 1, y), (x, y + 1), (x + 1, y)]
-  --     point     i@(x, y) = (fromIntegral x, fromIntegral y, a ! i)
-  --     face      i@(x, y) = zip (map point (boxpts i))
-  --                              (map normal (boxpts i))
-  --     
-  --     normal   i@(x, y) | inRange (innerBounds a) i =
-  --                         let center = point i
-  --                             others = map ((center `minus`) . point) (orthogonals i)
-  --                         in (0, 0, 1) `plus` (average (map (cross center) others))
-  --                       | otherwise                         = (0, 0, -1)
-  --     -- Auxiliary
-  --     average [(a1, b1, c1), (a2, b2, c2), (a3, b3, c3), (a4, b4, c4)] =
-  --              ((a1 + a2 + a3 + a4) / 4, (b1 + b2 + b3 + b4) / 4, (c1 + c2 + c3 + c4) / 4)
-  --     average _ = error "expects 4 values in array"-- hack case for now
-  --     minus (a, b, c) (x, y, z) = (a - x, b - y, c - z)
-  --     plus (a, b, c) (x, y, z) = (a + x, b + y, c + z)
-  --     -- shrink n = (fromIntegral n) / size
+  maskToMesh :: DepthMask -> Mesh
+  maskToMesh a = Mesh "tunnel" (0,0,0) vs ns fs
+    where
+      (w, h) = snd $ bounds a
+      tup k = (k, k, k)
+      rw = w + 1
+      vs = map vertex (assocs a)
+      ns = map normal (assocs a)
+      fs = [[ tup ((i + 0) * rw + j + 1),
+              tup ((i + 1) * rw + j + 1),
+              tup ((i + 1) * rw + j + 2),
+              tup ((i + 0) * rw + j + 2) ] |
+            (i, j) <- range (innerBounds a) ]
+      point i@(x, y)     = (fromIntegral x, fromIntegral y, (a ! i)/1)
+      vertex ((x, y), d) = (fromIntegral x, fromIntegral y, d)
+      normal ((x, y), d) =
+        let x_f = fromIntegral x
+            y_f = fromIntegral y
+            d1 = point (x + 1, y)
+            d2 = point (x + 1, y + 1)
+            d3 = (0, 0, 0)
+            ok = inRange (bounds a) ((x + 1), (y + 1))
+        in if ok then d1 `cross` d2 else d3
   
   drawLevel :: Mesh -> IO ()
   drawLevel level = do
@@ -214,18 +215,36 @@ module Silkworm.Game where
         normal $ Normal3 nx ny nz
         vertex $ Vertex3 vx vy vz
   
-  wormSegments = 10 :: Integer
-  
   createWorm :: H.Space -> H.Vector -> IO GameObject
   createWorm space pos@(H.Vector x y) = do
-    prims <- mapM (makeCirclePrim 0.2 wood) [(H.Vector (x + i) y) | i <- [0,0.5..2]]
-
+    -- Create worm segments
+    let partPositions = [(H.Vector (x + i) y) | i <- [0,0.5..2.5]]
+    prims <- mapM (makeCirclePrim 0.2 wormBody) partPositions
+    
     -- Create pivots between body parts
     let pairs = zip (drop 0 prims) (drop 1 prims)
     joints <- mapM pivotJointBetween pairs
     
+    fileData <- readFile "silkworm.obj"
+    wormObj <- return $ readWaveFront fileData
+    
+    -- Draw the silkworm
     let draw = combineActions (map drawGamePrim prims)
     return $ gameObject{ gPrim = prims, gDraw = draw }
+
+    -- let morph = mkMorph wormObj (fromIntegral $ length partPositions)
+    --     -- ctrls = map (\(H.Vector x y) -> (realToFrac x, realToFrac y, 0)) partPositions
+    --     draw = preservingMatrix $ do
+    --              ctrls <- forM prims $ \p -> do
+    --                let s = getPrimShape p
+    --                (H.Vector x y) <- H.getPosition (H.getBody s)
+    --                return ((realToFrac x), (realToFrac y), 0)
+    --              let (x, y, z) = center ctrls
+    --              translate $ Vector3 x y z
+    --              color  $ Color3 0.2 0.7 (0.2 :: GLfloat)
+    --              drawObject (blockMorph morph ctrls)
+    
+    -- return $ gameObject{ gPrim = prims, gDraw = Action "worm" draw }
     
     where pivotJointBetween (p1, p2) =
             let b1 = (H.getBody $ getPrimShape p1)
@@ -235,54 +254,6 @@ module Silkworm.Game where
                   j <- H.newJoint b1 b2 (H.Pivot (midpoint a b))
                   H.spaceAdd space j
                   return j
-            
-    -- objs <- mapM (makeCircleObject 0.2 wood) [(H.Vector (x + i) y) | i <- [0,1..3]]
-    -- putStrLn $ "objs: " ++ (show objs)
-    -- forM_ (drop 1 objs) (\o -> space `includes` o)
-    -- return (head objs)
-  
-  -- createWorm :: H.Space -> IO GameObject
-  -- createWorm space = do
-  --   fileData <- readFile "silkworm.obj"
-  --   wormObj <- return $ readWaveFront fileData
-  --   
-  --   -- let ctrls = crSplineN wormSegments [(-2,0,0),(-1,0,0),(0,0.5,0),(1,0,0),(2,0,0)]
-  --   let morph@Morph{ mphControls = m_ctrls } = mkMorph wormObj wormSegments
-  --       segs = zip [0..] m_ctrls
-  --   
-  --   -- Generate the worm body parts
-  --   shapes <- forM segs $ \(i, (x, y, z)) -> do
-  --     shape <- newShape (H.Circle 0.2) 2.0 0.2 0.0
-  --     includeShape space shape
-  --     H.setPosition (H.getBody shape) (H.Vector ((realToFrac x) + 1.5) ((realToFrac y) + 2.5))
-  --     H.setVelocity (H.getBody shape) (H.Vector 0 ((fromIntegral i)/10))
-  --     return shape
-  --   
-  --   -- Create pivots between body parts
-  --   let pairs = zip (drop 0 shapes) (drop 1 shapes)
-  --   forM_ pairs $ \(s1, s2) -> do
-  --     p1 <- H.getPosition (H.getBody s1)
-  --     p2 <- H.getPosition (H.getBody s2)
-  --     j <- H.newJoint (H.getBody s1) (H.getBody s2) (H.Pivot (midpoint p1 p2))
-  --     H.spaceAdd space j
-  --   
-  --   let draw = do
-  --         -- putStrLn "draw silkworm"
-  --         ctrls <- forM shapes $ \s -> do
-  --           (H.Vector x y) <- H.getPosition (H.getBody s)
-  --           return ((realToFrac x), (realToFrac y), 0)
-  --         
-  --         preservingMatrix $ do
-  --           let (x, y, z) = center ctrls
-  --           translate $ Vector3 x (y-0) 0
-  --           color  $ Color3 0.2 0.7 (0.2 :: GLfloat)
-  --           drawObject (blockMorph morph ctrls)
-  --   
-  --   mainShape <- return (head shapes)
-  --   return $ (gameObject mainShape) { gDraw = Action "draw silkworm" draw
-  --                                     , gMorph = morph }
-  -- 
-  toDegrees rad = rad / pi * 180
   
   orientationForShape shape action = do
     (H.Vector x y) <- H.getPosition $ H.getBody shape
@@ -292,6 +263,7 @@ module Silkworm.Game where
       translate    $ Vector3 x y 0
       rotate (toDegrees angle) $ Vector3 0 0 (1 :: GLfloat)
       action
+    where toDegrees rad = rad / pi * 180
     
   ------------------------------------------------------------
   -- Simulation bookkeeping
