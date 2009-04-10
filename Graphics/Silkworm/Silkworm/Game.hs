@@ -56,23 +56,30 @@ module Silkworm.Game where
   newGameState = do
     space <- newSpaceWithGravity gravity
     cwd <- getCurrentDirectory
-    let include o = do
-          obj <- o
-          space `includes` obj
-          return obj
-    objs <- mapM include [  makeBox 0.4 (H.Vector 0 5)
-                          , makeBox 0.8 (H.Vector (-3) 4)
-                          , makeBox 0.7 (H.Vector (-2) 4.5)
-                          , makeBox 0.6 (H.Vector (1.5) 6)
-                          , makeBox 0.8 (H.Vector (2) 5)
-                          , makeBox 0.4 (H.Vector (4) 4)
-                          , makeWall (H.Vector (-3) (0)) (H.Vector (3) (0))
-                          ]
+    
+    -- A function that tacks on an 'add' action for objects that don't do it for themselves
+    let addRm obj = do
+          let add = Action "add" (space `includes` obj)
+          -- let rm  = H.spaceRemove space obj
+          return (obj { gAdd = add, gRemove = inaction }) -- TODO: add remove fn
+    
+    objs <- sequence [ -- createWorm space (H.Vector 0 1)
+                       makeBox 0.4 (H.Vector 0 5)      >>= addRm
+                     , makeBox 0.8 (H.Vector (-3) 4)   >>= addRm
+                     , makeBox 0.7 (H.Vector (-2) 4.5) >>= addRm
+                     , makeBox 0.6 (H.Vector (1.5) 6)  >>= addRm
+                     , makeBox 0.8 (H.Vector (2) 5)    >>= addRm
+                     , makeBox 0.4 (H.Vector (4) 4)    >>= addRm
+                     , makeWall (H.Vector (-3) (0)) (H.Vector (3) (0)) >>= addRm
+                     ]
+    
+    -- Let each object add itself to the space
+    forM_ objs $ (\ GameObject{ gAdd = add } -> act add )
     return (GameState (0.0) space [cwd] objs [])
   
   startGame :: IO ()
   startGame = do
-    configureProjection (Perspective 90.0) Nothing
+    configureProjection (Perspective 60.0) Nothing
     stateRef <- newGameState >>= newIORef
 
     -- mouseButtonCallback   $= processMouseInput stateRef
@@ -99,23 +106,28 @@ module Silkworm.Game where
   
   acceptKeyboardCommands :: IORef GameState -> IO ()
   acceptKeyboardCommands stateRef = do
-    state <- get stateRef
-    let GameState { gsActives = actives } = state
-        shape = getHipShape (head actives)
-        body  = H.getBody shape
-    
-    H.setForce body (H.Vector 0 0)
+    state <- stateRef
+    controllables <- (gsActives) `withBehavior` BeControllable
     
     left  <- getKey (SpecialKey LEFT)
     right <- getKey (SpecialKey RIGHT)
     up    <- getKey (SpecialKey UP)
     down  <- getKey (SpecialKey DOWN)
     
-    when (left  == Press) (movePlayerLeft body)
-    when (right == Press) (movePlayerRight body)
+    forM_ controllables $ \obj -> do
+      let body  = H.getBody (getPrimShape $ head (gPrim obj))
+      
+      H.setForce body (H.Vector 0 0)
+      
+      when (left  == Press) (movePlayerLeft  body)
+      when (right == Press) (movePlayerRight body)
+      when (up    == Press) (movePlayerUp    body)
+      when (down  == Press) (movePlayerDown  body)
     
     where movePlayerRight body = H.setForce body (H.Vector 1 0)
           movePlayerLeft  body = H.setForce body (H.Vector (-1) 0)
+          movePlayerUp    body = H.setForce body (H.Vector 0 (1))
+          movePlayerDown  body = H.setForce body (H.Vector 0 (-1))
     
   
   -- | Renders the current state.
@@ -124,9 +136,14 @@ module Silkworm.Game where
     state <- get stateRef
     clear [ColorBuffer, DepthBuffer]
     
+    player <- head $ (gsActives state) `withBehavior` BeControllable
+    (H.Vector px_ py_) <- H.getPosition (H.getBody (getPrimShape (gPrim player)))
+    let (px, py) = (realToFrac px_, realToFrac py_)
     (x, y) <- getMousePan
     
-    lookingAt (Vector3 x y 2.5) (Vector3 0 0 0) (Vector3 0 1 0) $ do
+    lookingAt (Vector3 (px + x) (py + y) 2.5) -- Eye
+              (Vector3 px py 0)               -- Target
+              (Vector3 0 1 0) $ do
       moveLight $ Vector3 0.5 0.5 (-0.8)
       -- drawLevel (gsLevel state)
       forM_ (gsActives state) drawGameObject
@@ -143,6 +160,14 @@ module Silkworm.Game where
     if cx == 0 && cy == 0 then
       return ((center (w `div` 2) w) * (-1), center (h `div` 2) h)
       else return ((center cx w) * (-1), center cy h)
+  
+  
+  
+  firstGameObject :: IORef GameState -> IO GameObject
+  firstGameObject stateRef = do
+      state <- get stateRef
+      let GameState{ gsActives = actives } = state
+      return (head actives)
   
   type DepthMask = A.Array (Int, Int) Double
 
@@ -189,6 +214,24 @@ module Silkworm.Game where
         vertex $ Vertex3 vx vy vz
   
   wormSegments = 10 :: Integer
+  
+  -- createWorm :: H.Space -> H.Vector -> IO GameObject
+  -- createWorm space pos@(H.Vector x y) = do
+  --   o1 <- makeCircleObject 0.2 wood (H.Vector x y)
+  --   o2 <- makeCircleObject 0.2 wood (H.Vector (x+0.5) y)
+  --   o3 <- makeCircleObject 0.2 wood (H.Vector (x+1) y)
+  --   let draw = combineActions $ map (\GameObject{ gDraw = d } -> d) [o1, o2, o3]
+  --   let add = Action "add worm" $ do
+  --         space `includes` o1
+  --         space `includes` o2
+  --         space `includes` o3
+  --   
+  --   return $ gameObject{ gDraw = draw, gAdd = add }
+
+    -- objs <- mapM (makeCircleObject 0.2 wood) [(H.Vector (x + i) y) | i <- [0,1..3]]
+    -- putStrLn $ "objs: " ++ (show objs)
+    -- forM_ (drop 1 objs) (\o -> space `includes` o)
+    -- return (head objs)
   
   -- createWorm :: H.Space -> IO GameObject
   -- createWorm space = do

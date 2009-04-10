@@ -32,7 +32,6 @@ module Silkworm.Title where
     rasterizeLines, randomBumpyRaster,
     (#+), (#-), (#*),
     (#+#), (#-#), (#*#))
-  import Silkworm.Game (startGame)
   import Silkworm.OpenGLHelper (
     PerspectiveType(..),
     resizeWindow,
@@ -71,7 +70,7 @@ module Silkworm.Title where
   showTitleScreen :: IO ()
   showTitleScreen = do
     loadResources
-    moveLight $ Vector3 0.5 0.5 (1)
+    moveLight $ Vector3 0.5 0.5 (-1)
     configureProjection Orthogonal Nothing
     state <- newTitleState >>= newIORef
     titleScreenLoop state
@@ -91,8 +90,8 @@ module Silkworm.Title where
     
     case tsSelect state of
       NoSelection -> titleScreenLoop stateVar
-      StartGame   -> startGame
       QuitGame    -> exitWith ExitSuccess
+      StartGame   -> return ()
   
   -- | Load title screen textures into OpenGL buffers
   loadResources :: IO ()

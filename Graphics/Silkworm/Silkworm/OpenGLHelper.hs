@@ -36,7 +36,7 @@ module Silkworm.OpenGLHelper
     
     matrixMode $= Modelview 0
     loadIdentity
-    
+    normal $ Normal3 0 0 (-1 :: GLfloat)
     return ()
   
   resizeWindow :: Size -> IO ()

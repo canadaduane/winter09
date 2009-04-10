@@ -12,6 +12,7 @@ module Silkworm.GameObject
   , makeWall
   , makeBox
   -- , drawGameObject
+  , withBehavior
   , getPrimShape
   , getPrimShapeType
   , includes
@@ -91,6 +92,10 @@ module Silkworm.GameObject
   
   -- drawGamePrim :: GamePrim -> IO ()
   -- drawGamePrim (GamePrim ) = act (gDraw obj)
+  
+  withBehavior :: [GameObject] -> Behavior -> [GameObject]
+  withBehavior gs b = filter behaving gs
+    where behaving g = (gBehavior g) == b
   
   getPrimShape :: GamePrim -> Shape
   getPrimShape (GamePrim shape _ _) = shape
