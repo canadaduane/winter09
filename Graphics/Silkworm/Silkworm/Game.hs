@@ -60,13 +60,13 @@ module Silkworm.Game where
           obj <- o
           space `includes` obj
           return obj
-    objs <- mapM include [ makeWall (H.Vector (-3) (0)) (H.Vector (3) (0))
-                          , makeBox 0.4 (H.Vector 0 5)
+    objs <- mapM include [  makeBox 0.4 (H.Vector 0 5)
                           , makeBox 0.8 (H.Vector (-3) 4)
                           , makeBox 0.7 (H.Vector (-2) 4.5)
                           , makeBox 0.6 (H.Vector (1.5) 6)
                           , makeBox 0.8 (H.Vector (2) 5)
                           , makeBox 0.4 (H.Vector (4) 4)
+                          , makeWall (H.Vector (-3) (0)) (H.Vector (3) (0))
                           ]
     return (GameState (0.0) space [cwd] objs [])
   
@@ -87,14 +87,8 @@ module Silkworm.Game where
     -- Some key states
     quitKey  <- getKey (SpecialKey ESC)
     
-    -- Quit?
-    -- when (quitKey == Press) (terminate >> exitWith ExitSuccess)
-  
-    -- Clear?
-    -- when (clearKey == Press) $ do
-    --   destroyState =<< readIORef stateVar
-    --   initialState >>= writeIORef stateVar
-  
+    acceptKeyboardCommands stateRef
+    
     -- Update display and time
     updateDisplay stateRef
     newTime <- advanceTime stateRef oldTime
@@ -102,7 +96,28 @@ module Silkworm.Game where
     -- Continue the game as long as quit signal has not been given
     when (quitKey /= Press)
       (gameLoop stateRef newTime)
-
+  
+  acceptKeyboardCommands :: IORef GameState -> IO ()
+  acceptKeyboardCommands stateRef = do
+    state <- get stateRef
+    let GameState { gsActives = actives } = state
+        shape = getHipShape (head actives)
+        body  = H.getBody shape
+    
+    H.setForce body (H.Vector 0 0)
+    
+    left  <- getKey (SpecialKey LEFT)
+    right <- getKey (SpecialKey RIGHT)
+    up    <- getKey (SpecialKey UP)
+    down  <- getKey (SpecialKey DOWN)
+    
+    when (left  == Press) (movePlayerLeft body)
+    when (right == Press) (movePlayerRight body)
+    
+    where movePlayerRight body = H.setForce body (H.Vector 1 0)
+          movePlayerLeft  body = H.setForce body (H.Vector (-1) 0)
+    
+  
   -- | Renders the current state.
   updateDisplay :: IORef GameState -> IO ()
   updateDisplay stateRef  = do
