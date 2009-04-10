@@ -70,18 +70,11 @@ module Silkworm.Game where
                           ]
     return (GameState (0.0) space [cwd] objs [])
   
-  generateRandomGround :: H.Space -> IO ()
-  generateRandomGround space =
-    return ()
-  
   startGame :: IO ()
   startGame = do
-    
     configureProjection (Perspective 90.0) Nothing
-    -- configureProjection Orthogonal Nothing
-    
     stateRef <- newGameState >>= newIORef
-    
+
     -- mouseButtonCallback   $= processMouseInput stateRef
     windowSizeCallback $= resizeWindow
     
@@ -92,9 +85,7 @@ module Silkworm.Game where
   gameLoop :: IORef GameState -> Double -> IO ()
   gameLoop stateRef oldTime = do
     -- Some key states
-    slowKey  <- getKey (SpecialKey ENTER)
     quitKey  <- getKey (SpecialKey ESC)
-    clearKey <- getKey (SpecialKey DEL)
     
     -- Quit?
     -- when (quitKey == Press) (terminate >> exitWith ExitSuccess)
@@ -105,16 +96,16 @@ module Silkworm.Game where
     --   initialState >>= writeIORef stateVar
   
     -- Update display and time
-    updateDisplay stateRef slowKey
-    newTime <- advanceTime stateRef oldTime slowKey
+    updateDisplay stateRef
+    newTime <- advanceTime stateRef oldTime
   
     -- Continue the game as long as quit signal has not been given
     when (quitKey /= Press)
       (gameLoop stateRef newTime)
 
   -- | Renders the current state.
-  updateDisplay :: IORef GameState -> KeyButtonState -> IO ()
-  updateDisplay stateRef slowKey  = do
+  updateDisplay :: IORef GameState -> IO ()
+  updateDisplay stateRef  = do
     state <- get stateRef
     clear [ColorBuffer, DepthBuffer]
     
@@ -241,13 +232,12 @@ module Silkworm.Game where
   ------------------------------------------------------------
 
   -- | Advances the time.
-  advanceTime :: IORef GameState -> Double -> KeyButtonState -> IO Double
-  advanceTime stateRef oldTime slowKey = do
+  advanceTime :: IORef GameState -> Double -> IO Double
+  advanceTime stateRef oldTime = do
     newTime <- get time
   
     -- Advance simulation
-    let slower         = if slowKey == Press then slowdown else 1
-        mult           = frameSteps / (framePeriod * slower)
+    let mult           = frameSteps / framePeriod
         framesPassed   = truncate $ mult * (newTime - oldTime)
         simulNewTime   = oldTime + toEnum framesPassed / mult
     advanceSimulTime stateRef $ min maxSteps framesPassed
@@ -255,7 +245,7 @@ module Silkworm.Game where
     -- Correlate with reality
     newTime' <- get time
     let diff = newTime' - simulNewTime
-        sleepTime = ((framePeriod * slower) - diff) / slower
+        sleepTime = framePeriod - diff
     when (sleepTime > 0) $ sleep sleepTime
     return simulNewTime
     where
