@@ -1,19 +1,19 @@
 module Silkworm.GameObject
-  ( GameShape(..)
+  ( GamePrim(..)
   , GameObject(..)
   , gameObject
-  , makeObjectWithMass
-  , makeObject
-  , makeCircleObject
-  , makeRectangleObject
-  , makeSquareObject
-  , makeLineObject
-  , makeStaticLineObject
+  , makePrimWithMass
+  , makePrim
+  , makeCirclePrim
+  , makeRectanglePrim
+  , makeSquarePrim
+  , makeLinePrim
+  , makeStaticLinePrim
   , makeWall
   , makeBox
-  , drawGameObject
-  , getHipShape
-  , getHipShapeType
+  -- , drawGameObject
+  , getPrimShape
+  , getPrimShapeType
   , includes
   ) where
   
@@ -30,86 +30,81 @@ module Silkworm.GameObject
   import Silkworm.Mesh
   import Silkworm.Substance
   
-  
-  data GameShape = GameShape Shape ShapeType
-                 | NoGameShape
+  -- A Game Primitive holds shape and substance info for pieces of objects
+  --   e.g. silkworm is composed of several primitives, specifically Circle objects
+  data GamePrim = GamePrim Shape ShapeType Substance
     deriving Show
   
   -- The Game Object : Here is where we define everything to do with each moving thing
   data GameObject = GameObject {
-    gShape     :: GameShape,
-    gSubstance :: Substance,
+    gPrim      :: [GamePrim],
     gBehavior  :: Behavior,
     gMorph     :: Morph,
-    gDraw      :: Action
+    gDraw      :: Action,
+    gAdd       :: Action,
+    gRemove    :: Action
   } deriving Show
   
   gameObject :: GameObject
-  gameObject = GameObject NoGameShape genericSubstance BeStationary NoMorph inaction
+  gameObject = GameObject [] BeStationary NoMorph inaction inaction inaction
   
-  makeObjectWithMass :: Float -> ShapeType -> Substance -> Vector -> IO GameObject
-  makeObjectWithMass mass stype subst pos = do
+  makePrimWithMass :: Float -> ShapeType -> Substance -> Vector -> IO GamePrim
+  makePrimWithMass mass stype subst pos = do
       body  <- newBody mass moment
       shape <- newShape body stype (Vector 0 0)
       setElasticity shape elasticity
       setFriction shape friction
       setPosition body pos
-      let gameShape = GameShape shape stype
-      return gameObject { gShape     = gameShape
-                        , gSubstance = subst
-                        , gDraw      = action (drawShapeTrace gameShape)
-                        }
+      return $ GamePrim shape stype subst
     where (Substance elasticity friction _) = subst
           moment = case stype of
             H.Circle radius           -> momentForCircle mass (0, radius) (Vector 0 0)
             H.Polygon verts           -> momentForPoly mass verts (Vector 0 0)
             H.LineSegment p1 p2 thick -> infinity
   
-  makeObject :: ShapeType -> Substance -> Vector -> IO GameObject
-  makeObject stype subst pos = makeObjectWithMass mass stype subst pos
+  makePrim :: ShapeType -> Substance -> Vector -> IO GamePrim
+  makePrim stype subst pos = makePrimWithMass mass stype subst pos
     where (Substance _ _ density) = subst
           mass = density * (area stype)
   
-  makeCircleObject :: Float -> Substance -> Vector -> IO GameObject
-  makeCircleObject radius = makeObject circle
+  makeCirclePrim :: Float -> Substance -> Vector -> IO GamePrim
+  makeCirclePrim radius = makePrim circle
     where circle = Circle radius
   
-  makeRectangleObject :: Float -> Float -> Substance -> Vector -> IO GameObject
-  makeRectangleObject w h = makeObject (rectangle w h)
+  makeRectanglePrim :: Float -> Float -> Substance -> Vector -> IO GamePrim
+  makeRectanglePrim w h = makePrim (rectangle w h)
   
-  makeSquareObject :: Float -> Substance -> Vector -> IO GameObject
-  makeSquareObject s = makeRectangleObject s s
+  makeSquarePrim :: Float -> Substance -> Vector -> IO GamePrim
+  makeSquarePrim s = makeRectanglePrim s s
   
-  makeLineObject :: H.Position -> H.Position -> Substance -> IO GameObject
-  makeLineObject p1 p2 s = makeObject (LineSegment p1 p2 lineThickness) s (midpoint p1 p2)
+  makeLinePrim :: H.Position -> H.Position -> Substance -> IO GamePrim
+  makeLinePrim p1 p2 s = makePrim (LineSegment p1 p2 lineThickness) s (midpoint p1 p2)
   
-  makeStaticLineObject :: H.Position -> H.Position -> Substance -> IO GameObject
-  makeStaticLineObject p1 p2 s = makeObjectWithMass infinity (LineSegment p1 p2 lineThickness) s (midpoint p1 p2)
+  makeStaticLinePrim :: H.Position -> H.Position -> Substance -> IO GamePrim
+  makeStaticLinePrim p1 p2 s = makePrimWithMass infinity (LineSegment p1 p2 lineThickness) s (midpoint p1 p2)
   
-  makeWall :: Vector -> Vector -> IO GameObject
-  makeWall p1 p2 = makeStaticLineObject p1 p2 wood
+  makeWall :: Vector -> Vector -> IO GamePrim
+  makeWall p1 p2 = makeStaticLinePrim p1 p2 wood
   
-  makeBox :: Float -> Vector -> IO GameObject
-  makeBox size pos = makeSquareObject size wood pos
+  makeBox :: Float -> Vector -> IO GamePrim
+  makeBox size pos = makeSquarePrim size wood pos
   
-  drawGameObject :: GameObject -> IO ()
-  drawGameObject obj = act (gDraw obj)
+  -- drawGamePrim :: GamePrim -> IO ()
+  -- drawGamePrim (GamePrim ) = act (gDraw obj)
   
-  getHipShape :: GameObject -> Shape
-  getHipShape (GameObject { gShape = gs }) = shape
-    where (GameShape shape stype) = gs
+  getPrimShape :: GamePrim -> Shape
+  getPrimShape (GamePrim shape _ _) = shape
   
-  getHipShapeType :: GameObject -> ShapeType
-  getHipShapeType (GameObject { gShape = gs }) = stype
-    where (GameShape shape stype) = gs
+  getPrimShapeType :: GamePrim -> ShapeType
+  getPrimShapeType (GamePrim _ stype _) = stype
   
-  includes :: Space -> GameObject -> IO ()
-  includes space g = do
+  includes :: Space -> GamePrim -> IO ()
+  includes space prim = do
       mass <- getMass body
       -- Only add bodies of non-infinitely massive objects
       when (mass /= infinity) (spaceAdd space body)
       spaceAdd space shape
-    where shape = getHipShape g
+    where shape = getPrimShape prim
           body = getBody shape
   
   
@@ -134,17 +129,19 @@ module Silkworm.GameObject
   red = Color3 1 zero zero
   facingCamera = Normal3 0 0 (-1) :: Normal3 Double
   
-  drawShapeTrace :: GameShape -> IO ()
-  drawShapeTrace (GameShape shape stype) = do
+  drawShapeTrace :: GamePrim -> IO ()
+  drawShapeTrace (GamePrim shape stype _) = do
       -- Get center and angle of object
       pos@(Vector px py) <- getPosition body
       angle              <- getAngle    body
       -- Set OpenGL to white lines
-      traceInWhite
-      case stype of
-        H.Circle radius           -> circle radius angle px py
-        H.Polygon verts           -> polygon verts angle pos
-        H.LineSegment p1 p2 thick -> line p1 p2 pos
+      
+      preservingMatrix $ do
+        traceInWhite
+        case stype of
+          H.Circle radius           -> circle radius angle px py
+          H.Polygon verts           -> polygon verts angle pos
+          H.LineSegment p1 p2 thick -> line p1 p2 pos
       -- Finish with a dot at the center
       drawPoint pos
     where body  = getBody shape
