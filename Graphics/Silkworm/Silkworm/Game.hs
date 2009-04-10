@@ -65,8 +65,8 @@ module Silkworm.Game where
           -- let rm  = H.spaceRemove space obj
           return (obj { gAdd = add, gRemove = inaction }) -- TODO: add remove fn
     
-    objs <- sequence [ -- createWorm space (H.Vector 0 1)
-                       makeBox 0.3 (H.Vector 0 5)                               >>= addRm >>= controllable
+    objs <- sequence [ createWorm space (H.Vector 0 1)    >>=   controllable    >>= addRm
+                     , makeBox 0.3 (H.Vector 0 5)                               >>= addRm
                      , makeBox 0.8 (H.Vector (-3) 4)                            >>= addRm
                      , makeBox 0.7 (H.Vector (-2) 4.5)                          >>= addRm
                      , makeBox 0.6 (H.Vector (1.5) 6)                           >>= addRm
@@ -131,10 +131,10 @@ module Silkworm.Game where
       when (up    == Press) (movePlayerUp    body)
       when (down  == Press) (movePlayerDown  body)
     
-    where movePlayerRight body = H.setForce body (H.Vector 1 0)
-          movePlayerLeft  body = H.setForce body (H.Vector (-1) 0)
-          movePlayerUp    body = H.setForce body (H.Vector 0 (1))
-          movePlayerDown  body = H.setForce body (H.Vector 0 (-1))
+    where movePlayerRight body = H.setForce body (H.Vector 3 0)
+          movePlayerLeft  body = H.setForce body (H.Vector (-3) 0)
+          movePlayerUp    body = H.setForce body (H.Vector 0 (3))
+          movePlayerDown  body = H.setForce body (H.Vector 0 (-3))
     
   
   -- | Renders the current state.
@@ -216,19 +216,26 @@ module Silkworm.Game where
   
   wormSegments = 10 :: Integer
   
-  -- createWorm :: H.Space -> H.Vector -> IO GameObject
-  -- createWorm space pos@(H.Vector x y) = do
-  --   o1 <- makeCircleObject 0.2 wood (H.Vector x y)
-  --   o2 <- makeCircleObject 0.2 wood (H.Vector (x+0.5) y)
-  --   o3 <- makeCircleObject 0.2 wood (H.Vector (x+1) y)
-  --   let draw = combineActions $ map (\GameObject{ gDraw = d } -> d) [o1, o2, o3]
-  --   let add = Action "add worm" $ do
-  --         space `includes` o1
-  --         space `includes` o2
-  --         space `includes` o3
-  --   
-  --   return $ gameObject{ gDraw = draw, gAdd = add }
+  createWorm :: H.Space -> H.Vector -> IO GameObject
+  createWorm space pos@(H.Vector x y) = do
+    prims <- mapM (makeCirclePrim 0.2 wood) [(H.Vector (x + i) y) | i <- [0,0.5..2]]
 
+    -- Create pivots between body parts
+    let pairs = zip (drop 0 prims) (drop 1 prims)
+    joints <- mapM pivotJointBetween pairs
+    
+    let draw = combineActions (map drawGamePrim prims)
+    return $ gameObject{ gPrim = prims, gDraw = draw }
+    
+    where pivotJointBetween (p1, p2) =
+            let b1 = (H.getBody $ getPrimShape p1)
+                b2 = (H.getBody $ getPrimShape p2)
+            in do a <- H.getPosition b1
+                  b <- H.getPosition b2
+                  j <- H.newJoint b1 b2 (H.Pivot (midpoint a b))
+                  H.spaceAdd space j
+                  return j
+            
     -- objs <- mapM (makeCircleObject 0.2 wood) [(H.Vector (x + i) y) | i <- [0,1..3]]
     -- putStrLn $ "objs: " ++ (show objs)
     -- forM_ (drop 1 objs) (\o -> space `includes` o)
