@@ -2,6 +2,7 @@ module Silkworm.GameObject
   ( GamePrim(..)
   , GameObject(..)
   , gameObject
+  , primToObject
   , makePrimWithMass
   , makePrim
   , makeCirclePrim
@@ -11,10 +12,12 @@ module Silkworm.GameObject
   , makeStaticLinePrim
   , makeWall
   , makeBox
-  -- , drawGameObject
+  , drawGamePrim
+  , drawShapeTrace
   , withBehavior
   , getPrimShape
   , getPrimShapeType
+  , firstPrim
   , includes
   ) where
   
@@ -48,6 +51,11 @@ module Silkworm.GameObject
   
   gameObject :: GameObject
   gameObject = GameObject [] BeStationary NoMorph inaction inaction inaction
+  
+  -- | Simple promotion for objects that are just a simple primitive
+  primToObject :: GamePrim -> GameObject
+  primToObject p = gameObject{ gPrim = [p],
+                               gDraw = drawGamePrim p }
   
   makePrimWithMass :: Float -> ShapeType -> Substance -> Vector -> IO GamePrim
   makePrimWithMass mass stype subst pos = do
@@ -84,11 +92,15 @@ module Silkworm.GameObject
   makeStaticLinePrim :: H.Position -> H.Position -> Substance -> IO GamePrim
   makeStaticLinePrim p1 p2 s = makePrimWithMass infinity (LineSegment p1 p2 lineThickness) s (midpoint p1 p2)
   
-  makeWall :: Vector -> Vector -> IO GamePrim
-  makeWall p1 p2 = makeStaticLinePrim p1 p2 wood
+  makeWall :: Vector -> Vector -> IO GameObject
+  makeWall p1 p2 = do
+    prim <- makeStaticLinePrim p1 p2 rubber
+    return $ primToObject prim
   
-  makeBox :: Float -> Vector -> IO GamePrim
-  makeBox size pos = makeSquarePrim size wood pos
+  makeBox :: Float -> Vector -> IO GameObject
+  makeBox size pos = do
+    prim <- makeSquarePrim size rubber pos
+    return $ primToObject prim
   
   -- drawGamePrim :: GamePrim -> IO ()
   -- drawGamePrim (GamePrim ) = act (gDraw obj)
@@ -102,6 +114,9 @@ module Silkworm.GameObject
   
   getPrimShapeType :: GamePrim -> ShapeType
   getPrimShapeType (GamePrim _ stype _) = stype
+  
+  firstPrim :: GameObject -> GamePrim
+  firstPrim g = head (gPrim g)
   
   includes :: Space -> GamePrim -> IO ()
   includes space prim = do
@@ -133,6 +148,9 @@ module Silkworm.GameObject
   white = Color3 full full full
   red = Color3 1 zero zero
   facingCamera = Normal3 0 0 (-1) :: Normal3 Double
+  
+  drawGamePrim :: GamePrim -> Action
+  drawGamePrim p = Action "one prim draw" (drawShapeTrace p)
   
   drawShapeTrace :: GamePrim -> IO ()
   drawShapeTrace (GamePrim shape stype _) = do
