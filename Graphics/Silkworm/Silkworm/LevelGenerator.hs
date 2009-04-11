@@ -1,5 +1,5 @@
 module Silkworm.LevelGenerator (
-    rasterizeLines, DepthMask,
+    rasterizeLines, DepthMask, Point, Line, Rect,
     (#+), (#-), (#*),
     (#+#), (#-#), (#*#)
   ) where

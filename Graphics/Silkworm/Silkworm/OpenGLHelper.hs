@@ -26,11 +26,13 @@ module Silkworm.OpenGLHelper
     lineWidth     $= 2.5
     blend         $= Enabled
     blendFunc     $= (SrcAlpha, OneMinusSrcAlpha)
+    depthFunc     $= Just Less
     polygonMode   $= (Fill, Fill)
+    texture Texture2D $= Enabled
     
     -- Set up shading and lighting
     lighting      $= Enabled
-    shadeModel    $= Smooth -- Flat 
+    shadeModel    $= Smooth -- Flat
     normalize     $= Enabled
     colorMaterial $= Just (Front, Diffuse)
     

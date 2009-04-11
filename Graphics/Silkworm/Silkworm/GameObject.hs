@@ -12,6 +12,7 @@ module Silkworm.GameObject
   , makeStaticLinePrim
   , makeWall
   , makeBox
+  , makeNgon
   , drawGamePrim
   , drawShapeTrace
   , withBehavior
@@ -90,7 +91,7 @@ module Silkworm.GameObject
   makeLinePrim p1 p2 s = makePrim (LineSegment p1 p2 lineThickness) s (midpoint p1 p2)
   
   makeStaticLinePrim :: H.Position -> H.Position -> Substance -> IO GamePrim
-  makeStaticLinePrim p1 p2 s = makePrimWithMass infinity (LineSegment p1 p2 lineThickness) s (midpoint p1 p2)
+  makeStaticLinePrim p1 p2 s = makePrimWithMass infinity (LineSegment p1 p2 lineThickness) s (Vector 0 0)
   
   makeWall :: Vector -> Vector -> IO GameObject
   makeWall p1 p2 = do
@@ -101,6 +102,11 @@ module Silkworm.GameObject
   makeBox size pos = do
     prim <- makeSquarePrim size rubber pos
     return $ primToObject prim
+
+  makeNgon :: Float -> Float -> Vector -> IO GameObject
+  makeNgon radius sides pos = return gameObject
+    -- prim <- makeSquarePrim size rubber pos
+    -- return $ primToObject prim
   
   -- drawGamePrim :: GamePrim -> IO ()
   -- drawGamePrim (GamePrim ) = act (gDraw obj)
@@ -147,6 +153,7 @@ module Silkworm.GameObject
   zero = 0.0 :: Double
   white = Color3 full full full
   red = Color3 1 zero zero
+  blue = Color3 zero zero 1
   facingCamera = Normal3 0 0 (-1) :: Normal3 Double
   
   drawGamePrim :: GamePrim -> Action
@@ -191,6 +198,7 @@ module Silkworm.GameObject
   traceInWhite = do
     normal facingCamera
     color white
+    textureBinding Texture2D $= Just (TextureObject 0)
   
   -- | Draws a red point.
   drawPoint :: Vector -> IO ()

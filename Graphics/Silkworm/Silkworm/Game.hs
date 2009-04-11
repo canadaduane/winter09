@@ -21,7 +21,8 @@ module Silkworm.Game where
   import Silkworm.Constants
   import Silkworm.GameObject
   import Silkworm.HipmunkHelper
-  import Silkworm.LevelGenerator
+  import Silkworm.ImageHelper
+  import Silkworm.LevelGenerator as LG
   import Silkworm.Math
   import Silkworm.OpenGLHelper
   import Silkworm.WaveFront
@@ -35,17 +36,32 @@ module Silkworm.Game where
   
   -- The Game State : Keep track of the Chipmunk engine state as well as our game
   -- objects, both active (on-screen) and inactive (off-screen)
-  data GameState = GameState {
-    gsAngle     :: Float,
-    gsSpace     :: H.Space,
-    gsLevel     :: Mesh,
-    gsResources :: [FilePath],
-    gsActives   :: [GameObject],
-    gsInactives :: [GameObject]
-  } deriving Show
+  data GameState = GameState { gsAngle     :: Float
+                             , gsSpace     :: H.Space
+                             , gsLevel     :: Mesh
+                             , gsResources :: [FilePath]
+                             , gsActives   :: [GameObject]
+                             , gsInactives :: [GameObject]
+                             }
+    deriving Show
   
-  -- level1 = array ((0, 0), (1, 1)) [((0, 0), 0.0), ((0, 1), 5.0), ((1, 0), 10.0), ((1, 1), 20.0)] :: Array (Int, Int) Double
-  level1 = rasterizeLines [((0, 8), (20, 12))] ((0, 0), (20, 20)) 5.0
+  data GameLevel = GameLevel { levLines  :: [LG.Line]
+                             , levBounds :: LG.Rect
+                             , levCarve  :: Double
+                             , levMesh   :: Mesh
+                             }
+  
+  generateLevel :: [LG.Line] -> LG.Rect -> Double -> GameLevel
+  generateLevel ls b c = GameLevel{ levLines  = ls
+                                  , levBounds = b
+                                  , levCarve  = c
+                                  , levMesh   = maskToMesh $
+                                                rasterizeLines ls b c
+                                  }
+  
+  level1 = generateLevel [((0, 8), (20, 12))]
+                         ((0, 0), (20, 20))
+                         2.5
   
   -------------------------------------------------------
   -- Game Functions
@@ -56,8 +72,6 @@ module Silkworm.Game where
   newGameState = do
     space <- newSpaceWithGravity gravity
     cwd <- getCurrentDirectory
-    
-    let level = maskToMesh level1
     
     let controllable obj = return (obj{ gBehavior = BeControllable })
     
@@ -76,19 +90,21 @@ module Silkworm.Game where
                      , makeBox 0.4 (H.Vector (4) 4)                             >>= addRm
                      , makeWall (H.Vector (-3) (0)) (H.Vector (3) (0))          >>= addRm
                      , makeWall (H.Vector (-5) (2)) (H.Vector (0) (-2))         >>= addRm
-                     , makeWall (H.Vector (5) (3)) (H.Vector (1) (-2.5))        >>= addRm
+                     , makeWall (H.Vector ( 5) (3)) (H.Vector (1) (-2.5))       >>= addRm
                      , makeWall (H.Vector (-1) (-2.5)) (H.Vector (1) (-2.5))    >>= addRm
                      ]
     
     -- Let each object add itself to the space
     forM_ objs $ (\ GameObject{ gAdd = add } -> act add )
-    return (GameState (0.0) space level [cwd] objs [])
+    return (GameState (0.0) space (levMesh level1) [cwd] objs [])
   
   startGame :: IO ()
   startGame = do
     configureProjection (Perspective 60.0) Nothing
     stateRef <- newGameState >>= newIORef
-
+    
+    loadTexture "dirt-texture.png" 2
+    
     -- mouseButtonCallback   $= processMouseInput stateRef
     windowSizeCallback $= resizeWindow
     
@@ -150,14 +166,22 @@ module Silkworm.Game where
     let (px, py) = (realToFrac px_, realToFrac py_)
     (x, y) <- getMousePan
     
+    
     lookingAt (Vector3 (px + x) (py + y) 2.5) -- Eye
               (Vector3 px py 0)               -- Target
               (Vector3 0 1 0) $ do
-      moveLight $ Vector3 0.5 0.5 (-0.8)
-      preservingMatrix $ do
-        translate $ Vector3 (-0.5) (-0.5) (6 :: GLfloat)
-        drawLevel (gsLevel state)
+      moveLight $ Vector3 0.5 1.0 (-3.0)
+      -- preservingMatrix $ do
+      --   color $ Color3 0.6 0.3 (0.15 :: Float)
+      --   scale 4 4 (-1.5 :: Float)
+      --   translate $ Vector3 (-1) (-1) ( 5 :: Float)
+      --   drawLevel (gsLevel state)
       forM_ (gsActives state) (act . gDraw)
+    
+    preservingMatrix $ do
+      translate $ Vector3 (0) (0) (-10 :: Float)
+      scale (14) (14) (0 :: Float)
+      renderTexture 2 (-1) (-1) (2) (2)
     
     -- angle <- return (gsAngle state)
     -- stateRef $= state { gsAngle = angle + 0.01 }
@@ -189,7 +213,7 @@ module Silkworm.Game where
               tup ((i + 0) * rw + j + 2) ] |
             (i, j) <- range (innerBounds a) ]
       point i@(x, y)     = (fromIntegral x, fromIntegral y, (a ! i)/1)
-      vertex ((x, y), d) = (fromIntegral x, fromIntegral y, d)
+      vertex ((x, y), d) = (fromIntegral x, fromIntegral y, -d)
       normal ((x, y), d) =
         let x_f = fromIntegral x
             y_f = fromIntegral y

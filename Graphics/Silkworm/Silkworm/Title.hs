@@ -28,12 +28,9 @@ module Silkworm.Title where
     setFontFaceSize, renderFont, getFontError)
   import Silkworm.WindowHelper (getPressedKeys, keyIsPressed)
   import Silkworm.ImageHelper (loadTexture, renderTexture)
-  import Silkworm.OpenGLHelper (
-    PerspectiveType(..),
-    resizeWindow,
-    configureProjection,
-    lookingAt,
-    moveLight )
+  import Silkworm.OpenGLHelper
+  import Silkworm.WaveFront
+  import Silkworm.Mesh
   
   type KeyMap = Map.Map Key Bool
   
@@ -50,7 +47,9 @@ module Silkworm.Title where
   data TitleState = TitleState {
     tsObjects :: [TitleObject],
     tsHover   :: MenuSelection,
-    tsSelect  :: MenuSelection
+    tsSelect  :: MenuSelection,
+    tsAngle   :: Float,
+    tsWorm    :: Mesh
   }
   
   -- | Return a TitleState object set to reasonable initial values
@@ -59,14 +58,18 @@ module Silkworm.Title where
     -- bgImage <- readImage "background.png"
     -- let objs = [TitleObject (0, 0) [] 0.0 bgImage]
     let objs = []
+    
+    fileData <- readFile "silkworm.obj"
+    wormObj <- return $ readWaveFront fileData
+    
     -- putStrLn (show $ getFontError font)
     -- exitWith (ExitFailure (-1))
-    return (TitleState objs StartGame NoSelection)
+    return (TitleState objs StartGame NoSelection 0.0 wormObj)
   
   showTitleScreen :: IO ()
   showTitleScreen = do
     loadResources
-    moveLight $ Vector3 0.5 0.5 (-1)
+    moveLight $ Vector3 0.5 0.5 (1)
     configureProjection Orthogonal Nothing
     state <- newTitleState >>= newIORef
     titleScreenLoop state
@@ -77,6 +80,9 @@ module Silkworm.Title where
     keySet <- getPressedKeys [SpecialKey ENTER, SpecialKey UP, SpecialKey DOWN]
     updateDisplay stateVar
     
+    let angle = tsAngle state
+    stateVar $= state { tsAngle = (angle + 2) }
+      
     when (keyIsPressed (SpecialKey UP) keySet) $ do
       stateVar $= state { tsHover = StartGame }
     when (keyIsPressed (SpecialKey DOWN) keySet) $ do
@@ -89,21 +95,35 @@ module Silkworm.Title where
       QuitGame    -> exitWith ExitSuccess
       StartGame   -> return ()
   
+  drawObject :: Mesh -> IO ()
+  drawObject obj = do
+    forM_ (faces obj) $ \face -> renderPrimitive Polygon $ do
+      forM_ face $ \((vx, vy, vz), (nx, ny, nz)) -> do
+        normal $ Normal3 nx ny nz
+        vertex $ Vertex3 vx vy vz
+
   -- | Load title screen textures into OpenGL buffers
   loadResources :: IO ()
   loadResources = do
-    loadTexture "background.png" 0
+    loadTexture "background.png" 1
     return ()
     
   -- | Renders the current state.
   updateDisplay :: IORef TitleState -> IO ()
   updateDisplay stateVar = do
+    state <- get stateVar
     clear [ColorBuffer, DepthBuffer]
     drawTitle stateVar
+    preservingMatrix $ do
+      translate $ Vector3 0.5 0.5 (-0.5 :: Float)
+      scale 0.2 0.2 (0.2 :: Float)
+      rotate (tsAngle state) (Vector3 0 1 (0 :: Float))
+      drawObject (tsWorm state)
+      
     -- when (slowKey == Press) drawSlowMotion
     -- forM_ (M.assocs $ stShapes state) (fst . snd) -- Draw each one
     swapBuffers
-    sleep 0.050
+    sleep 0.005
   
   drawText :: Float -> Float -> Float -> String -> IO ()
   drawText x y s str = preservingMatrix $ do
@@ -120,7 +140,7 @@ module Silkworm.Title where
     lookingAt (Vector3 0 0 1) (Vector3 0 0 0) (Vector3 0 1 0) $ do
       preservingMatrix $ do
         translate (Vector3 0 0 (-1.1) :: Vector3 Float)
-        renderTexture 0 (-1) (-1) 2 2
+        renderTexture 1 (-1) (-1) 2 2
       
         -- let font = (tsFont state)
         -- font <- createTextureFont "shrewsbury.ttf"
