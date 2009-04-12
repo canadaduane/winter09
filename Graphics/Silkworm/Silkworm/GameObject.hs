@@ -11,6 +11,7 @@ module Silkworm.GameObject
   , makeLinePrim
   , makeStaticLinePrim
   , makeWall
+  , makeCurveWall
   , makeBox
   , makeNgon
   , drawGamePrim
@@ -20,6 +21,7 @@ module Silkworm.GameObject
   , getPrimShapeType
   , firstPrim
   , includes
+  , lineThickness
   ) where
   
   import Control.Monad (forM, forM_, when)
@@ -97,6 +99,17 @@ module Silkworm.GameObject
   makeWall p1 p2 = do
     prim <- makeStaticLinePrim p1 p2 rubber
     return $ primToObject prim
+  
+  makeCurveWall :: [Vector] -> IO GameObject
+  makeCurveWall ps = do
+    let vs    = map to2 $ crSpline 0.1 (map to3 ps)
+    let pairs = zip (drop 0 vs) (drop 1 vs)
+    prims <- mapM (uncurry makeLinePrim) pairs
+    let draw = combineActions (map drawGamePrim prims)
+    return $ gameObject{ gPrim = prims, gDraw = draw }
+    where to3 (Vector x y) = (realToFrac x, realToFrac y, 0)
+          to2 (x, y, _) = Vector (realToFrac x) (realToFrac y)
+          makeLinePrim p1 p2 = makeStaticLinePrim p1 p2 rubber
   
   makeBox :: Float -> Vector -> IO GameObject
   makeBox size pos = do

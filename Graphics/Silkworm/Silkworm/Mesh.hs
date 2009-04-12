@@ -6,6 +6,7 @@ module Silkworm.Mesh
   , blockMorph
   , mkMorph
   , center
+  , crSpline
   ) where
   
   import Data.Function (on)

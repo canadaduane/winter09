@@ -52,12 +52,12 @@ module Silkworm.Game where
                              }
   
   generateLevel :: [LG.Line] -> LG.Rect -> Double -> GameLevel
-  generateLevel ls b c = GameLevel{ levLines  = ls
-                                  , levBounds = b
-                                  , levCarve  = c
-                                  , levMesh   = maskToMesh $
-                                                rasterizeLines ls b c
-                                  }
+  generateLevel ls b c = GameLevel { levLines  = ls
+                                   , levBounds = b
+                                   , levCarve  = c
+                                   , levMesh   = maskToMesh $
+                                                 rasterizeLines ls b c
+                                   }
   
   level1 = generateLevel [((0, 8), (20, 12))]
                          ((0, 0), (20, 20))
@@ -81,17 +81,103 @@ module Silkworm.Game where
           -- let rm  = H.spaceRemove space obj
           return (obj { gAdd = add, gRemove = inaction }) -- TODO: add remove fn
     
-    objs <- sequence [ createWorm space (H.Vector 0 1)    >>=   controllable    >>= addRm
-                     , makeBox 0.3 (H.Vector 0 5)                               >>= addRm
-                     , makeBox 0.8 (H.Vector (-3) 4)                            >>= addRm
-                     , makeBox 0.7 (H.Vector (-2) 4.5)                          >>= addRm
-                     , makeBox 0.6 (H.Vector (1.5) 6)                           >>= addRm
-                     , makeBox 0.8 (H.Vector (2) 5)                             >>= addRm
-                     , makeBox 0.4 (H.Vector (4) 4)                             >>= addRm
-                     , makeWall (H.Vector (-3) (0)) (H.Vector (3) (0))          >>= addRm
-                     , makeWall (H.Vector (-5) (2)) (H.Vector (0) (-2))         >>= addRm
-                     , makeWall (H.Vector ( 5) (3)) (H.Vector (1) (-2.5))       >>= addRm
-                     , makeWall (H.Vector (-1) (-2.5)) (H.Vector (1) (-2.5))    >>= addRm
+    -- let poly = H.Polygon [H.Vector (-1) (-1), H.Vector 1 1, H.Vector (-1) 0, H.Vector 0, (-1)]
+    -- let rock = makePrimWithMass 2 poly wood (H.Vector (-20) 5)
+    objs <- sequence [
+                     -- createWorm space (H.Vector (-25) 2)    >>=   controllable    >>= addRm
+                     createWorm space (H.Vector (60) 2)    >>=   controllable    >>= addRm
+                     , createBox 0.5 (H.Vector (-0.5) 1.05)                      >>= addRm
+                     , createBox 0.5 (H.Vector (-0.5) 2.05)                      >>= addRm
+                     , createBox 0.5 (H.Vector (-0.5) 3.05)                      >>= addRm
+                     , createBox 0.5 (H.Vector (-0.5) 4.05)                      >>= addRm
+                     , createBox 0.5 (H.Vector (-0.5) 5.05)                      >>= addRm
+                     , createBox 0.5 (H.Vector (-0.5) 6.05)                      >>= addRm
+                     , createBox 0.5 (H.Vector (-1.1) 1.05)                      >>= addRm
+                     , createBox 0.5 (H.Vector (-1.1) 2.05)                      >>= addRm
+                     , createBox 0.5 (H.Vector (-1.1) 3.05)                      >>= addRm
+                     , createBox 0.5 (H.Vector (-1.1) 4.05)                      >>= addRm
+                     , createBox 0.5 (H.Vector (-1.1) 5.05)                      >>= addRm
+                     , createBox 0.5 (H.Vector (-1.1) 6.05)                      >>= addRm
+                     , createBox 0.5 (H.Vector (1) (-1))                         >>= addRm
+                     -- , rock >>= addRm
+                     -- the ground, up to the pit
+                     , makeCurveWall [ H.Vector (-30) (1)
+                                     , H.Vector (-30) (0)
+                                     , H.Vector (-20) (1)
+                                     , H.Vector (-10) (-2)
+                                     , H.Vector (-2.2) (0)
+                                     , H.Vector (-2) (0)
+                                     , H.Vector (0) (0)
+                                     , H.Vector (1) (0) ]                        >>= addRm
+                     -- the pit
+                     , makeWall (H.Vector (0) (0)) (H.Vector (2) (-2.5))         >>= addRm
+                     , makeWall (H.Vector (2) (-2.5)) (H.Vector (4) (-6))        >>= addRm
+                     , makeWall (H.Vector (4) (-6)) (H.Vector (5) (-6.5))        >>= addRm
+                     , makeWall (H.Vector (5) (-6.5)) (H.Vector (6) (0))         >>= addRm
+                     , makeWall (H.Vector (6) (0)) (H.Vector (10) (0))           >>= addRm
+                     -- the right wall
+                     , makeWall (H.Vector (10) (4)) (H.Vector (10) (30))         >>= addRm
+                     -- the left wall
+                     , makeWall (H.Vector (-30) (30)) (H.Vector (-30) (0))       >>= addRm
+                     -- the tunnel
+                     , makeCurveWall [ H.Vector (10) (-1)
+                                     , H.Vector (10) (0)
+                                     , H.Vector (14) (0)
+                                     , H.Vector (18) (4)
+                                     , H.Vector (25) (3)
+                                     , H.Vector (30) (0)
+                                     , H.Vector (30) (-1) ]                      >>= addRm
+                     , makeCurveWall [ H.Vector (10) (7)
+                                     , H.Vector (10) (4)
+                                     , H.Vector (14) (4)
+                                     , H.Vector (18) (5)
+                                     , H.Vector (25) (4)
+                                     , H.Vector (30) (2)
+                                     , H.Vector (35) (4)
+                                     , H.Vector (40) (3)
+                                     , H.Vector (50) (0)
+                                     , H.Vector (51) (0) ]                       >>= addRm
+                     -- the next level
+                     , makeWall (H.Vector (30) (0)) (H.Vector (30) (-10))        >>= addRm
+                     , makeWall (H.Vector (30) (-10)) (H.Vector (50) (-10))      >>= addRm
+                     , makeWall (H.Vector (50) (-10)) (H.Vector (50) (-1))       >>= addRm
+                     -- platforms
+                     , makeWall (H.Vector (30) (-2)) (H.Vector (33) (-2))        >>= addRm
+                     , makeWall (H.Vector (30) (-2)) (H.Vector (30) (-10))       >>= addRm
+                     , makeWall (H.Vector (33) (-2)) (H.Vector (33) (-10))       >>= addRm
+
+                     , makeWall (H.Vector (34) (-2.5)) (H.Vector (36) (-2.5))    >>= addRm
+                     , makeWall (H.Vector (34) (-2.5)) (H.Vector (34) (-10))     >>= addRm
+                     , makeWall (H.Vector (36) (-2.5)) (H.Vector (36) (-10))     >>= addRm
+
+                     , makeWall (H.Vector (37) (-4)) (H.Vector (39) (-4))        >>= addRm
+                     , makeWall (H.Vector (37) (-4)) (H.Vector (37) (-10))       >>= addRm
+                     , makeWall (H.Vector (39) (-4)) (H.Vector (39) (-10))       >>= addRm
+
+                     , makeWall (H.Vector (40) (-4)) (H.Vector (42) (-4))        >>= addRm
+                     , makeWall (H.Vector (40) (-4)) (H.Vector (40) (-10))       >>= addRm
+                     , makeWall (H.Vector (42) (-4)) (H.Vector (42) (-10))       >>= addRm
+
+                     , makeWall (H.Vector (43) (-2)) (H.Vector (46) (-2))        >>= addRm
+                     , makeWall (H.Vector (43) (-2)) (H.Vector (43) (-10))       >>= addRm
+                     , makeWall (H.Vector (46) (-2)) (H.Vector (46) (-10))       >>= addRm
+
+                     , makeWall (H.Vector (47) (-1)) (H.Vector (50) (-1))        >>= addRm
+                     , makeWall (H.Vector (47) (-1)) (H.Vector (47) (-10))       >>= addRm
+                     , makeWall (H.Vector (50) (-1)) (H.Vector (50) (-10))       >>= addRm
+                     
+                     -- final room
+                     , makeCurveWall [ H.Vector (49) (-1)
+                                     , H.Vector (50) (-1)
+                                     , H.Vector (60) (1)
+                                     , H.Vector (70) (0)
+                                     , H.Vector (70) (0) ]                       >>= addRm
+                     , makeWall (H.Vector (70) (0)) (H.Vector (70) (-5))         >>= addRm
+                     , makeWall (H.Vector (70) (-5)) (H.Vector (100) (-5))       >>= addRm
+                     , createBox 1.0 (H.Vector (69) 1.00)                      >>= addRm
+                     , createBox 0.8 (H.Vector (75) (-4))                      >>= addRm
+                     , createRect 8 0.2 (H.Vector (75) (-3.5))    >>= addRm
+                     , createBox 0.2 (H.Vector (78.9) (-3))                      >>= addRm
                      ]
     
     -- Let each object add itself to the space
@@ -132,13 +218,18 @@ module Silkworm.Game where
     state <- get stateRef
     let controllables = ((gsActives state) `withBehavior` BeControllable)
     
+    space <- getKey (CharKey ' ')
     left  <- getKey (SpecialKey LEFT)
     right <- getKey (SpecialKey RIGHT)
     up    <- getKey (SpecialKey UP)
     down  <- getKey (SpecialKey DOWN)
     
     forM_ controllables $ \obj -> do
-      let body  = H.getBody (getPrimShape $ head (gPrim obj))
+      -- ringSqueeze obj 1.0
+      
+      let body   = H.getBody (getPrimShape $ head (gPrim obj))
+      let bodies = map (H.getBody . getPrimShape) (gPrim obj)
+      let bodies2 = [bodies !! i | i <- [0,2..((length bodies) - 1)]]
       
       H.setForce body (H.Vector 0 0)
       
@@ -146,11 +237,13 @@ module Silkworm.Game where
       when (right == Press) (movePlayerRight body)
       when (up    == Press) (movePlayerUp    body)
       when (down  == Press) (movePlayerDown  body)
+      -- when (space == Press) (forM_ bodies2 $ (\b -> H.setForce b (H.Vector 0.0 1.0)))
     
-    where movePlayerRight body = H.setForce body (H.Vector 1.5 0)
-          movePlayerLeft  body = H.setForce body (H.Vector (-1.5) 0)
-          movePlayerUp    body = H.setForce body (H.Vector 0 (1.5))
-          movePlayerDown  body = H.setForce body (H.Vector 0 (-1.5))
+    where force = 2.0
+          movePlayerRight body = H.applyForce body (H.Vector force 0) (H.Vector 0 0)
+          movePlayerLeft  body = H.applyForce body (H.Vector (-force) 0) (H.Vector 0 0)
+          movePlayerUp    body = H.applyForce body (H.Vector 0 (force)) (H.Vector 0 0)
+          movePlayerDown  body = H.applyForce body (H.Vector 0 (-force)) (H.Vector 0 0)
     
   
   -- | Renders the current state.
@@ -239,10 +332,82 @@ module Silkworm.Game where
         normal $ Normal3 nx ny nz
         vertex $ Vertex3 vx vy vz
   
+  drawNiceBox :: GamePrim -> Action
+  drawNiceBox (GamePrim shape stype _) = Action "nice box" drawBox
+    where
+      H.Polygon verts = stype
+      body = H.getBody shape
+      drawBox = do
+        pos@(H.Vector px py) <- H.getPosition body
+        angle                <- H.getAngle    body
+        let rot = H.rotate $ H.fromAngle angle
+            verts' = map ((+pos) . rot) verts
+        textureBinding Texture2D $= Just (TextureObject 0)
+        color $ Color3 0.8 0.4 (0.1 :: Float)
+        normal $ Normal3 0 0 (-1 :: Float)
+        renderPrimitive Quads $ do
+          forM_ verts' $ \(H.Vector x y) -> do
+            vertex (Vertex3 (x) (y) 0)
+        color $ Color3 0.7 0.3 (0.05 :: Float)
+        renderPrimitive LineStrip $ do
+          forM_ verts' $ \(H.Vector x y) -> do
+            vertex (Vertex3 (x) (y) 0)
+  
+  createBox :: Float -> H.Vector -> IO GameObject
+  createBox size pos@(H.Vector x y) = do
+    prim <- makeSquarePrim size rubber pos
+    let draw = drawNiceBox prim
+    return $ gameObject{ gPrim = [prim], gDraw = draw }
+  
+  createRect :: Float -> Float -> H.Vector -> IO GameObject
+  createRect w h pos = do
+    prim <- makeRectanglePrim w h wood pos
+    return $ primToObject prim
+  
+  drawWormCircle :: Float -> Color3 Float -> GamePrim -> Action
+  drawWormCircle r c (GamePrim shape stype _) = Action "worm" drawCircle
+    where
+      -- vtx (x, y) = Vertex3 (realToFrac x) (realToFrac y) 0.0
+      body = H.getBody shape
+      drawCircle = do
+        -- Get center and angle of object
+        pos@(H.Vector px py) <- H.getPosition body
+        angle                <- H.getAngle    body
+        
+        textureBinding Texture2D $= Just (TextureObject 0)
+        color $ Color3 1 1 (1 :: Float)
+        let segs  = 10
+            coef  = (2 * pi) / (toEnum segs)
+            r1    = r * 0.5
+            r2    = r * 1.0
+        renderPrimitive Quads $ do
+          forM_ [0..segs] $ \i -> do
+            let t1 = toEnum i * coef
+                t2 = toEnum (i + 1) * coef
+                x1 = cos (t1 + angle)
+                y1 = sin (t1 + angle)
+                x2 = cos (t2 + angle)
+                y2 = sin (t2 + angle)
+            -- vertex $ Vertex3 px py 0
+            normal $ Normal3 y1 x1 (-1 :: Float)
+            vertex $ Vertex3 (px + x1 * r1) (py + y1 * r1) (0)
+            vertex $ Vertex3 (px + x1 * r2) (py + y1 * r2) (0)
+            vertex $ Vertex3 (px + x2 * r2) (py + y2 * r2) (0)
+            vertex $ Vertex3 (px + x2 * r1) (py + y2 * r1) (0)
+        renderPrimitive Polygon $ do
+          normal $ Normal3 0.1 0.1 (-0.2 :: Float)
+          forM_ [0..segs] $ \i -> do
+            let t = toEnum i * coef
+                x = cos (t + angle)
+                y = sin (t + angle)
+            vertex $ Vertex3 (px + x * r1) (py + y * r1) (0)
+          
+      
+  
   createWorm :: H.Space -> H.Vector -> IO GameObject
   createWorm space pos@(H.Vector x y) = do
     -- Create worm segments
-    let partPositions = [(H.Vector (x + i) y) | i <- [0,0.5..2.5]]
+    let partPositions = [(H.Vector (x - i) y) | i <- [0,0.5..4.5]]
     prims <- mapM (makeCirclePrim 0.2 wormBody) partPositions
     
     -- Create pivots between body parts
@@ -253,7 +418,7 @@ module Silkworm.Game where
     wormObj <- return $ readWaveFront fileData
     
     -- Draw the silkworm
-    let draw = combineActions (map drawGamePrim prims)
+    let draw = combineActions (map (drawWormCircle 0.25 (Color3 0.8 0.2 0.2)) prims)
     return $ gameObject{ gPrim = prims, gDraw = draw }
 
     -- let morph = mkMorph wormObj (fromIntegral $ length partPositions)
@@ -267,7 +432,7 @@ module Silkworm.Game where
     --              translate $ Vector3 x y z
     --              color  $ Color3 0.2 0.7 (0.2 :: GLfloat)
     --              drawObject (blockMorph morph ctrls)
-    
+    -- 
     -- return $ gameObject{ gPrim = prims, gDraw = Action "worm" draw }
     
     where pivotJointBetween (p1, p2) =
@@ -278,6 +443,15 @@ module Silkworm.Game where
                   j <- H.newJoint b1 b2 (H.Pivot (midpoint a b))
                   H.spaceAdd space j
                   return j
+  
+  -- ringSqueeze :: GameObject -> Float -> IO ()
+  -- ringSqueeze g dir force = do
+  --   let shapes = map getPrimShape (gPrim g)
+  --   ps <- mapM (H.getPosition . H.getBody) shapes
+  --   let vpairs = zip (drop 0 ps) (drop 1 ps)
+  --       mids   = map midpoint vpairs
+  --       prps   = map perpendicular vpairs
+  --       center = vecCenter ps
   
   orientationForShape shape action = do
     (H.Vector x y) <- H.getPosition $ H.getBody shape
