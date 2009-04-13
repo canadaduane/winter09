@@ -84,8 +84,8 @@ module Silkworm.Game where
     -- let poly = H.Polygon [H.Vector (-1) (-1), H.Vector 1 1, H.Vector (-1) 0, H.Vector 0, (-1)]
     -- let rock = makePrimWithMass 2 poly wood (H.Vector (-20) 5)
     objs <- sequence [
-                     -- createWorm space (H.Vector (-25) 2)    >>=   controllable    >>= addRm
-                     createWorm space (H.Vector (60) 2)    >>=   controllable    >>= addRm
+                     createWorm space (H.Vector (-25) 2)    >>=   controllable    >>= addRm
+                     -- createWorm space (H.Vector (60) 2)    >>=   controllable    >>= addRm
                      , createBox 0.5 (H.Vector (-0.5) 1.05)                      >>= addRm
                      , createBox 0.5 (H.Vector (-0.5) 2.05)                      >>= addRm
                      , createBox 0.5 (H.Vector (-0.5) 3.05)                      >>= addRm
@@ -219,6 +219,8 @@ module Silkworm.Game where
     let controllables = ((gsActives state) `withBehavior` BeControllable)
     
     space <- getKey (CharKey ' ')
+    a_key <- getKey (CharKey 'A')
+    s_key <- getKey (CharKey 'S')
     left  <- getKey (SpecialKey LEFT)
     right <- getKey (SpecialKey RIGHT)
     up    <- getKey (SpecialKey UP)
@@ -227,16 +229,23 @@ module Silkworm.Game where
     forM_ controllables $ \obj -> do
       -- ringSqueeze obj 1.0
       
-      let body   = H.getBody (getPrimShape $ head (gPrim obj))
-      let bodies = map (H.getBody . getPrimShape) (gPrim obj)
+      let prims  = gPrim obj
+      let bHead  = H.getBody (getPrimShape $ head prims)
+      let bMid   = H.getBody (getPrimShape $ prims !! ((length prims) `div` 2))
+      let bTail  = H.getBody (getPrimShape $ last prims)
+      let bodies = map (H.getBody . getPrimShape) prims
       let bodies2 = [bodies !! i | i <- [0,2..((length bodies) - 1)]]
       
-      H.setForce body (H.Vector 0 0)
+      H.setForce bHead (H.Vector 0 0)
+      -- H.setForce bMid (H.Vector 0 0)
+      H.setForce bTail (H.Vector 0 0)
       
-      when (left  == Press) (movePlayerLeft  body)
-      when (right == Press) (movePlayerRight body)
-      when (up    == Press) (movePlayerUp    body)
-      when (down  == Press) (movePlayerDown  body)
+      when (left  == Press) (movePlayerLeft  bHead)
+      when (right == Press) (movePlayerRight bHead)
+      when (up    == Press) (movePlayerUp    bHead)
+      when (down  == Press) (movePlayerDown  bHead)
+      when (a_key == Press) (movePlayerLeft  bTail)
+      when (s_key == Press) (movePlayerRight bTail)
       -- when (space == Press) (forM_ bodies2 $ (\b -> H.setForce b (H.Vector 0.0 1.0)))
     
     where force = 2.0
